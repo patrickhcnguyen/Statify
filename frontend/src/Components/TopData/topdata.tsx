@@ -23,6 +23,10 @@ interface Genre {
   name: string;
 }
 
+interface GenreProps {
+  timeRange: string;
+}
+
 export const TopTracks: React.FC<TopTracksProps> = ({ timeRange }) => {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -40,13 +44,18 @@ export const TopTracks: React.FC<TopTracksProps> = ({ timeRange }) => {
           console.error('Response Text:', text);
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
+          
         const data = await response.json();
-        const trackData = data.items.map((item: any) => ({
-          name: item.name,
-          artist: item.artists[0].name,
-          albumImageUrl: item.album.images[1]?.url || '',
-        }));
+        const trackData = data.items.map((item: any) => {
+          const albumImageUrl = item.album.images[0]?.url || '';
+          console.log('Album Image URL:', albumImageUrl); // Log the album image URL
+          return {
+            name: item.name,
+            artist: item.artists[0].name,
+            albumImageUrl: albumImageUrl,
+          };
+        });
+        
         setTracks(trackData);
       } catch (error) {
         console.error('Error fetching top tracks:', error);
@@ -64,7 +73,11 @@ export const TopTracks: React.FC<TopTracksProps> = ({ timeRange }) => {
       <ul>
         {tracks.map((track, index) => (
           <li key={index} className="flex items-center mb-4">
-            <img src={track.albumImageUrl} alt={track.name} className="w-16 h-16 mr-4" />
+            <img 
+              src={track.albumImageUrl} 
+              alt={track.name} 
+              className="w-36 h-36 object-cover mr-4" // adjust image size here
+            />
             <div>
               <p className="font-bold">{index + 1}. {track.name}</p>
               <p>{track.artist}</p>
@@ -97,7 +110,7 @@ export const TopArtists: React.FC<TopArtistsProps> = ({ timeRange }) => {
         const data = await response.json();
         const artistData = data.items.map((item: any) => ({
           name: item.name,
-          albumImageUrl: item.images[1]?.url || '',
+          albumImageUrl: item.images[0]?.url || '',
         }));
         setArtists(artistData);
       } catch (error) {
@@ -116,7 +129,10 @@ export const TopArtists: React.FC<TopArtistsProps> = ({ timeRange }) => {
       <ul>
         {artists.map((artist, index) => (
           <li key={index} className="flex items-center mb-4">
-            <img src={artist.albumImageUrl} alt={artist.name} className="w-16 h-16 mr-4" />
+            <img 
+            src={artist.albumImageUrl} 
+            alt={artist.name} 
+            className="w-36 h-36 mr-4" />
             <div>
               <p className="font-bold">{index + 1}. {artist.name}</p>
             </div>
@@ -127,14 +143,14 @@ export const TopArtists: React.FC<TopArtistsProps> = ({ timeRange }) => {
   );
 };
 
-export const TopGenres: React.FC = () => {
+export const TopGenres: React.FC<GenreProps> = ({ timeRange }) => {
   const [genres, setGenres] = useState<Genre[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTopGenres = async () => {
       try {
-        const response = await fetch('http://localhost:8888/top-genres?time_range=short_term', {
+        const response = await fetch(`http://localhost:8888/top-genres?time_range=${timeRange}`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -157,7 +173,7 @@ export const TopGenres: React.FC = () => {
     };
 
     fetchTopGenres();
-  }, []);
+  }, [timeRange]);
 
   return (
     <div>
@@ -173,8 +189,6 @@ export const TopGenres: React.FC = () => {
     </div>
   );
 };
-
-// Ensure the Recent component is defined only once and used somewhere in your application
 export const Recent: React.FC = () => {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -200,7 +214,7 @@ export const Recent: React.FC = () => {
       const trackData = data.items.map((item: any) => ({
         name: item.track.name,
         artist: item.track.artists[0].name,
-        albumImageUrl: item.track.album.images[1]?.url || '',
+        albumImageUrl: item.track.album.images[0]?.url || '',
       }));
       setTracks(trackData);
     } catch (error) {
@@ -216,7 +230,10 @@ export const Recent: React.FC = () => {
       <ul>
         {tracks.map((track, index) => (
           <li key={index} className="flex items-center mb-4">
-            <img src={track.albumImageUrl} alt={track.name} className="w-16 h-16 mr-4" />
+            <img 
+            src={track.albumImageUrl} 
+            alt={track.name} 
+            className="w-36 h-36 mr-4" />
             <div>
               <p className="font-bold">{index + 1}. {track.name}</p>
               <p>{track.artist}</p>

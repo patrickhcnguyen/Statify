@@ -18,7 +18,7 @@ const Box: React.FC<BoxProps> = ({ timeRange }) => {
       case '/artist/top':
         return <TopArtists timeRange={timeRange} />; 
       case '/genre/top':
-        return <TopGenres />;
+        return <TopGenres timeRange={timeRange} />; 
       case '/track/recent':
         return <Recent />;
       default:
@@ -27,7 +27,7 @@ const Box: React.FC<BoxProps> = ({ timeRange }) => {
   };
   
   return (
-    <div className="border-black border-2 p-4 w-1/4 bg-gray-100 ml-12 mt-4 drop-shadow-lg">
+    <div className="border-black border-2 p-4 w-3/5 bg-gray-100 ml-12 mt-4 drop-shadow-lg">
       <h1 className="text-lg font-bold">Music Stats</h1>
       {renderComponent()}
     </div>
