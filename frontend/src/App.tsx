@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import Navbar from './Components/Navbar/navbar';
 import Hero from './Components/Hero/hero';
 import Box from './Components/Box/box';
 import TimeRangeSelector from './Components/TimeRangeSelector/TimeRangeSelector';
-import { TopArtists, TopGenres, TopTracks, Recent } from './Components/TopData/topdata';
 
 const App: React.FC = () => {
   const [timeRange, setTimeRange] = useState<string>('short_term');
@@ -52,14 +51,15 @@ const App: React.FC = () => {
       />
       <Hero title="Welcome to Stats For Spotify" isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout} />
       <div className="flex bg-gray-100">
+        <Box timeRange={timeRange} /> {/* Render Box first */}
+
+        {/* Conditionally render TimeRangeSelector based on path */}
         {window.location.pathname.includes('/track/top') || window.location.pathname.includes('/artist/top') ? (
           <TimeRangeSelector
             currentRange={timeRange}
             onRangeChange={handleTimeRangeChange}
           />
         ) : null}
-
-        <Box timeRange={timeRange} /> 
       </div>
     </Router>
   );
