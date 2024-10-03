@@ -54,8 +54,7 @@ const App: React.FC = () => {
       <Hero title="Welcome to Stats For Spotify" isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout} />
       <div className="flex bg-gray-100">
         <Box timeRange={timeRange} /> 
-
-        {location.pathname.includes('/track/top') || location.pathname.includes('/artist/top') ? (
+        {location.pathname.includes('/track/top') || location.pathname.includes('/artist/top') || location.pathname.includes('/genre/top') ? (
           <div className="flex flex-col">
             <TimeRangeSelector
               currentRange={timeRange}
