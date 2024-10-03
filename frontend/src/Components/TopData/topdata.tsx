@@ -27,33 +27,33 @@ export const TopTracks: React.FC<TopTracksProps> = ({ timeRange }) => {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchTopTracks = async () => {
-    try {
-      const response = await fetch(`http://localhost:8888/top-tracks?time_range=${timeRange}`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        const text = await response.text();
-        console.error('Response Text:', text);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      const trackData = data.items.map((item: any) => ({
-        name: item.name,
-        artist: item.artists[0].name,
-        albumImageUrl: item.album.images[1]?.url || '',
-      }));
-      setTracks(trackData);
-    } catch (error) {
-      console.error('Error fetching top tracks:', error);
-      setError('Error fetching top tracks.');
-    }
-  };
-
   useEffect(() => {
+    const fetchTopTracks = async () => {
+      try {
+        const response = await fetch(`http://localhost:8888/top-tracks?time_range=${timeRange}`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          const text = await response.text();
+          console.error('Response Text:', text);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const trackData = data.items.map((item: any) => ({
+          name: item.name,
+          artist: item.artists[0].name,
+          albumImageUrl: item.album.images[1]?.url || '',
+        }));
+        setTracks(trackData);
+      } catch (error) {
+        console.error('Error fetching top tracks:', error);
+        setError('Error fetching top tracks.');
+      }
+    };
+
     fetchTopTracks();
   }, [timeRange]);
 
@@ -80,32 +80,32 @@ export const TopArtists: React.FC<TopArtistsProps> = ({ timeRange }) => {
   const [artists, setArtists] = useState<Artist[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchTopArtists = async () => {
-    try {
-      const response = await fetch(`http://localhost:8888/top-artists?time_range=${timeRange}`, {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        const text = await response.text();
-        console.error('Response Text:', text);
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      const artistData = data.items.map((item: any) => ({
-        name: item.name,
-        albumImageUrl: item.images[1]?.url || '',
-      }));
-      setArtists(artistData);
-    } catch (error) {
-      console.error('Error fetching top artists:', error);
-      setError('Error fetching top artists.');
-    }
-  };
-
   useEffect(() => {
+    const fetchTopArtists = async () => {
+      try {
+        const response = await fetch(`http://localhost:8888/top-artists?time_range=${timeRange}`, {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          const text = await response.text();
+          console.error('Response Text:', text);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const artistData = data.items.map((item: any) => ({
+          name: item.name,
+          albumImageUrl: item.images[1]?.url || '',
+        }));
+        setArtists(artistData);
+      } catch (error) {
+        console.error('Error fetching top artists:', error);
+        setError('Error fetching top artists.');
+      }
+    };
+
     fetchTopArtists();
   }, [timeRange]);
 

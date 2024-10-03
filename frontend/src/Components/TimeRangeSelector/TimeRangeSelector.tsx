@@ -7,15 +7,24 @@ interface TimeRangeSelectorProps {
 
 const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ currentRange, onRangeChange }) => {
   return (
-    <div>
-      <button onClick={() => onRangeChange('short_term')} className={currentRange === 'short_term' ? 'active' : ''}>
-        Last 4 weeks
+    <div className="mt-4 ml-12 space-x-4"> 
+      <button
+        className={`px-4 py-2 rounded ${currentRange === 'short_term' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
+        onClick={() => onRangeChange('short_term')}
+      >
+        Last 4 Weeks
       </button>
-      <button onClick={() => onRangeChange('medium_term')} className={currentRange === 'medium_term' ? 'active' : ''}>
-        Last 6 months
+      <button
+        className={`px-4 py-2 rounded ${currentRange === 'medium_term' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
+        onClick={() => onRangeChange('medium_term')}
+      >
+        Last 6 Months
       </button>
-      <button onClick={() => onRangeChange('long_term')} className={currentRange === 'long_term' ? 'active' : ''}>
-        All time
+      <button
+        className={`px-4 py-2 rounded ${currentRange === 'long_term' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
+        onClick={() => onRangeChange('long_term')}
+      >
+        All Time
       </button>
     </div>
   );

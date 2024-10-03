@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, } from 'react-router-dom';
+import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 import Navbar from './Components/Navbar/navbar';
 import Hero from './Components/Hero/hero';
 import Box from './Components/Box/box';
 import TimeRangeSelector from './Components/TimeRangeSelector/TimeRangeSelector';
-import { TopArtists, TopGenres, TopTracks, Recent } from './Components/TopData/topdata';
 
 const App: React.FC = () => {
   const [timeRange, setTimeRange] = useState<string>('short_term');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  
+  const location = useLocation(); 
 
   const handleTimeRangeChange = (range: string) => {
     setTimeRange(range);
@@ -43,7 +44,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <Router>
+    <>
       <Navbar 
         title="Stats For Spotify"
         isLoggedIn={isLoggedIn}
@@ -52,17 +53,25 @@ const App: React.FC = () => {
       />
       <Hero title="Welcome to Stats For Spotify" isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout} />
       <div className="flex bg-gray-100">
-        {window.location.pathname.includes('/track/top') || window.location.pathname.includes('/artist/top') ? (
-          <TimeRangeSelector
-            currentRange={timeRange}
-            onRangeChange={handleTimeRangeChange}
-          />
-        ) : null}
-
         <Box timeRange={timeRange} /> 
+
+        {location.pathname.includes('/track/top') || location.pathname.includes('/artist/top') ? (
+          <div className="flex flex-col">
+            <TimeRangeSelector
+              currentRange={timeRange}
+              onRangeChange={handleTimeRangeChange}
+            />
+          </div>
+        ) : null}
       </div>
-    </Router>
+    </>
   );
 };
 
-export default App;
+const Main: React.FC = () => (
+  <Router>
+    <App />
+  </Router>
+);
+
+export default Main;
