@@ -134,7 +134,7 @@ const App: React.FC = () => {
           onLogin={handleLogin}
           onLogout={handleLogout}
         />
-        <Hero title="Welcome to Spotify Sats" isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout} />
+        <Hero title="Welcome to Spotify Stats" isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout} />
         <div className="flex bg-gray-100 h-auto"> {/* bar where the box starts */}
           <Box timeRange={timeRange} />
           {(location.pathname.includes('/track/top') ||
