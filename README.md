@@ -1,6 +1,10 @@
 # Stats-For-Spotify-Clone
 Stats for Spotify Clone for Aggieworks Takehome Assignment
 
+My old repository got corrupted somehow...so I switched to a new one, but if you'd want to see the prior commit history here is the old repo
+
+<l>https://github.com/patrickhcnguyen/Stats-For-Spotify-Clone/</l>
+
 # IMPORTANT
 
 You MUST have a Spotify account (sorry Apple users)
