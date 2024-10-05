@@ -1,14 +1,11 @@
 const express = require('express');
 const request = require('request');
 const router = express.Router();
-
 router.get('/recently-played', function(req, res) {
     const accessToken = req.cookies.access_token; 
-
     if (!accessToken) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
-
     const options = {
         url: 'https://api.spotify.com/v1/me/player/recently-played',
         qs: {
@@ -19,7 +16,6 @@ router.get('/recently-played', function(req, res) {
         },
         json: true
     };
-
     request.get(options, function(error, response, body) {
         if (!error && response.statusCode === 200) {
             res.json(body);  
@@ -29,5 +25,4 @@ router.get('/recently-played', function(req, res) {
         }
     });
 });
-
 module.exports = router;

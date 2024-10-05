@@ -3,7 +3,7 @@ const request = require('request');
 const router = express.Router();
 
 router.get('/top-artists', function(req, res) {
-    const accessToken = req.cookies.access_token; // Get the access token from cookies
+    const accessToken = req.cookies.access_token; 
 
     if (!accessToken) {
         return res.status(401).json({ error: 'Unauthorized' });

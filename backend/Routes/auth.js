@@ -5,6 +5,8 @@ const crypto = require('crypto');
 const querystring = require('querystring');
 const request = require('request');
 
+// Aggieworks reviewers look here!!!!!!!!!!!!!!
+
 const client_id = "54da85c1c7114ffb810148c9cbdede29";
 const client_secret = "e2abdb2c6d594b229a47f11aabeb7f92";
 const redirect_uri = 'http://localhost:8888/callback';
@@ -24,8 +26,8 @@ router.get("/", (req, res) => {
 
 router.get('/login', function(req, res) {
     const state = generateRandomString(16);
-    const scope = 'user-read-private user-read-email user-top-read user-read-recently-played';
-  
+    const scope = 'user-read-private user-read-email user-read-recently-played user-top-read playlist-modify-public playlist-modify-private';
+
     res.redirect('https://accounts.spotify.com/authorize?' +
       querystring.stringify({
         response_type: 'code',
