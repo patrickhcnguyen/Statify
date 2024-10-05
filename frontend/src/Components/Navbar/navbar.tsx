@@ -9,7 +9,7 @@ interface NavbarProps {
   onLogout: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogin, onLogout }) => {
+const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -40,7 +40,7 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogin, onLogout }) => {
       <div className="w-full px-6 py-3 flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
           <HomeIcon className="w-7 h-7" />
-          <span className="font-bold text-lg">Stats For Spotify</span>
+          <span className="font-bold text-lg">Spotify Stats</span>
         </Link>
         <div className="flex items-center space-x-6 ml-auto">
           <Link to="/track/top" className="hover:text-blue-600 transition-colors text-lg">
@@ -67,9 +67,6 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogin, onLogout }) => {
               </button>
               {isDropdownOpen && (
                 <ul className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg">
-                  <li className="py-2 px-4 hover:bg-gray-100 cursor-pointer">
-                    Manage account
-                  </li>
                   <li
                     className="py-2 px-4 hover:bg-gray-100 cursor-pointer"
                     onClick={handleLogoutClick}
