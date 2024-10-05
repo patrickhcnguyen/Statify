@@ -1,4 +1,3 @@
-// src/Components/Box/box.tsx
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { TopArtists, TopTracks, TopGenres, Recent } from '../TopData/topdata';
@@ -27,7 +26,7 @@ const Box: React.FC<BoxProps> = ({ timeRange }) => {
   };
   
   return (
-    <div className="border-black border-2 p-4 w-3/5 bg-gray-100 ml-12 mt-4 drop-shadow-lg">
+    <div className="border-black border-2 p-4 w-3/5 bg-gray-100 ml-12 mt-4 drop-shadow-2xl">
       <h1 className="text-lg font-bold">Music Stats</h1>
       {renderComponent()}
     </div>
