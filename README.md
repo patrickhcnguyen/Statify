@@ -18,16 +18,19 @@ You MUST have a Spotify account (sorry Apple users)
     <l> At Redirect URIs, copy and paste this link http://localhost:8888/callback
   <li>Click on Web API and agree to the terms and conditions</li>
   <li>Once your app is made, click on Settings</li>
-  <li>Copy your client ID and client secret ID then go to the backend directory and create a .env file</li>
-  <li>In the .env file, add your Spotify credentials, there's a .env.example file showing the variable name being used and how it's formatted</li>
+  <li>Copy your client ID and client secret ID then go to the backend/Routes/auth.js</li>
+  <li>In auth.js, there is a client_id and client_secret</li>
   
-      <l>SPOTIFY_CLIENT_ID=""</l>
+      const client_id = ""
 
-      <l>SPOTIFY_CLIENT_SECRET=""</l>
+      const client_secret = ""
+
+  <li>Replace the client_id with the Spotify client ID and the client_secret with the Spotify secret client ID from your dashboard </li>
 </ol>
 
 To run:
 <ol>
+  <li>Open up two terminals</li>
   <li>cd into frontend/src and npm i, then npm start</li>
   <li>cd into backend and npm i, then npm run dev</li>
   <li>Click login and enjoy :)</li>
