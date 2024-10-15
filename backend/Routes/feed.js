@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const User = require('../Database/Models/users');
-// error bc im not using cors or mongoose rn
+
 router.post('/feed', async (req, res) => {
-    const { userID, playlistName, playlistDescription, trackURIs } = req.body;
+    const { userID, playlists } = req.body; 
 
     try {
         let user = await User.findOne({ userID });
@@ -15,20 +16,22 @@ router.post('/feed', async (req, res) => {
             });
         }
 
-        user.playlists.push({
-            playlistID: new mongoose.Types.ObjectId(), 
-            name: playlistName,
-            description: playlistDescription,
-            trackURIs, 
-            createdAt: new Date()
+        playlists.forEach(playlist => {
+            user.playlists.push({
+                playlistID: playlist.playlistID || new mongoose.Types.ObjectId(), 
+                name: playlist.name,
+                description: playlist.description,
+                trackURIs: playlist.trackURIs, 
+                createdAt: new Date()
+            });
         });
 
         await user.save();
 
-        res.status(200).json({ message: 'Playlist added to feed successfully!' });
+        res.status(200).json({ message: 'Playlist(s) added to feed successfully!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error adding playlist to feed' });
+        res.status(500).json({ message: 'Error adding playlist(s) to feed' });
     }
 });
 
