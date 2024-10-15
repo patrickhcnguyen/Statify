@@ -2,9 +2,21 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const path = require('path');
+require('dotenv').config()
+const mongoose = require('mongoose');
 
 const app = express();
 app.use(express.json()); 
+
+const mongoURI = process.env.MONGODBURI;
+
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log('MongoDB connected successfully');
+    })
+    .catch(err => {
+        console.error('MongoDB connection error:', err);
+    });
 
 app.use(cors({
   origin: ['http://localhost:3000', 'https://accounts.spotify.com'], 
@@ -21,8 +33,9 @@ const topGenreRoutes = require('./Routes/topGenres');
 const recentlyPlayedRoutes = require ('./Routes/recentlyPlayed');
 const getUserProfileRoutes = require('./Routes/getUserProfile')
 const createPlaylistRoute = require('./Routes/createPlaylists');
-const addTracksRoute = require('./Routes/addItems')
-const getRecommendationsRoute = require('./Routes/getRecommendations')
+const addTracksRoute = require('./Routes/addItems');
+const getRecommendationsRoute = require('./Routes/getRecommendations');
+const getFeedRoute = require('./Routes/feed'); // error here
 
 app.use(authRoutes);
 app.use(topArtistsRoutes);
@@ -31,8 +44,9 @@ app.use(topGenreRoutes);
 app.use(recentlyPlayedRoutes);
 app.use(getUserProfileRoutes);
 app.use(createPlaylistRoute);
-app.use(addTracksRoute)
-app.use(getRecommendationsRoute)
+app.use(addTracksRoute);
+app.use(getRecommendationsRoute);
+app.use(getFeedRoute);
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 
