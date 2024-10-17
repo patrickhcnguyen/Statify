@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get('/top-tracks', function(req, res) {
     const accessToken = req.cookies.access_token;
-    console.log("access token is:", accessToken)
+    // console.log("access token is:", accessToken) // old debugging statement
     if (!accessToken) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
