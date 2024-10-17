@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom'; 
 import Navbar from './Components/Navbar/navbar';
 import Hero from './Components/Hero/hero';
 import Box from './Components/Box/box';
@@ -7,6 +7,7 @@ import TimeRangeSelector from './Components/TimeRangeSelector/TimeRangeSelector'
 import useUserProfile from './Components/GetUserProfile/getUserProfile';
 import CreatePlaylist from './Components/CreatePlaylist/createPlaylist';
 import Recommender from './Components/Recommender/Recommender';
+import Feed from './Components/Feed/feed'; 
 
 const App: React.FC = () => {
   const [timeRange, setTimeRange] = useState<string>('short_term');
@@ -127,46 +128,49 @@ const App: React.FC = () => {
   };
 
   return (
-      <>
-        <Navbar
-          title="Stats For Spotify"
-          isLoggedIn={isLoggedIn}
-          onLogin={handleLogin}
-          onLogout={handleLogout}
-        />
-        <Hero title="Welcome to Spotify Stats" isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout} />
-        <div className="flex bg-gray-100 h-auto"> {/* bar where the box starts */}
-          <Box timeRange={timeRange} />
-          {(location.pathname.includes('/track/top') ||
-            location.pathname.includes('/artist/top') ||
-            location.pathname.includes('/genre/top')) && (
-            <div className="flex flex-col">
-              <TimeRangeSelector
-                currentRange={timeRange}
-                onRangeChange={setTimeRange}
-              />
-              {location.pathname.includes('/track/top') && recentTracks.length > 0 && userProfile && (
-                <div className="flex flex-col">
-                  <CreatePlaylist userId={userProfile.id} topTracks={topTracks} timeQuery={timeQuery} />
-                    <Recommender topTracks={topTracks} />
-                </div>
-              )}
-            </div>
-          )}
-          {location.pathname.includes('/track/recent') && topTracks.length > 0 && userProfile && (
-            <div className="flex flex-col">
-              <CreatePlaylist userId={userProfile.id} topTracks={recentTracks} timeQuery={timeQuery} />
-              <Recommender topTracks={recentTracks}/>
-            </div>
-          )}
-        </div>
-      </>
+    <>
+      <Navbar
+        title="Stats For Spotify"
+        isLoggedIn={isLoggedIn}
+        onLogin={handleLogin}
+        onLogout={handleLogout}
+      />
+      <Hero title="Welcome to Spotify Stats" isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout} />
+      <div className="flex bg-gray-100 h-auto">
+        <Box timeRange={timeRange} />
+        {(location.pathname.includes('/track/top') ||
+          location.pathname.includes('/artist/top') ||
+          location.pathname.includes('/genre/top')) && (
+          <div className="flex flex-col">
+            <TimeRangeSelector
+              currentRange={timeRange}
+              onRangeChange={setTimeRange}
+            />
+            {location.pathname.includes('/track/top') && recentTracks.length > 0 && userProfile && (
+              <div className="flex flex-col">
+                <CreatePlaylist userId={userProfile.id} topTracks={topTracks} timeQuery={timeQuery} />
+                <Recommender topTracks={topTracks} />
+              </div>
+            )}
+          </div>
+        )}
+        {location.pathname.includes('/track/recent') && topTracks.length > 0 && userProfile && (
+          <div className="flex flex-col">
+            <CreatePlaylist userId={userProfile.id} topTracks={recentTracks} timeQuery={timeQuery} />
+            <Recommender topTracks={recentTracks}/>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 
 const Main: React.FC = () => (
   <Router>
-    <App />
+    <Routes>
+      <Route path="/feed" element={<Feed />} />
+      <Route path="*" element={<App />} />
+    </Routes>
   </Router>
 );
 
