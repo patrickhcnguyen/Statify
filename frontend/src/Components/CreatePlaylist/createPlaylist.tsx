@@ -30,11 +30,12 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, topTracks, time
       setError('Playlist name is required');
       return;
     }
-
+  
     setLoading(true);
     setError(null);
-
+  
     try {
+      // Step 1: Create the Playlist
       const response = await fetch('http://localhost:8888/create-playlist', {
         method: 'POST',
         credentials: 'include',
@@ -46,19 +47,20 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, topTracks, time
           playlistName,
         }),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to create playlist');
       }
-
+  
       const playlist = await response.json();
       const playlistId = playlist.id;
-
+  
       console.log('Created Playlist:', playlist);
-
+  
       await handleAddTracks(playlistId);
-
+      await addPlaylistToFeed(playlistId);
+  
       setPlaylistName(''); 
     } catch (error) {
       console.error('Error creating playlist:', error);
@@ -67,6 +69,40 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, topTracks, time
       setLoading(false);
     }
   };
+  
+
+  // sending playlist to database using feed
+  const addPlaylistToFeed = async (playlistId: string) => {
+    try {
+      const response = await fetch('http://localhost:8888/feed', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userID: userId,
+          playlists: [
+            {
+              playlistID: playlistId,
+              name: playlistName,
+              description: `Created on ${new Date().toLocaleDateString()} - ${timeQuery || 'Custom'}`,
+              trackURIs: topTracks.map(track => track.uri),
+            },
+          ],
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to add playlist to feed');
+      }
+  
+      console.log('Playlist added to feed successfully');
+    } catch (error) {
+      console.error('Error adding playlist to feed:', error);
+      setError('Failed to add playlist to feed.');
+    }
+  };  
 
   const handleAddTracks = async (playlistId: string) => {
     if (!topTracks || topTracks.length === 0) {
