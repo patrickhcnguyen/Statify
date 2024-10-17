@@ -22,6 +22,8 @@ const App: React.FC = () => {
   const location = useLocation();
   const { userProfile } = useUserProfile();
 
+  const renderHeroAndBox = location.pathname !== '/feed';
+
   useEffect(() => {
     const fetchTopTracks = async () => {
       try {
@@ -135,32 +137,44 @@ const App: React.FC = () => {
         onLogin={handleLogin}
         onLogout={handleLogout}
       />
-      <Hero title="Welcome to Spotify Stats" isLoggedIn={isLoggedIn} onLogin={handleLogin} onLogout={handleLogout} />
-      <div className="flex bg-gray-100 h-auto">
-        <Box timeRange={timeRange} />
-        {(location.pathname.includes('/track/top') ||
-          location.pathname.includes('/artist/top') ||
-          location.pathname.includes('/genre/top')) && (
-          <div className="flex flex-col">
-            <TimeRangeSelector
-              currentRange={timeRange}
-              onRangeChange={setTimeRange}
-            />
-            {location.pathname.includes('/track/top') && recentTracks.length > 0 && userProfile && (
+      <Routes>
+        <Route path="/feed" element={<Feed />} />
+      </Routes>
+      {renderHeroAndBox && ( // added conditional rendering so that /feed doesnt render hero or box
+        <>
+          <Hero
+            title="Welcome to Spotify Stats"
+            isLoggedIn={isLoggedIn}
+            onLogin={handleLogin}
+            onLogout={handleLogout}
+          />
+          <div className="flex bg-gray-100 h-auto">
+            <Box timeRange={timeRange} />
+            {(location.pathname.includes('/track/top') ||
+              location.pathname.includes('/artist/top') ||
+              location.pathname.includes('/genre/top')) && (
               <div className="flex flex-col">
-                <CreatePlaylist userId={userProfile.id} topTracks={topTracks} timeQuery={timeQuery} />
-                <Recommender topTracks={topTracks} />
+                <TimeRangeSelector
+                  currentRange={timeRange}
+                  onRangeChange={setTimeRange}
+                />
+                {location.pathname.includes('/track/top') && recentTracks.length > 0 && userProfile && (
+                  <div className="flex flex-col">
+                    <CreatePlaylist userId={userProfile.id} topTracks={topTracks} timeQuery={timeQuery} />
+                    <Recommender topTracks={topTracks} />
+                  </div>
+                )}
+              </div>
+            )}
+            {location.pathname.includes('/track/recent') && topTracks.length > 0 && userProfile && (
+              <div className="flex flex-col">
+                <CreatePlaylist userId={userProfile.id} topTracks={recentTracks} timeQuery={timeQuery} />
+                <Recommender topTracks={recentTracks} />
               </div>
             )}
           </div>
-        )}
-        {location.pathname.includes('/track/recent') && topTracks.length > 0 && userProfile && (
-          <div className="flex flex-col">
-            <CreatePlaylist userId={userProfile.id} topTracks={recentTracks} timeQuery={timeQuery} />
-            <Recommender topTracks={recentTracks}/>
-          </div>
-        )}
-      </div>
+        </>
+      )}
     </>
   );
 };
@@ -168,7 +182,6 @@ const App: React.FC = () => {
 const Main: React.FC = () => (
   <Router>
     <Routes>
-      <Route path="/feed" element={<Feed />} />
       <Route path="*" element={<App />} />
     </Routes>
   </Router>
