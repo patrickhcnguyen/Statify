@@ -21,7 +21,7 @@ router.post('/create-playlist', async (req, res) => {
         },
         body: JSON.stringify({
             name: playlistName,
-            description: 'Playlist created from top tracks by Patty :)',
+            description: 'Playlist created by Patty :)',
             public: false // set true for public playlists
         })
     };
