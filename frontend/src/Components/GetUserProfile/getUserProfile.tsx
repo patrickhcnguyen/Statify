@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 
 interface UserProfile {
   id: string;
+  displayName: string;
 }
 
 const useUserProfile = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -22,9 +23,13 @@ const useUserProfile = () => {
         }
 
         const data = await response.json();
-        setUserProfile(data); 
+        setUserProfile({
+          id: data.id,
+          displayName: data.displayName,
+        });
       } catch (err) {
         console.error(err);
+        setError('Failed to load user profile');
       } finally {
         setLoading(false);
       }
