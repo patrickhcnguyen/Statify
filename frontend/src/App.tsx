@@ -107,6 +107,7 @@ const App: React.FC = () => {
   useEffect(() => {
     if (userProfile) {
       console.log('User ID:', userProfile.id);
+      console.log('display_name:', userProfile.displayName)
     }
   }, [userProfile]);
 
@@ -160,7 +161,7 @@ const App: React.FC = () => {
                 />
                 {location.pathname.includes('/track/top') && recentTracks.length > 0 && userProfile && (
                   <div className="flex flex-col">
-                    <CreatePlaylist userId={userProfile.id} topTracks={topTracks} timeQuery={timeQuery} />
+                    <CreatePlaylist userId={userProfile.id} displayName={userProfile.displayName} topTracks={topTracks} timeQuery={timeQuery} />
                     <Recommender topTracks={topTracks} />
                   </div>
                 )}
@@ -168,7 +169,7 @@ const App: React.FC = () => {
             )}
             {location.pathname.includes('/track/recent') && topTracks.length > 0 && userProfile && (
               <div className="flex flex-col">
-                <CreatePlaylist userId={userProfile.id} topTracks={recentTracks} timeQuery={timeQuery} />
+                <CreatePlaylist userId={userProfile.id} displayName={userProfile.displayName} topTracks={recentTracks} timeQuery={timeQuery} />
                 <Recommender topTracks={recentTracks} />
               </div>
             )}
