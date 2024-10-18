@@ -4,7 +4,11 @@ const mongoose = require('mongoose');
 const User = require('../Database/Models/users');
 
 router.post('/feed', async (req, res) => {
-    const { userID, playlists } = req.body; 
+    const { userID, displayName, playlists } = req.body; 
+
+    if (!displayName) {
+        return res.status(400).json({ message: 'displayName is required' });
+    }
 
     try {
         let user = await User.findOne({ userID });
@@ -12,15 +16,17 @@ router.post('/feed', async (req, res) => {
         if (!user) {
             user = new User({
                 userID,
+                displayName, 
                 playlists: []
             });
+        } else {
+            user.displayName = displayName; 
         }
 
         playlists.forEach(playlist => {
             user.playlists.push({
                 playlistID: playlist.playlistID || new mongoose.Types.ObjectId(), 
                 name: playlist.name,
-                description: playlist.description,
                 trackURIs: playlist.trackURIs, 
                 createdAt: new Date()
             });
@@ -37,13 +43,12 @@ router.post('/feed', async (req, res) => {
 
 router.get('/feed', async (req, res) => {
     try {
-      const users = await User.find({});
-      res.status(200).json(users);
+        const users = await User.find({});
+        res.status(200).json(users);
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error fetching feed data' });
+        console.error(error);
+        res.status(500).json({ message: 'Error fetching feed data' });
     }
-  });
-
+});
 
 module.exports = router;
