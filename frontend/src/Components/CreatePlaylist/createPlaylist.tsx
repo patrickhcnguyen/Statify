@@ -3,11 +3,12 @@ import { useLocation } from 'react-router-dom';
 
 interface CreatePlaylistProps {
   userId: string;
+  displayName: string;
   topTracks: Array<{ name: string; artist: string; albumImageUrl: string; uri: string }>;
   timeQuery: 'Last 4 weeks' | 'Last 6 months' | 'All time' | null; 
 }
 
-const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, topTracks, timeQuery }) => {
+const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, topTracks, timeQuery }) => {
   const [playlistName, setPlaylistName] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -35,7 +36,6 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, topTracks, time
     setError(null);
   
     try {
-      // Step 1: Create the Playlist
       const response = await fetch('http://localhost:8888/create-playlist', {
         method: 'POST',
         credentials: 'include',
@@ -44,6 +44,7 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, topTracks, time
         },
         body: JSON.stringify({
           userId,
+          displayName, // Pass the displayName here
           playlistName,
         }),
       });
@@ -61,7 +62,7 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, topTracks, time
       await handleAddTracks(playlistId);
       await addPlaylistToFeed(playlistId);
   
-      setPlaylistName(''); 
+      setPlaylistName('');
     } catch (error) {
       console.error('Error creating playlist:', error);
       setError('Failed to create playlist.');
@@ -82,11 +83,12 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, topTracks, time
         },
         body: JSON.stringify({
           userID: userId,
+          displayName: displayName,
+
           playlists: [
             {
               playlistID: playlistId,
               name: playlistName,
-              description: `Created on ${new Date().toLocaleDateString()} - ${timeQuery || 'Custom'}`,
               trackURIs: topTracks.map(track => track.uri),
             },
           ],
