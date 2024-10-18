@@ -6,6 +6,7 @@ router.post('/create-playlist', async (req, res) => {
     const accessToken = req.cookies.access_token; 
     console.log('Access Token from createPlaylists.js is:', accessToken);
 
+    
     const userId = req.body.userId; 
     const playlistName = req.body.playlistName || 'New Playlist'; 
 
