@@ -1,5 +1,4 @@
-# Stats-For-Spotify-Clone
-Stats for Spotify Clone for Aggieworks Takehome Assignment
+# SpotiStats
 
 My old repository got corrupted somehow...so I switched to a new one, but if you'd want to see the prior commit history here is the old repo
 
