@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react';
 interface Playlist {
   playlistID: string;
   name: string;
-  description: string;
   trackURIs: string[];
   createdAt: string;
 }
 
 interface User {
   userID: string;
+  displayName: string; 
   playlists: Playlist[];
 }
 
@@ -63,11 +63,10 @@ const Feed: React.FC = () => {
           {feedData.map((user) => (
             user.playlists.map((playlist) => (
               <div key={playlist.playlistID} className="playlist-card bg-gray-100 p-4 rounded-lg shadow-md">
-                {/* Playlist Image - For now, using the first track's album image */}
                 {playlist.trackURIs.length > 0 ? (
                   <img
                     src={`https://i.scdn.co/image/${playlist.trackURIs[0]}`} 
-                    alt={playlist.name}
+                    // alt={playlist.name}
                     className="w-full h-48 object-cover mb-2 rounded"
                   />
                 ) : (
@@ -77,7 +76,7 @@ const Feed: React.FC = () => {
                 )}
 
                 <h3 className="font-bold text-lg">{playlist.name}</h3>
-                <p className="text-gray-600">{playlist.description || 'No description'}</p> {/* chnage this part o created by {userID} */}
+                <p className="text-gray-600">Created by {user.displayName}</p>
                 <p className="text-gray-500 text-sm mt-2">Created on: {new Date(playlist.createdAt).toLocaleDateString()}</p>
                 <a
                   href={`https://open.spotify.com/playlist/${playlist.playlistID}`}
