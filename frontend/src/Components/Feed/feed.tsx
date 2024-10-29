@@ -84,12 +84,12 @@ const Feed: React.FC = () => {
   }
 
   return (
-    <div className="feed-container p-4">
+    <div className="feed-container p-4 max-w-7xl mx-auto">
       <h2 className="text-xl font-semibold mb-4">User Playlists Feed</h2>
       {feedData.length === 0 ? (
         <p>No playlists available.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {feedData
             .flatMap(user => 
               user.playlists.map(playlist => ({
@@ -103,23 +103,23 @@ const Feed: React.FC = () => {
                 {playlist.trackURIs.length > 0 ? (
                   <img
                     src={playlistImages[playlist.playlistID] || 'default-image-url'} 
-                    className="w-full h-48 object-cover mb-2 rounded"
+                    className="w-full aspect-square object-cover mb-2 rounded"
                     alt={playlist.name}
                   />
                 ) : (
-                  <div className="w-full h-48 bg-gray-200 flex items-center justify-center mb-2 rounded">
-                    <span>No image available</span>
+                  <div className="w-full aspect-square bg-gray-200 flex items-center justify-center mb-2 rounded">
+                    <span className="text-sm text-center px-2">No image available</span>
                   </div>
                 )}
 
-                <h3 className="font-bold text-lg">{playlist.name}</h3>
-                <p className="text-gray-600">Created by {playlist.displayName}</p>
-                <p className="text-gray-500 text-sm mt-2">Created on: {new Date(playlist.createdAt).toLocaleDateString()}</p>
+                <h3 className="font-bold text-base sm:text-lg truncate">{playlist.name}</h3>
+                <p className="text-gray-600 text-sm">Created by {playlist.displayName}</p>
+                <p className="text-gray-500 text-xs mt-2">Created on: {new Date(playlist.createdAt).toLocaleDateString()}</p>
                 <a
                   href={`https://open.spotify.com/playlist/${playlist.playlistID}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline mt-4 block"
+                  className="text-blue-500 hover:underline mt-4 block text-sm"
                 >
                   View on Spotify
                 </a>
