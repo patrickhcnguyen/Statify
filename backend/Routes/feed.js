@@ -51,4 +51,31 @@ router.get('/feed', async (req, res) => {
     }
 });
 
+router.get('/playlist-image/:playlistId', async (req, res) => {
+  const accessToken = req.cookies.access_token;
+  const { playlistId } = req.params;
+
+  if (!accessToken) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  try {
+    const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}`, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch playlist data');
+    }
+
+    const data = await response.json();
+    res.json({ images: data.images });
+  } catch (error) {
+    console.error('Error fetching playlist image:', error);
+    res.status(500).json({ error: 'Failed to fetch playlist image' });
+  }
+});
+
 module.exports = router;
