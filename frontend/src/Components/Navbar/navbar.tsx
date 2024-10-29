@@ -40,7 +40,7 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogout }) => {
       <div className="w-full px-6 py-3 flex justify-between items-center">
         <Link to="/" className="flex items-center space-x-2">
           <HomeIcon className="w-7 h-7" />
-          <span className="font-bold text-lg">Spotify Stats</span>
+          <span className="font-bold text-lg">Statify</span>
         </Link>
         <div className="flex items-center space-x-6 ml-auto">
           <Link to="/track/top" className="hover:text-blue-600 transition-colors text-lg">

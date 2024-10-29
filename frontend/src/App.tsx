@@ -144,7 +144,7 @@ const App: React.FC = () => {
       {renderHeroAndBox && ( // added conditional rendering so that /feed doesnt render hero or box
         <>
           <Hero
-            title="Welcome to Spotify Stats"
+            title="Welcome to Statify"
             isLoggedIn={isLoggedIn}
             onLogin={handleLogin}
             onLogout={handleLogout}
