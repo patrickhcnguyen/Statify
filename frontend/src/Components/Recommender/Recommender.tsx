@@ -37,11 +37,11 @@ const Recommender: React.FC<RecommenderProps> = ({ topTracks }) => {
   };  
 
   return (
-    <div className="p-4">
+    <div className="mt-4 ml-32">
       <button 
         onClick={getRecommendations} 
         disabled={loading} 
-        className="bg-green-500 ml-44 text-white px-4 py-2 rounded hover:bg-green-600"
+        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full"
       >
         {loading ? 'Loading...' : 'Get Recommendations'}
       </button>
