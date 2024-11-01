@@ -1,25 +1,45 @@
 import React, { useState } from 'react';
 
+interface Track {
+  name: string;
+  artist: string;
+  uri: string;
+}
+
 interface RecommenderProps {
-  topTracks: Array<{ uri: string }>;
+  topTracks: Track[];
 }
 
 const Recommender: React.FC<RecommenderProps> = ({ topTracks }) => {
   const [recommendedTracks, setRecommendedTracks] = useState<Array<any>>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedTracks, setSelectedTracks] = useState<Set<string>>(new Set());
+
+  const toggleTrackSelection = (uri: string) => {
+    const newSelection = new Set(selectedTracks);
+    if (newSelection.has(uri)) {
+      newSelection.delete(uri);
+    } else if (newSelection.size < 5) {
+      newSelection.add(uri);
+    }
+    setSelectedTracks(newSelection);
+  };
 
   const getRecommendations = async () => {
     setLoading(true);
     try {
-      console.log('Top Tracks:', topTracks); 
-      const response = await fetch('http://localhost:8888/get-recommendations', { 
+      const tracksToUse = selectedTracks.size > 0 
+        ? Array.from(selectedTracks)
+        : topTracks.slice(0, 5).map(track => track.uri);
+
+      const response = await fetch('http://localhost:8888/get-recommendations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
         body: JSON.stringify({
-          topTracks: topTracks.map((track) => track.uri),
+          topTracks: tracksToUse,
         }),
       });
 
@@ -34,14 +54,45 @@ const Recommender: React.FC<RecommenderProps> = ({ topTracks }) => {
     } finally {
       setLoading(false);
     }
-  };  
+  };
 
   return (
     <div className="mt-4 ml-32">
+      <div className="mb-4">
+        <h3 className="text-lg font-semibold mb-2">Select up to 5 tracks for recommendations:</h3>
+        <p className="text-sm text-gray-600 mb-4">
+          {selectedTracks.size === 0 
+            ? "No tracks selected - will use top 5 tracks by default" 
+            : `${selectedTracks.size} tracks selected`}
+        </p>
+        <div className="max-h-60 overflow-y-auto border rounded-lg p-4">
+          {topTracks.map((track) => (
+            <div 
+              key={track.uri}
+              className={`flex items-center p-2 hover:bg-gray-100 cursor-pointer rounded ${
+                selectedTracks.has(track.uri) ? 'bg-blue-50' : ''
+              }`}
+              onClick={() => toggleTrackSelection(track.uri)}
+            >
+              <input
+                type="checkbox"
+                checked={selectedTracks.has(track.uri)}
+                onChange={() => toggleTrackSelection(track.uri)}
+                className="mr-3"
+              />
+              <div>
+                <p className="font-medium">{track.name}</p>
+                <p className="text-sm text-gray-600">{track.artist}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <button 
-        onClick={getRecommendations} 
-        disabled={loading} 
-        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full"
+        onClick={getRecommendations}
+        disabled={loading}
+        className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full disabled:bg-gray-400"
       >
         {loading ? 'Loading...' : 'Get Recommendations'}
       </button>
@@ -57,7 +108,9 @@ const Recommender: React.FC<RecommenderProps> = ({ topTracks }) => {
                   <h4 className="font-semibold">{track.name}</h4>
                   <p className="text-gray-600">{track.artists}</p>
                 </div>
-                <a href={track.url} target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline">Listen</a>
+                <a href={track.url} target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline">
+                  Listen
+                </a>
               </li>
             ))}
           </ul>
