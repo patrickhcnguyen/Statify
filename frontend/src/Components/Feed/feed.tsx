@@ -18,6 +18,8 @@ const Feed: React.FC = () => {
   const [playlistImages, setPlaylistImages] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const playlistsPerPage = 9;
 
   const fetchPlaylistImage = async (playlistId: string) => {
     try {
@@ -75,6 +77,28 @@ const Feed: React.FC = () => {
   }, []);
   
 
+  // Calculate pagination values
+  const getAllPlaylists = () => {
+    return feedData
+      .flatMap(user => 
+        user.playlists.map(playlist => ({
+          ...playlist,
+          displayName: user.displayName
+        }))
+      )
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  };
+
+  const indexOfLastPlaylist = currentPage * playlistsPerPage;
+  const indexOfFirstPlaylist = indexOfLastPlaylist - playlistsPerPage;
+  const currentPlaylists = getAllPlaylists().slice(indexOfFirstPlaylist, indexOfLastPlaylist);
+  const totalPages = Math.ceil(getAllPlaylists().length / playlistsPerPage);
+
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo(0, 0); // Scroll to top when changing pages
+  };
+
   if (loading) {
     return <div>Loading feed...</div>;
   }
@@ -89,32 +113,22 @@ const Feed: React.FC = () => {
       {feedData.length === 0 ? (
         <p>No playlists available.</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {feedData
-            .flatMap(user => 
-              user.playlists.map(playlist => ({
-                ...playlist,
-                displayName: user.displayName
-              }))
-            )
-            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-            .map((playlist) => (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {currentPlaylists.map((playlist) => (
               <div key={playlist.playlistID} className="playlist-card bg-gray-100 p-4 rounded-lg shadow-md">
-                {playlist.trackURIs.length > 0 ? (
+                {playlistImages[playlist.playlistID] && (
                   <img
                     src={playlistImages[playlist.playlistID] || 'default-image-url'} 
                     className="w-full aspect-square object-cover mb-2 rounded"
                     alt={playlist.name}
                   />
-                ) : (
-                  <div className="w-full aspect-square bg-gray-200 flex items-center justify-center mb-2 rounded">
-                    <span className="text-sm text-center px-2">No image available</span>
-                  </div>
                 )}
-
                 <h3 className="font-bold text-base sm:text-lg truncate">{playlist.name}</h3>
                 <p className="text-gray-600 text-sm">Created by {playlist.displayName}</p>
-                <p className="text-gray-500 text-xs mt-2">Created on: {new Date(playlist.createdAt).toLocaleDateString()}</p>
+                <p className="text-gray-500 text-xs mt-2">
+                  Created on: {new Date(playlist.createdAt).toLocaleDateString()}
+                </p>
                 <a
                   href={`https://open.spotify.com/playlist/${playlist.playlistID}`}
                   target="_blank"
@@ -125,7 +139,49 @@ const Feed: React.FC = () => {
                 </a>
               </div>
             ))}
-        </div>
+          </div>
+
+          {/* Pagination Controls */}
+          <div className="flex justify-center mt-8 space-x-2">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 rounded ${
+                currentPage === 1 
+                  ? 'bg-gray-300 cursor-not-allowed' 
+                  : 'bg-blue-500 hover:bg-blue-600 text-white'
+              }`}
+            >
+              Previous
+            </button>
+            
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => paginate(index + 1)}
+                className={`px-4 py-2 rounded ${
+                  currentPage === index + 1
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 hover:bg-gray-300'
+                }`}
+              >
+                {index + 1}
+              </button>
+            ))}
+
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`px-4 py-2 rounded ${
+                currentPage === totalPages 
+                  ? 'bg-gray-300 cursor-not-allowed' 
+                  : 'bg-blue-500 hover:bg-blue-600 text-white'
+              }`}
+            >
+              Next
+            </button>
+          </div>
+        </>
       )}
     </div>
   );
