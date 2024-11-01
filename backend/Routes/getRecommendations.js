@@ -17,7 +17,7 @@ router.post('/get-recommendations', async (req, res) => {
 
   const topTracksIds = topTracks.map(track => track.split(':')[2]); // extract ids of songs
   
-  const limitedTracksIds = topTracksIds.slice(0, 5); 
+  const limitedTracksIds = topTracksIds.slice(0, 5); // up to 5 things are allowed to be inputted in
 
   const endpoint = `https://api.spotify.com/v1/recommendations?limit=5&seed_tracks=${limitedTracksIds.join(',')}`;
 
