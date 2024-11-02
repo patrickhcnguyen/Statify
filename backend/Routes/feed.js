@@ -78,4 +78,39 @@ router.get('/playlist-image/:playlistId', async (req, res) => {
   }
 });
 
+router.delete('/feed/playlist/:playlistId', async (req, res) => {
+    const { playlistId } = req.params;
+    const { userID } = req.query;
+
+    if (!playlistId || !userID) {
+        return res.status(400).json({ message: 'PlaylistID and userID are required' });
+    }
+
+    try {
+        const user = await User.findOne({ userID });
+        
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Find the index of the playlist to remove
+        const playlistIndex = user.playlists.findIndex(
+            playlist => playlist.playlistID === playlistId
+        );
+
+        if (playlistIndex === -1) {
+            return res.status(404).json({ message: 'Playlist not found' });
+        }
+
+        // Remove the playlist
+        user.playlists.splice(playlistIndex, 1);
+        await user.save();
+
+        res.status(200).json({ message: 'Playlist deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting playlist:', error);
+        res.status(500).json({ message: 'Error deleting playlist' });
+    }
+});
+
 module.exports = router;
