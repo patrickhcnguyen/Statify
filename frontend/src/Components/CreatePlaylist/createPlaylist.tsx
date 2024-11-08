@@ -12,6 +12,11 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
   const [playlistName, setPlaylistName] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [gradientUrls, setGradientUrls] = useState<{
+    radialUrl: string;
+    conicUrl: string;
+    cssGradient: string;
+  } | null>(null);
 
   const location = useLocation(); 
 
@@ -25,6 +30,56 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
       setPlaylistName('Top Tracks');
     }
   }, [timeQuery, location.pathname]);
+
+  const generateGradientFromGenres = async (trackURIs: string[]) => {
+    try {
+      // Get genres for the tracks
+      const genresResponse = await fetch('http://localhost:8888/get-track-genres', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ trackURIs }),
+      });
+
+      const { genres } = await genresResponse.json();
+      
+      // Get 3 random genres
+      const randomGenres = genres
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3);
+
+      // Get colors from GPT
+      const colorResponse = await fetch('http://localhost:8888/generate-gradient-colors', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ genres: randomGenres }),
+      });
+
+      const { colors } = await colorResponse.json();
+
+      // Generate gradient
+      const gradientResponse = await fetch('http://localhost:8888/gradients/generate-gradients', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          color1: colors[0],
+          color2: colors[1],
+          color3: colors[2],
+        }),
+      });
+
+      const gradientData = await gradientResponse.json();
+      setGradientUrls(gradientData);
+    } catch (error) {
+      console.error('Error generating gradient:', error);
+    }
+  };
 
   const handleCreatePlaylist = async () => {
     if (!playlistName) {
@@ -61,7 +116,11 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
   
       await handleAddTracks(playlistId);
       await addPlaylistToFeed(playlistId);
-  
+      
+      // Generate gradient after successful playlist creation
+      const trackURIs = topTracks.map(track => track.uri);
+      await generateGradientFromGenres(trackURIs);
+
       setPlaylistName('');
     } catch (error) {
       console.error('Error creating playlist:', error);
@@ -165,6 +224,17 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
           {loading ? 'Creating...' : 'Create Playlist'}
         </button>
       </div>
+      
+      {/* Add gradient display */}
+      {gradientUrls && (
+        <div className="mt-4">
+          <h3 className="text-lg font-semibold mb-2">Playlist Mood Gradient</h3>
+          <div className="grid grid-cols-2 gap-4">
+            <img src={gradientUrls.radialUrl} alt="Radial Gradient" className="w-full rounded" />
+            <img src={gradientUrls.conicUrl} alt="Conic Gradient" className="w-full rounded" />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
