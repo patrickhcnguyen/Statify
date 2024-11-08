@@ -38,6 +38,7 @@ const createPlaylistRoute = require('./Routes/createPlaylists');
 const addTracksRoute = require('./Routes/addItems');
 const getRecommendationsRoute = require('./Routes/getRecommendations');
 const getFeedRoute = require('./Routes/feed');
+const gradientRoutes = require('./Routes/gradients');
 
 app.use(authRoutes);
 app.use(topArtistsRoutes);
@@ -49,6 +50,7 @@ app.use(createPlaylistRoute);
 app.use(addTracksRoute);
 app.use(getRecommendationsRoute);
 app.use(getFeedRoute);
+app.use('/gradients', gradientRoutes);
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 
