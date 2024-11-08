@@ -50,6 +50,8 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
         .sort(() => 0.5 - Math.random())
         .slice(0, 3);
 
+      console.log('Selected random genres:', randomGenres);
+
       // Get colors from GPT
       const colorResponse = await fetch('http://localhost:8888/generate-gradient-colors', {
         method: 'POST',
@@ -60,6 +62,7 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
       });
 
       const { colors } = await colorResponse.json();
+      console.log('Generated colors:', colors);
 
       // Generate gradient
       const gradientResponse = await fetch('http://localhost:8888/gradients/generate-gradients', {
@@ -75,6 +78,11 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
       });
 
       const gradientData = await gradientResponse.json();
+      console.log('Generated gradient URLs:', {
+        radial: `http://localhost:8888${gradientData.radialUrl.split('8888')[1]}`,
+        conic: `http://localhost:8888${gradientData.conicUrl.split('8888')[1]}`
+      });
+
       setGradientUrls(gradientData);
     } catch (error) {
       console.error('Error generating gradient:', error);
