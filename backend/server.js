@@ -38,7 +38,7 @@ const createPlaylistRoute = require('./Routes/createPlaylists');
 const addTracksRoute = require('./Routes/addItems');
 const getRecommendationsRoute = require('./Routes/getRecommendations');
 const getFeedRoute = require('./Routes/feed');
-const gradientRoutes = require('./Routes/gradients');
+const gradientRoutes = require('./Routes/gradientURLs');
 
 app.use(authRoutes);
 app.use(topArtistsRoutes);
