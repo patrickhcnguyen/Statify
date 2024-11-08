@@ -1,5 +1,4 @@
 const sharp = require('sharp');
-const path = require('path');
 
 class GradientMaker {
   constructor(size = 2048) {
@@ -59,18 +58,16 @@ class GradientMaker {
     return colors;
   }
 
-  async generateGradients(color1, color2, color3) {
-    const outputDir = path.join(__dirname, 'output');
+  async generateGradientBuffers(color1, color2, color3) {
     const colors = this.interpolateColors(color1, color2, color3);
     
-    // Create color stops string for SVG
     const colorStops = colors
       .map((color, index) => 
         `<stop offset="${(index * 100 / (colors.length - 1))}%" stop-color="${color}"/>`
       )
       .join('\n        ');
 
-    // Radial gradient with interpolated colors
+    // Radial gradient SVG
     const radialSvg = `
       <svg width="${this.size}" height="${this.size}">
         <defs>
@@ -82,7 +79,7 @@ class GradientMaker {
       </svg>
     `;
     
-    // Conic gradient with interpolated colors
+    // Conic gradient SVG
     const conicSvg = `
       <svg width="${this.size}" height="${this.size}">
         <defs>
@@ -94,16 +91,23 @@ class GradientMaker {
       </svg>
     `;
 
-    // Convert SVGs to JPEGs
-    await Promise.all([
+    // Convert SVGs to JPEG buffers
+    const [radialBuffer, conicBuffer] = await Promise.all([
       sharp(Buffer.from(radialSvg))
         .jpeg({ quality: 100 })
-        .toFile(path.join(outputDir, 'radial_gradient.jpg')),
+        .toBuffer(),
       
       sharp(Buffer.from(conicSvg))
         .jpeg({ quality: 100 })
-        .toFile(path.join(outputDir, 'conic_gradient.jpg'))
+        .toBuffer()
     ]);
+
+    return {
+      radialBuffer,
+      conicBuffer,
+      cssGradient: `radial-gradient(circle at 50% 50%, ${colors.join(', ')})`,
+      colorStops: colors
+    };
   }
 }
 
