@@ -39,6 +39,8 @@ const addTracksRoute = require('./Routes/addItems');
 const getRecommendationsRoute = require('./Routes/getRecommendations');
 const getFeedRoute = require('./Routes/feed');
 const gradientRoutes = require('./Routes/gradientURLs');
+const getTrackGenresRoute = require('./Routes/getTrackGenres');
+const gptGradientRoute = require('./Routes/gptGradient');
 
 app.use(authRoutes);
 app.use(topArtistsRoutes);
@@ -51,6 +53,8 @@ app.use(addTracksRoute);
 app.use(getRecommendationsRoute);
 app.use(getFeedRoute);
 app.use('/gradients', gradientRoutes);
+app.use(getTrackGenresRoute);
+app.use(gptGradientRoute);
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 
