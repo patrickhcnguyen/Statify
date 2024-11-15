@@ -94,11 +94,19 @@ class GradientMaker {
     // Convert SVGs to JPEG buffers
     const [radialBuffer, conicBuffer] = await Promise.all([
       sharp(Buffer.from(radialSvg))
-        .jpeg({ quality: 100 })
+        .resize(512, 512)
+        .jpeg({ 
+          quality: 90,
+          chromaSubsampling: '4:4:4'
+        })
         .toBuffer(),
       
       sharp(Buffer.from(conicSvg))
-        .jpeg({ quality: 100 })
+        .resize(512, 512)
+        .jpeg({ 
+          quality: 90,
+          chromaSubsampling: '4:4:4'
+        })
         .toBuffer()
     ]);
 
