@@ -26,7 +26,7 @@ router.get("/", (req, res) => {
 
 router.get('/login', function(req, res) {
     const state = generateRandomString(16);
-    const scope = 'user-read-private user-read-email user-read-recently-played user-top-read playlist-modify-public playlist-modify-private';
+    const scope = 'user-read-private user-read-email user-read-recently-played user-top-read playlist-modify-public playlist-modify-private ugc-image-upload';
 
     res.redirect('https://accounts.spotify.com/authorize?' +
       querystring.stringify({
