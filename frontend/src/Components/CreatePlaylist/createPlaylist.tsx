@@ -107,7 +107,7 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
         throw new Error('Failed to generate gradient');
       }
 
-      // Then create the playlist
+      // Create playlist
       const response = await fetch('http://localhost:8888/create-playlist', {
         method: 'POST',
         credentials: 'include',
@@ -131,12 +131,13 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
 
       console.log('Created Playlist:', playlist);
 
-      // Add tracks and update feed
+      // Add tracks
       await handleAddTracks(playlistId);
-      await addPlaylistToFeed(playlistId);
 
-      // Update the playlist image using the gradient data directly
-      console.log('Updating playlist image with:', gradientData.radialUrl);
+      // Add to feed with gradient URL
+      await addPlaylistToFeed(playlistId, gradientData.radialUrl);
+
+      // Update the playlist image
       await updatePlaylistImage(playlistId, gradientData.radialUrl);
 
       setPlaylistName('');
@@ -150,9 +151,20 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
   
 
   // sending playlist to database using feed
-  const addPlaylistToFeed = async (playlistId: string) => {
+  const addPlaylistToFeed = async (playlistId: string, imageUrl: string) => {
     try {
-      const response = await fetch('http://localhost:8888/feed', {
+      // First fetch and convert the image to base64
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      
+      // Convert blob to base64
+      const base64data = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.readAsDataURL(blob);
+      });
+
+      const feedResponse = await fetch('http://localhost:8888/feed', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -161,21 +173,19 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
         body: JSON.stringify({
           userID: userId,
           displayName: displayName,
-
-          playlists: [
-            {
-              playlistID: playlistId,
-              name: playlistName,
-              trackURIs: topTracks.map(track => track.uri),
-            },
-          ],
+          playlists: [{
+            playlistID: playlistId,
+            name: playlistName,
+            trackURIs: topTracks.map(track => track.uri),
+            imageBase64: base64data // Store the actual base64 data
+          }]
         }),
       });
-  
-      if (!response.ok) {
+
+      if (!feedResponse.ok) {
         throw new Error('Failed to add playlist to feed');
       }
-  
+
       console.log('Playlist added to feed successfully');
     } catch (error) {
       console.error('Error adding playlist to feed:', error);
