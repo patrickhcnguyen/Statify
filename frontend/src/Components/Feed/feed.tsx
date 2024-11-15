@@ -5,6 +5,8 @@ interface Playlist {
   name: string;
   trackURIs: string[];
   createdAt: string;
+  imageBase64?: string;
+  displayName?: string;
 }
 
 interface User {
@@ -15,29 +17,10 @@ interface User {
 
 const Feed: React.FC = () => {
   const [feedData, setFeedData] = useState<User[]>([]);
-  const [playlistImages, setPlaylistImages] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const playlistsPerPage = 9;
-
-  const fetchPlaylistImage = async (playlistId: string) => {
-    try {
-      const response = await fetch(`http://localhost:8888/playlist-image/${playlistId}`, {
-        credentials: 'include',
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch playlist image');
-      }
-
-      const data = await response.json();
-      return data.images[0]?.url || null;
-    } catch (err) {
-      console.error('Error fetching playlist image:', err);
-      return null;
-    }
-  };
 
   useEffect(() => {
     const fetchFeed = async () => {
@@ -53,18 +36,6 @@ const Feed: React.FC = () => {
 
         const data = await response.json();
         setFeedData(data);
-
-        // Fetch images for all playlists
-        const images: Record<string, string> = {};
-        for (const user of data) {
-          for (const playlist of user.playlists) {
-            const imageUrl = await fetchPlaylistImage(playlist.playlistID);
-            if (imageUrl) {
-              images[playlist.playlistID] = imageUrl;
-            }
-          }
-        }
-        setPlaylistImages(images);
       } catch (err) {
         setError('Failed to load feed');
         console.error(err);
@@ -75,7 +46,6 @@ const Feed: React.FC = () => {
   
     fetchFeed();
   }, []);
-  
 
   // Calculate pagination values
   const getAllPlaylists = () => {
@@ -96,7 +66,7 @@ const Feed: React.FC = () => {
 
   const paginate = (pageNumber: number) => {
     setCurrentPage(pageNumber);
-    window.scrollTo(0, 0); // Scroll to top when changing pages
+    window.scrollTo(0, 0);
   };
 
   if (loading) {
@@ -117,9 +87,9 @@ const Feed: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {currentPlaylists.map((playlist) => (
               <div key={playlist.playlistID} className="playlist-card bg-gray-100 p-4 rounded-lg shadow-md">
-                {playlistImages[playlist.playlistID] && (
+                {playlist.imageBase64 && (
                   <img
-                    src={playlistImages[playlist.playlistID] || 'default-image-url'} 
+                    src={playlist.imageBase64}
                     className="w-full aspect-square object-cover mb-2 rounded"
                     alt={playlist.name}
                   />
