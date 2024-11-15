@@ -7,7 +7,7 @@ import TimeRangeSelector from './Components/TimeRangeSelector/TimeRangeSelector'
 import useUserProfile from './Components/GetUserProfile/getUserProfile';
 import CreatePlaylist from './Components/CreatePlaylist/createPlaylist';
 import Recommender from './Components/Recommender/Recommender';
-import Feed from './Components/Feed/feed'; 
+import Feed from './Components/Community/Community'; 
 
 const App: React.FC = () => {
   const [timeRange, setTimeRange] = useState<string>('short_term');

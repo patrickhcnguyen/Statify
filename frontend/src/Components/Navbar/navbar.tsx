@@ -56,7 +56,7 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogout }) => {
             Recently Played
           </Link>
           <Link to="/feed" className='hover:text-blue-600 transition-colors text-lg'>
-            Feed
+            Community
           </Link>
           {isLoggedIn ? (
             <>
