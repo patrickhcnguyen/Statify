@@ -23,6 +23,8 @@ router.put('/update-playlist-image/:playlistId', async (req, res) => {
       return res.status(401).json({ error: 'Invalid access token. Please re-authenticate.' });
     }
 
+    console.log('Base64 Image Data:', imageBase64.substring(0, 100) + '...');
+
     const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/images`, {
       method: 'PUT',
       headers: {
