@@ -78,14 +78,14 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
       });
 
       const gradientData = await gradientResponse.json();
-      console.log('Generated gradient URLs:', {
-        radial: `http://localhost:8888${gradientData.radialUrl.split('8888')[1]}`,
-        conic: `http://localhost:8888${gradientData.conicUrl.split('8888')[1]}`
-      });
+      console.log('Generated gradient URLs:', gradientData);
 
+      // Update state and return the data
       setGradientUrls(gradientData);
+      return gradientData;
     } catch (error) {
       console.error('Error generating gradient:', error);
+      throw error;
     }
   };
 
@@ -94,11 +94,20 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
       setError('Playlist name is required');
       return;
     }
-  
+
     setLoading(true);
     setError(null);
-  
+
     try {
+      // First, generate the gradient and get the data directly
+      const trackURIs = topTracks.map(track => track.uri);
+      const gradientData = await generateGradientFromGenres(trackURIs);
+
+      if (!gradientData?.radialUrl) {
+        throw new Error('Failed to generate gradient');
+      }
+
+      // Then create the playlist
       const response = await fetch('http://localhost:8888/create-playlist', {
         method: 'POST',
         credentials: 'include',
@@ -107,27 +116,28 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
         },
         body: JSON.stringify({
           userId,
-          displayName, // Pass the displayName here
+          displayName,
           playlistName,
         }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to create playlist');
       }
-  
+
       const playlist = await response.json();
       const playlistId = playlist.id;
-  
+
       console.log('Created Playlist:', playlist);
-  
+
+      // Add tracks and update feed
       await handleAddTracks(playlistId);
       await addPlaylistToFeed(playlistId);
-      
-      // Generate gradient after successful playlist creation
-      const trackURIs = topTracks.map(track => track.uri);
-      await generateGradientFromGenres(trackURIs);
+
+      // Update the playlist image using the gradient data directly
+      console.log('Updating playlist image with:', gradientData.radialUrl);
+      await updatePlaylistImage(playlistId, gradientData.radialUrl);
 
       setPlaylistName('');
     } catch (error) {
@@ -204,6 +214,43 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
     } catch (error) {
       console.error('Error adding tracks to playlist:', error);
       setError('Error adding tracks to playlist');
+    }
+  };
+
+  const updatePlaylistImage = async (playlistId: string, imageUrl: string) => {
+    try {
+      // Fetch the image and convert to base64
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      
+      // Convert blob to base64 using a Promise
+      const base64data = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(blob);
+      });
+
+      // Send to our backend endpoint
+      const updateResponse = await fetch(`http://localhost:8888/update-playlist-image/${playlistId}`, {
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          imageBase64: base64data
+        }),
+      });
+
+      if (!updateResponse.ok) {
+        const errorData = await updateResponse.json();
+        throw new Error(errorData.details || 'Failed to update playlist image');
+      }
+      
+      console.log('Playlist image updated successfully');
+    } catch (error) {
+      console.error('Error updating playlist image:', error);
+      throw error; // Re-throw to be handled by the caller
     }
   };
 
