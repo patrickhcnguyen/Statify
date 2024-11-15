@@ -5,6 +5,10 @@ const User = require('../Database/Models/users');
 
 router.post('/feed', async (req, res) => {
     const { userID, displayName, playlists } = req.body; 
+    console.log('Received playlists data:', playlists.map(p => ({
+        ...p,
+        imageBase64: p.imageBase64 ? 'Base64 data present' : 'No base64 data'
+    })));
 
     if (!displayName) {
         return res.status(400).json({ message: 'displayName is required' });
@@ -24,19 +28,22 @@ router.post('/feed', async (req, res) => {
         }
 
         playlists.forEach(playlist => {
+            console.log('Adding playlist with image:', playlist.imageBase64?.substring(0, 100) + '...');
             user.playlists.push({
-                playlistID: playlist.playlistID || new mongoose.Types.ObjectId(), 
+                playlistID: playlist.playlistID,
                 name: playlist.name,
-                trackURIs: playlist.trackURIs, 
-                createdAt: new Date()
+                trackURIs: playlist.trackURIs,
+                createdAt: new Date(),
+                imageBase64: playlist.imageBase64
             });
         });
 
         await user.save();
+        console.log('Saved user with playlists:', user.playlists);
 
         res.status(200).json({ message: 'Playlist(s) added to feed successfully!' });
     } catch (error) {
-        console.error(error);
+        console.error('Error adding playlist to feed:', error);
         res.status(500).json({ message: 'Error adding playlist(s) to feed' });
     }
 });
