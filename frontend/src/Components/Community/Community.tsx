@@ -7,6 +7,7 @@ interface Playlist {
   createdAt: string;
   imageBase64?: string;
   displayName?: string;
+  userID: string;
 }
 
 interface User {
@@ -17,12 +18,27 @@ interface User {
 
 const Community: React.FC = () => {
   const [feedData, setFeedData] = useState<User[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const playlistsPerPage = 9;
 
   useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch('http://localhost:8888/user-profile', {
+          credentials: 'include',
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setCurrentUserId(data.id);
+        }
+      } catch (err) {
+        console.error('Error fetching current user:', err);
+      }
+    };
+
     const fetchFeed = async () => {
       try {
         const response = await fetch('http://localhost:8888/feed', {
@@ -44,6 +60,7 @@ const Community: React.FC = () => {
       }
     };
   
+    fetchCurrentUser();
     fetchFeed();
   }, []);
 
@@ -55,7 +72,8 @@ const Community: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete playlist');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete playlist');
       }
 
       setFeedData(prevData => 
@@ -76,7 +94,8 @@ const Community: React.FC = () => {
       .flatMap(user => 
         user.playlists.map(playlist => ({
           ...playlist,
-          displayName: user.displayName
+          displayName: user.displayName,
+          userID: user.userID
         }))
       )
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -110,20 +129,17 @@ const Community: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {currentPlaylists.map((playlist) => (
               <div key={playlist.playlistID} className="playlist-card bg-gray-100 p-4 rounded-lg shadow-md relative">
-                <button
-                  onClick={() => {
-                    const user = feedData.find(u => u.displayName === playlist.displayName);
-                    if (user) {
-                      handleDelete(playlist.playlistID, user.userID);
-                    }
-                  }}
-                  className="absolute top-2 right-2 p-2 text-red-500 hover:text-red-700 bg-white rounded-full shadow-sm"
-                  title="Delete playlist"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                </button>
+                {currentUserId === playlist.userID && (
+                  <button
+                    onClick={() => handleDelete(playlist.playlistID, playlist.userID)}
+                    className="absolute top-2 right-2 p-2 text-red-500 hover:text-red-700 bg-white rounded-full shadow-sm"
+                    title="Delete playlist"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                )}
                 
                 {playlist.imageBase64 && (
                   <img

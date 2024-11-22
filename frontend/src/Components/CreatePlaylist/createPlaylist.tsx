@@ -153,11 +153,9 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
   // sending playlist to database using feed
   const addPlaylistToFeed = async (playlistId: string, imageUrl: string) => {
     try {
-      // First fetch and convert the image to base64
       const response = await fetch(imageUrl);
       const blob = await response.blob();
       
-      // Convert blob to base64
       const base64data = await new Promise<string>((resolve) => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result as string);
@@ -177,7 +175,8 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
             playlistID: playlistId,
             name: playlistName,
             trackURIs: topTracks.map(track => track.uri),
-            imageBase64: base64data // Store the actual base64 data
+            imageBase64: base64data,
+            userID: userId
           }]
         }),
       });
