@@ -18,7 +18,8 @@ const userSchema = new mongoose.Schema({
             name: { type: String, required: true }, // Name of the playlist
             trackURIs: [{ type: String }], // Array of track URIs
             createdAt: { type: Date, default: Date.now }, // Timestamp when the playlist was created
-            imageBase64: { type: String, required: false } // URL of the playlist image
+            imageBase64: { type: String, required: false }, // URL of the playlist image
+            userID: { type: String, required: true }
         }
     ]
 });
