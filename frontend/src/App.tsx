@@ -92,6 +92,20 @@ const App: React.FC = () => {
           credentials: 'include',
         });
         const data = await response.json();
+        
+        if (!data.isLoggedIn) {
+          // Try to refresh the token
+          const refreshResponse = await fetch('http://localhost:8888/refresh-token', {
+            method: 'POST',
+            credentials: 'include'
+          });
+          
+          if (refreshResponse.ok) {
+            setIsLoggedIn(true);
+            return;
+          }
+        }
+        
         setIsLoggedIn(data.isLoggedIn);
       } catch (error) {
         console.error('Error checking login status:', error);

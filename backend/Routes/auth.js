@@ -84,16 +84,19 @@ router.get('/callback', function(req, res) {
 
                 res.cookie('access_token', access_token, {
                     path: '/',
-                    httpOnly: false, // LET ME ACCESS MY COOKIES
+                    httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
                     sameSite: 'Lax',
-                });                
-                  res.cookie('refresh_token', refresh_token, { 
-                    httpOnly: false, // 
-                    secure: false,
-                    sameSite: 'Lax' 
-                  });
-                  
+                    maxAge: 3600000
+                });
+
+                res.cookie('refresh_token', refresh_token, { 
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'Lax',
+                    maxAge: 7 * 24 * 3600000
+                });
+
                 console.log('Access token set in cookie:', access_token);
                 console.log("Refresh token is:", refresh_token);
 
@@ -104,6 +107,46 @@ router.get('/callback', function(req, res) {
             }
         });
     }
+});
+
+router.post('/refresh-token', function(req, res) {
+    const refresh_token = req.cookies.refresh_token;
+    
+    if (!refresh_token) {
+        return res.status(401).json({ error: 'No refresh token' });
+    }
+
+    const authOptions = {
+        url: 'https://accounts.spotify.com/api/token',
+        form: {
+            grant_type: 'refresh_token',
+            refresh_token: refresh_token
+        },
+        headers: {
+            'Authorization': 'Basic ' + (Buffer.from(client_id + ':' + client_secret).toString('base64'))
+        },
+        json: true
+    };
+
+    request.post(authOptions, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+            const access_token = body.access_token;
+            
+            res.cookie('access_token', access_token, {
+                path: '/',
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'Lax',
+                maxAge: 3600000
+            });
+
+            res.json({ success: true });
+        } else {
+            res.clearCookie('access_token');
+            res.clearCookie('refresh_token');
+            res.status(401).json({ error: 'Invalid refresh token' });
+        }
+    });
 });
 
 module.exports = router;
