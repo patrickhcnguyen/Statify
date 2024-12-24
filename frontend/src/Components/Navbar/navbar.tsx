@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { HomeIcon, MinusIcon, XMarkIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom'; 
+import smallStar from '../../assets/icons/smallStar.svg';
 
 interface NavbarProps {
   title: string;
@@ -10,12 +11,7 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogout }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -36,62 +32,68 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogout }) => {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-gray-200 shadow-md h-16">
-      <div className="w-full px-6 py-3 flex justify-between items-center">
-        <Link to="/" className="flex items-center space-x-2">
-          <HomeIcon className="w-7 h-7" />
-          <span className="font-bold text-lg">Statify</span>
-        </Link>
-        <div className="flex items-center space-x-6 ml-auto">
-          <Link to="/track/top" className="hover:text-blue-600 transition-colors text-lg">
+    <div className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-center">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-center space-x-8">
+          <Link to="/" className="text-[24px] font-picnic text-white flex items-center">
+            Statify
+          </Link>
+          
+          <Link to="/track/top" className="text-[25px] font-pixelify text-white flex items-center">
             Top Tracks
           </Link>
-          <Link to="/artist/top" className="hover:text-blue-600 transition-colors text-lg">
+          <img src={smallStar} alt="star" className="w-6 h-6" />
+          
+          <Link to="/artist/top" className="text-[25px] font-pixelify text-white flex items-center">
             Top Artists
           </Link>
-          <Link to="/genre/top" className="hover:text-blue-600 transition-colors text-lg">
+          <img src={smallStar} alt="star" className="w-6 h-6" />
+          
+          <Link to="/genre/top" className="text-[25px] font-pixelify text-white flex items-center">
             Top Genres
           </Link>
-          <Link to="/track/recent" className="hover:text-blue-600 transition-colors text-lg">
+          <img src={smallStar} alt="star" className="w-6 h-6" />
+          
+          <Link to="/track/recent" className="text-[25px] font-pixelify text-white flex items-center">
             Recently Played
           </Link>
-          <Link to="/feed" className='hover:text-blue-600 transition-colors text-lg'>
+          <img src={smallStar} alt="star" className="w-6 h-6" />
+          
+          <Link to="/feed" className="text-[25px] font-pixelify text-white flex items-center">
             Community
           </Link>
-          {isLoggedIn ? (
-            <>
-              <button
-                className="flex items-center hover:text-blue-600 transition-colors text-lg"
-                onClick={toggleDropdown}
-              >
-                Account
-                <ChevronDownIcon className="w-5 h-5 ml-1" />
-              </button>
-              {isDropdownOpen && (
-                <ul className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg">
-                  <li
-                    className="py-2 px-4 hover:bg-gray-100 cursor-pointer"
+          
+          <div className="relative flex items-center">
+            <button
+              className="flex items-center text-[25px] font-pixelify text-white"
+              onClick={toggleDropdown}
+            >
+              {isLoggedIn ? 'Account' : 'Login'}
+              <ChevronDownIcon className="w-6 h-6 ml-1" />
+            </button>
+            {isDropdownOpen && (
+              <div className="absolute top-full right-0 mt-2 py-2 px-4 bg-black bg-opacity-50 rounded-lg">
+                {isLoggedIn ? (
+                  <button
+                    className="text-[20px] text-white font-pixelify hover:text-blue-300 transition-colors whitespace-nowrap"
                     onClick={handleLogoutClick}
                   >
                     Logout
-                  </li>
-                </ul>
-              )}
-            </>
-          ) : (
-            <button
-              className="hover:text-blue-600 transition-colors text-lg"
-              onClick={handleLoginClick}
-            >
-              Login
-            </button>
-          )}
+                  </button>
+                ) : (
+                  <button
+                    className="text-[20px] text-white font-pixelify hover:text-blue-300 transition-colors whitespace-nowrap"
+                    onClick={handleLoginClick}
+                  >
+                    Login with Spotify
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-        <button className="md:hidden ml-auto" aria-label="Toggle menu" onClick={toggleMenu}>
-          {isOpen ? <XMarkIcon className="w-6 h-6" /> : <MinusIcon className="w-6 h-6" />}
-        </button>
       </div>
-    </nav>
+    </div>
   );
 };
 
