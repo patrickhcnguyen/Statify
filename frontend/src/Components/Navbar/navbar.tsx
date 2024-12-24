@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom'; 
 import smallStar from '../../assets/icons/smallStar.svg';
@@ -10,8 +10,26 @@ interface NavbarProps {
   onLogout: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogout }) => {
+const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const response = await fetch('http://localhost:8888/check-login-status', {
+          credentials: 'include'
+        });
+        const data = await response.json();
+        setIsLoggedIn(data.isLoggedIn);
+      } catch (error) {
+        console.error('Error checking auth status:', error);
+        setIsLoggedIn(false);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -24,11 +42,16 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogout }) => {
   };
 
   const handleLogoutClick = async () => {
-    await fetch('http://localhost:8888/logout', {
-      method: 'GET',
-      credentials: 'include',
-    });
-    onLogout();
+    try {
+      await fetch('http://localhost:8888/logout', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      setIsLoggedIn(false);
+      onLogout();
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
   };
 
   return (
@@ -64,31 +87,33 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogout }) => {
           </Link>
           
           <div className="relative flex items-center">
-            <button
-              className="flex items-center text-[25px] font-pixelify text-white"
-              onClick={toggleDropdown}
-            >
-              {isLoggedIn ? 'Account' : 'Login'}
-              <ChevronDownIcon className="w-6 h-6 ml-1" />
-            </button>
-            {isDropdownOpen && (
-              <div className="absolute top-full right-0 mt-2 py-2 px-4 bg-black bg-opacity-50 rounded-lg">
-                {isLoggedIn ? (
-                  <button
-                    className="text-[20px] text-white font-pixelify hover:text-blue-300 transition-colors whitespace-nowrap"
-                    onClick={handleLogoutClick}
-                  >
-                    Logout
-                  </button>
-                ) : (
-                  <button
-                    className="text-[20px] text-white font-pixelify hover:text-blue-300 transition-colors whitespace-nowrap"
-                    onClick={handleLoginClick}
-                  >
-                    Login with Spotify
-                  </button>
+            {isLoggedIn ? (
+              <>
+                <button
+                  className="flex items-center text-[25px] font-pixelify text-white"
+                  onClick={toggleDropdown}
+                >
+                  Account
+                  <ChevronDownIcon className="w-6 h-6 ml-1" />
+                </button>
+                {isDropdownOpen && (
+                  <div className="absolute top-full right-0 mt-2 py-2 px-4 bg-black bg-opacity-50 rounded-lg">
+                    <button
+                      className="text-[20px] text-white font-pixelify hover:text-blue-300 transition-colors whitespace-nowrap"
+                      onClick={handleLogoutClick}
+                    >
+                      Logout
+                    </button>
+                  </div>
                 )}
-              </div>
+              </>
+            ) : (
+              <button
+                className="text-[25px] font-pixelify text-white"
+                onClick={handleLoginClick}
+              >
+                Login
+              </button>
             )}
           </div>
         </div>
