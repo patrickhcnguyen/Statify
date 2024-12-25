@@ -10,7 +10,7 @@ const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ currentRange, onR
   return (
     <div className="absolute top-[14vh] left-[55%] flex space-x-[2vw]">
       <button
-        className="relative w-[13.5vw] h-[13.5vw] min-w-[100px] min-h-[100px] max-w-[150px] max-h-[150px] group"
+        className="relative w-[13.5vw] h-[13.5vw] group"
         onClick={() => onRangeChange('short_term')}
       >
         <img 
