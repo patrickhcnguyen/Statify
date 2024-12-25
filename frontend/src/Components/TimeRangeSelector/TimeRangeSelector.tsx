@@ -1,4 +1,5 @@
 import React from 'react';
+import bubbleSvg from '../../assets/icons/bubble.svg';
 
 interface TimeRangeSelectorProps {
   currentRange: string;
@@ -7,24 +8,47 @@ interface TimeRangeSelectorProps {
 
 const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ currentRange, onRangeChange }) => {
   return (
-    <div className="mt-4 ml-12 space-x-4"> 
+    <div className="absolute top-[14vh] left-[55%] flex space-x-[2vw]">
       <button
-        className={`px-4 py-2 rounded-full ${currentRange === 'short_term' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
+        className="relative w-[13.5vw] h-[13.5vw] min-w-[100px] min-h-[100px] max-w-[150px] max-h-[150px] group"
         onClick={() => onRangeChange('short_term')}
       >
-        Last 4 Weeks
+        <img 
+          src={bubbleSvg} 
+          alt="4 weeks bubble" 
+          className="w-full h-full"
+        />
+        <span className="absolute inset-0 flex items-center justify-center text-white font-pixelify text-[1.5vw] min-text-[14px] max-text-[18px]">
+          Last 4 Weeks
+        </span>
       </button>
+
       <button
-        className={`px-4 py-2 rounded-full ${currentRange === 'medium_term' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
+        className="relative w-[13.5vw] h-[13.5vw] group"
         onClick={() => onRangeChange('medium_term')}
       >
-        Last 6 Months
+        <img 
+          src={bubbleSvg} 
+          alt="6 months bubble" 
+          className="w-full h-full"
+        />
+        <span className="absolute inset-0 flex items-center justify-center text-white font-pixelify text-[1.5vw] min-text-[14px] max-text-[18px]">
+          Last 6 Months
+        </span>
       </button>
+
       <button
-        className={`px-4 py-2 rounded-full ${currentRange === 'long_term' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}
+        className="relative w-[13.5vw] h-[13.5vw] group"
         onClick={() => onRangeChange('long_term')}
       >
-        All Time
+        <img 
+          src={bubbleSvg} 
+          alt="all time bubble" 
+          className="w-full h-full"
+        />
+        <span className="absolute inset-0 flex items-center justify-center text-white font-pixelify text-[1.5vw] min-text-[14px] max-text-[18px]">
+          All Time
+        </span>
       </button>
     </div>
   );
