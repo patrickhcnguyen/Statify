@@ -1,9 +1,9 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { TopArtists, TopTracks, TopGenres, Recent } from '../TopData/topdata';
+import { TopArtists, TopGenres, Recent } from '../TopData/topdata';
 
 interface BoxProps {
-  timeRange: string; 
+  timeRange: string;
 }
 
 const Box: React.FC<BoxProps> = ({ timeRange }) => { 
@@ -12,8 +12,6 @@ const Box: React.FC<BoxProps> = ({ timeRange }) => {
 
   const renderComponent = () => {
     switch (pathname) {
-      case '/track/top':
-        return <TopTracks timeRange={timeRange} />; 
       case '/artist/top':
         return <TopArtists timeRange={timeRange} />; 
       case '/genre/top':

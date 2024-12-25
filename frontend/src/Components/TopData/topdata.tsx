@@ -31,6 +31,8 @@ const COLORS = [
   '#f3722c', '#f9844a', '#90be6d', '#4d908e', '#277da1'
 ];
 
+/* 
+Phasing out top tracks for now
 export const TopTracks: React.FC<TopTracksProps> = ({ timeRange }) => {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -92,6 +94,8 @@ export const TopTracks: React.FC<TopTracksProps> = ({ timeRange }) => {
     </div>
   );
 };
+*/
+
 
 export const TopArtists: React.FC<TopArtistsProps> = ({ timeRange }) => {
   const [artists, setArtists] = useState<Artist[]>([]);
