@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom'; 
 import Navbar from './Components/Navbar/navbar';
-import Hero from './Components/Hero/hero';
 import Box from './Components/Box/box';
 import TimeRangeSelector from './Components/TimeRangeSelector/TimeRangeSelector';
 import useUserProfile from './Components/GetUserProfile/getUserProfile';
 import CreatePlaylist from './Components/CreatePlaylist/createPlaylist';
 import Recommender from './Components/Recommender/Recommender';
-import Feed from './Components/Community/Community'; 
+import Feed from './Components/Community/Community';
+import LandingPage from './Components/Landing Page/landingPage';
 import TopTracksUI from './Components/TopTracksUI/TopTracksUI';
 
 const App: React.FC = () => {
@@ -147,53 +147,70 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      {location.pathname === '/feed' ? (
-        <Feed />
-      ) : location.pathname === '/track/top' ? (
-        <div>
-          <TopTracksUI timeRange={timeRange} />
-          <div className="fixed bottom-4 right-4 flex flex-col gap-4">
-            <TimeRangeSelector
-              currentRange={timeRange}
-              onRangeChange={setTimeRange}
-            />
-            {topTracks.length > 0 && userProfile && (
-              <>
-                <CreatePlaylist 
-                  userId={userProfile.id} 
-                  displayName={userProfile.displayName} 
-                  topTracks={topTracks} 
-                  timeQuery={timeQuery} 
-                />
-                <Recommender topTracks={topTracks} />
-              </>
-            )}
-          </div>
-        </div>
+      {location.pathname === '/' ? (
+        <LandingPage />
       ) : (
         <>
-          <Hero
-            title="Welcome to Statify"
+          <Navbar
+            title="Stats For Spotify"
             isLoggedIn={isLoggedIn}
             onLogin={handleLogin}
             onLogout={handleLogout}
           />
-          <div className="flex bg-gray-100 h-auto">
-            <Box timeRange={timeRange} />
-            {(location.pathname.includes('/artist/top') ||
-              location.pathname.includes('/genre/top')) && (
-              <TimeRangeSelector
-                currentRange={timeRange}
-                onRangeChange={setTimeRange}
-              />
-            )}
-            {location.pathname.includes('/track/recent') && topTracks.length > 0 && userProfile && (
-              <div className="flex flex-col">
-                <CreatePlaylist userId={userProfile.id} displayName={userProfile.displayName} topTracks={recentTracks} timeQuery={timeQuery} />
-                <Recommender topTracks={recentTracks} />
-              </div>
-            )}
-          </div>
+          <Routes>
+            <Route path="/feed" element={<Feed />} />
+            <Route 
+              path="/track/top" 
+              element={
+                <div>
+                  <TopTracksUI timeRange={timeRange} />
+                  <div className="fixed bottom-4 right-4 flex flex-col gap-4">
+                    <TimeRangeSelector
+                      currentRange={timeRange}
+                      onRangeChange={setTimeRange}
+                    />
+                    {topTracks.length > 0 && userProfile && (
+                      <>
+                        <CreatePlaylist 
+                          userId={userProfile.id} 
+                          displayName={userProfile.displayName} 
+                          topTracks={topTracks} 
+                          timeQuery={timeQuery} 
+                        />
+                        <Recommender topTracks={topTracks} />
+                      </>
+                    )}
+                  </div>
+                </div>
+              } 
+            />
+            <Route
+              path="*"
+              element={
+                <div className="flex bg-gray-100 h-auto">
+                  <Box timeRange={timeRange} />
+                  {(location.pathname.includes('/artist/top') ||
+                    location.pathname.includes('/genre/top')) && (
+                    <TimeRangeSelector
+                      currentRange={timeRange}
+                      onRangeChange={setTimeRange}
+                    />
+                  )}
+                  {location.pathname.includes('/track/recent') && topTracks.length > 0 && userProfile && (
+                    <div className="flex flex-col">
+                      <CreatePlaylist 
+                        userId={userProfile.id} 
+                        displayName={userProfile.displayName} 
+                        topTracks={recentTracks} 
+                        timeQuery={timeQuery} 
+                      />
+                      <Recommender topTracks={recentTracks} />
+                    </div>
+                  )}
+                </div>
+              }
+            />
+          </Routes>
         </>
       )}
     </div>
