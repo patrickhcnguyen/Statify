@@ -72,14 +72,14 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({ timeRange }) => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen flex flex-col">
       <Navbar title={''} isLoggedIn={false} onLogin={function (): void {
         throw new Error('Function not implemented.');
       }} onLogout={function (): void {
         throw new Error('Function not implemented.');
       }} />
       <div 
-        className="h-screen bg-cover bg-center bg-no-repeat"
+        className="flex-1 bg-cover bg-center bg-no-repeat min-h-screen"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
         <div className="flex flex-col">
