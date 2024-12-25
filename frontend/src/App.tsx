@@ -163,20 +163,16 @@ const App: React.FC = () => {
               path="/track/top" 
               element={
                 <div>
-                  <TopTracksUI timeRange={timeRange} />
+                  <TopTracksUI 
+                    timeRange={timeRange} 
+                    setTimeRange={setTimeRange}
+                    userProfile={userProfile || { id: '', displayName: '' }}
+                    topTracks={topTracks}
+                    timeQuery={timeQuery}
+                  />
                   <div className="fixed bottom-4 right-4 flex flex-col gap-4">
-                    <TimeRangeSelector
-                      currentRange={timeRange}
-                      onRangeChange={setTimeRange}
-                    />
                     {topTracks.length > 0 && userProfile && (
                       <>
-                        <CreatePlaylist 
-                          userId={userProfile.id} 
-                          displayName={userProfile.displayName} 
-                          topTracks={topTracks} 
-                          timeQuery={timeQuery} 
-                        />
                         <Recommender topTracks={topTracks} />
                       </>
                     )}
@@ -189,21 +185,8 @@ const App: React.FC = () => {
               element={
                 <div className="flex bg-gray-100 h-auto">
                   <Box timeRange={timeRange} />
-                  {(location.pathname.includes('/artist/top') ||
-                    location.pathname.includes('/genre/top')) && (
-                    <TimeRangeSelector
-                      currentRange={timeRange}
-                      onRangeChange={setTimeRange}
-                    />
-                  )}
                   {location.pathname.includes('/track/recent') && topTracks.length > 0 && userProfile && (
                     <div className="flex flex-col">
-                      <CreatePlaylist 
-                        userId={userProfile.id} 
-                        displayName={userProfile.displayName} 
-                        topTracks={recentTracks} 
-                        timeQuery={timeQuery} 
-                      />
                       <Recommender topTracks={recentTracks} />
                     </div>
                   )}
