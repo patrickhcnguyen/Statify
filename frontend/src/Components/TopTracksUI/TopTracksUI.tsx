@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../Navbar/navbar';
 import backgroundImage from '../../assets/background/background.svg';
 import shelfImage from '../../assets/icons/shelf.svg';
+import TimeRangeSelector from '../TimeRangeSelector/TimeRangeSelector';
+import CreatePlaylist from '../CreatePlaylist/createPlaylist';
 
 interface Track {
   name: string;
@@ -11,9 +13,22 @@ interface Track {
 
 interface TopTracksUIProps {
   timeRange: string;
+  setTimeRange: (range: string) => void;
+  userProfile: {
+    id: string;
+    displayName: string;
+  };
+  topTracks: Array<{ name: string; artist: string; albumImageUrl: string; uri: string }>;
+  timeQuery: 'Last 4 weeks' | 'Last 6 months' | 'All time' | null;
 }
 
-const TopTracksUI: React.FC<TopTracksUIProps> = ({ timeRange }) => {
+const TopTracksUI: React.FC<TopTracksUIProps> = ({ 
+  timeRange, 
+  setTimeRange, 
+  userProfile,
+  topTracks,
+  timeQuery 
+}) => {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -84,6 +99,15 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({ timeRange }) => {
         className="flex-1 bg-cover bg-center bg-no-repeat min-h-screen"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
+        <TimeRangeSelector currentRange={timeRange} onRangeChange={setTimeRange} />
+        <div className="absolute top-[35vh] left-[70%] -translate-x-1/2">
+          <CreatePlaylist 
+            userId={userProfile.id} 
+            displayName={userProfile.displayName} 
+            topTracks={topTracks} 
+            timeQuery={timeQuery} 
+          />
+        </div>
         <div className="flex flex-col">
           <div className="mt-[25vh] space-y-[20vh]">
             {[0, 4, 8, 12].map((startIndex) => (
