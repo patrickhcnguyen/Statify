@@ -52,6 +52,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
           name: item.name,
           artist: item.artists[0].name,
           albumImageUrl: item.album.images[0]?.url || '',
+          uri: item.uri,
         }));
         
         setTracks(trackData);
