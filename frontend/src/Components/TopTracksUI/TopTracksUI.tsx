@@ -50,19 +50,19 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({ timeRange }) => {
     const shelfTracks = tracks.slice(startIndex, startIndex + 4);
     
     return (
-      <div className="relative ml-[50px]">
+      <div className="relative ml-[5%]">
         <img 
           src={shelfImage} 
           alt="shelf" 
-          className="w-[720px] h-[35px]"
+          className="w-[45%] min-w-[300px] max-w-[720px] h-auto"
         />
-        <div className="absolute -top-[100px] left-[60px] flex space-x-[50px]">
+        <div className="absolute -top-[6.9vw] left-[4%] flex gap-[3vw]">
           {shelfTracks.map((track, index) => (
             <div key={startIndex + index} className="relative">
               <img 
                 src={track.albumImageUrl}
                 alt={track.name}
-                className="w-[100px] h-[100px] object-cover"
+                className="w-[7.5vw] h-[7.5vw] min-w-[80px] min-h-[80px] max-w-[100px] max-h-[100px] object-cover"
               />
             </div>
           ))}
@@ -83,7 +83,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({ timeRange }) => {
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
         <div className="flex flex-col">
-          <div className="mt-[302px] space-y-[210px]">
+          <div className="mt-[25vh] space-y-[20vh]">
             {[0, 4, 8, 12].map((startIndex) => (
               <div key={startIndex}>
                 {renderShelf(startIndex)}
