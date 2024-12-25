@@ -4,11 +4,13 @@ import backgroundImage from '../../assets/background/background.svg';
 import shelfImage from '../../assets/icons/shelf.svg';
 import TimeRangeSelector from '../TimeRangeSelector/TimeRangeSelector';
 import CreatePlaylist from '../CreatePlaylist/createPlaylist';
+import Recommender from '../Recommender/Recommender';
 
 interface Track {
   name: string;
   artist: string;
   albumImageUrl: string;
+  uri: string;
 }
 
 interface TopTracksUIProps {
@@ -31,6 +33,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
 }) => {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [selectedTracks, setSelectedTracks] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const fetchTopTracks = async () => {
@@ -61,6 +64,16 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
     fetchTopTracks();
   }, [timeRange]);
 
+  const handleTrackClick = (track: Track) => {
+    const newSelection = new Set(selectedTracks);
+    if (newSelection.has(track.uri)) {
+      newSelection.delete(track.uri);
+    } else if (newSelection.size < 5) {
+      newSelection.add(track.uri);
+    }
+    setSelectedTracks(newSelection);
+  };
+
   const renderShelf = (startIndex: number) => {
     const shelfTracks = tracks.slice(startIndex, startIndex + 4);
     
@@ -69,7 +82,15 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
         <div className="relative">
           <div className="absolute bottom-[2vw] left-[4%] flex gap-[3.8vw]">
             {shelfTracks.map((track, index) => (
-              <div key={startIndex + index} className="relative">
+              <div 
+                key={startIndex + index} 
+                className={`relative cursor-pointer transition-all duration-200 ${
+                  selectedTracks.has(track.uri) 
+                    ? 'scale-110 ring-4 ring-white/50' 
+                    : 'hover:scale-105'
+                }`}
+                onClick={() => handleTrackClick(track)}
+              >
                 <img 
                   src={track.albumImageUrl}
                   alt={track.name}
@@ -100,13 +121,16 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
         <TimeRangeSelector currentRange={timeRange} onRangeChange={setTimeRange} />
-        <div className="absolute top-[35vh] left-[70%] -translate-x-1/2">
+        <div className="absolute top-[35vh] left-[70%] -translate-x-1/2 flex flex-col items-center">
           <CreatePlaylist 
             userId={userProfile.id} 
             displayName={userProfile.displayName} 
             topTracks={topTracks} 
             timeQuery={timeQuery} 
           />
+          <div className="mt-[5vw]">
+            <Recommender topTracks={topTracks} />
+          </div>
         </div>
         <div className="flex flex-col">
           <div className="mt-[25vh] space-y-[20vh]">
