@@ -8,6 +8,7 @@ import useUserProfile from './Components/GetUserProfile/getUserProfile';
 import CreatePlaylist from './Components/CreatePlaylist/createPlaylist';
 import Recommender from './Components/Recommender/Recommender';
 import Feed from './Components/Community/Community'; 
+import TopTracksUI from './Components/TopTracksUI/TopTracksUI';
 
 const App: React.FC = () => {
   const [timeRange, setTimeRange] = useState<string>('short_term');
@@ -145,17 +146,31 @@ const App: React.FC = () => {
   };
 
   return (
-    <>
-      <Navbar
-        title="Stats For Spotify"
-        isLoggedIn={isLoggedIn}
-        onLogin={handleLogin}
-        onLogout={handleLogout}
-      />
-      <Routes>
-        <Route path="/feed" element={<Feed />} />
-      </Routes>
-      {renderHeroAndBox && ( // added conditional rendering so that /feed doesnt render hero or box
+    <div className="min-h-screen">
+      {location.pathname === '/feed' ? (
+        <Feed />
+      ) : location.pathname === '/track/top' ? (
+        <div>
+          <TopTracksUI timeRange={timeRange} />
+          <div className="fixed bottom-4 right-4 flex flex-col gap-4">
+            <TimeRangeSelector
+              currentRange={timeRange}
+              onRangeChange={setTimeRange}
+            />
+            {topTracks.length > 0 && userProfile && (
+              <>
+                <CreatePlaylist 
+                  userId={userProfile.id} 
+                  displayName={userProfile.displayName} 
+                  topTracks={topTracks} 
+                  timeQuery={timeQuery} 
+                />
+                <Recommender topTracks={topTracks} />
+              </>
+            )}
+          </div>
+        </div>
+      ) : (
         <>
           <Hero
             title="Welcome to Statify"
@@ -165,21 +180,12 @@ const App: React.FC = () => {
           />
           <div className="flex bg-gray-100 h-auto">
             <Box timeRange={timeRange} />
-            {(location.pathname.includes('/track/top') ||
-              location.pathname.includes('/artist/top') ||
+            {(location.pathname.includes('/artist/top') ||
               location.pathname.includes('/genre/top')) && (
-              <div className="flex flex-col">
-                <TimeRangeSelector
-                  currentRange={timeRange}
-                  onRangeChange={setTimeRange}
-                />
-                {location.pathname.includes('/track/top') && recentTracks.length > 0 && userProfile && (
-                  <div className="flex flex-col">
-                    <CreatePlaylist userId={userProfile.id} displayName={userProfile.displayName} topTracks={topTracks} timeQuery={timeQuery} />
-                    <Recommender topTracks={topTracks} />
-                  </div>
-                )}
-              </div>
+              <TimeRangeSelector
+                currentRange={timeRange}
+                onRangeChange={setTimeRange}
+              />
             )}
             {location.pathname.includes('/track/recent') && topTracks.length > 0 && userProfile && (
               <div className="flex flex-col">
@@ -190,7 +196,7 @@ const App: React.FC = () => {
           </div>
         </>
       )}
-    </>
+    </div>
   );
 };
 
