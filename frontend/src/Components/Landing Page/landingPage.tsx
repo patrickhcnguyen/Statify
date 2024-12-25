@@ -21,7 +21,7 @@ const LandingPage: React.FC = () => {
               Welcome to Statify
             </h1>
             <div className="max-w-[968px] mx-auto">
-              <p className="text-[50px] font-picnic text-white leading-tight
+              <p className="text-[50px] font-pixelify text-white leading-tight
                           lg:text-[40px] md:text-[30px] sm:text-[30px] xs:text-[25px]">
                 View your most listened tracks, artists, and genres and switch between 3 different time periods. Your data updates every day!
               </p>
