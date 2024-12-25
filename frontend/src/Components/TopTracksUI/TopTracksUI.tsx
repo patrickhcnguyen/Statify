@@ -51,21 +51,23 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({ timeRange }) => {
     
     return (
       <div className="relative ml-[5%]">
-        <img 
-          src={shelfImage} 
-          alt="shelf" 
-          className="w-[45%] min-w-[300px] max-w-[720px] h-auto"
-        />
-        <div className="absolute -top-[6.9vw] left-[4%] flex gap-[3vw]">
-          {shelfTracks.map((track, index) => (
-            <div key={startIndex + index} className="relative">
-              <img 
-                src={track.albumImageUrl}
-                alt={track.name}
-                className="w-[7.5vw] h-[7.5vw] min-w-[80px] min-h-[80px] max-w-[100px] max-h-[100px] object-cover"
-              />
-            </div>
-          ))}
+        <div className="relative">
+          <div className="absolute bottom-[2vw] left-[4%] flex gap-[3.8vw]">
+            {shelfTracks.map((track, index) => (
+              <div key={startIndex + index} className="relative">
+                <img 
+                  src={track.albumImageUrl}
+                  alt={track.name}
+                  className="w-[7vw] h-[7vw] min-w-[70px] min-h-[70px] max-w-[120px] max-h-[120px] object-cover"
+                />
+              </div>
+            ))}
+          </div>
+          <img 
+            src={shelfImage} 
+            alt="shelf" 
+            className="w-[50%] min-w-[300px] max-w-[720px] h-auto relative"
+          />
         </div>
       </div>
     );
