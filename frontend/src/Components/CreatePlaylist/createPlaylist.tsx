@@ -264,39 +264,24 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
   };
 
   return (
-    <div className="mt-4 ml-32">
-      <h2 className="text-xl font-semibold">Create a New Playlist</h2>
+    <div className="flex flex-col items-center">
+      <button 
+        onClick={handleCreatePlaylist}
+        className="text-[2.1vw] min-text-[24px] max-text-[32px] font-picnic text-white mb-4 hover:opacity-80 transition-opacity whitespace-nowrap"
+      >
+        Create a new playlist!
+      </button>
       <input
         type="text"
         value={playlistName}
         onChange={(e) => setPlaylistName(e.target.value)}
         placeholder="Playlist name"
-        className="border rounded p-2 mb-2 text-gray-500 placeholder-gray-500 w-full" 
+        className="w-[296px] h-[45px] rounded-[15px] bg-white/50 px-4 font-picnic text-black placeholder-gray-600 outline-none focus:outline-none"
       />
+      {error && <p className="text-red-500 mt-2">{error}</p>}
       {loading && (
         <div className="flex justify-center mt-4">
           <div className="animate-spin rounded-full border-4 border-t-4 border-blue-500 h-8 w-8"></div>
-        </div>
-      )}
-      {error && <p className="text-red-500">{error}</p>}
-      <div className="mt-4">
-        <button
-          onClick={handleCreatePlaylist}
-          disabled={loading}
-          className={`w-full p-2 rounded ${loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700 text-white'} transition duration-300`}
-        >
-          {loading ? 'Creating...' : 'Create Playlist'}
-        </button>
-      </div>
-      
-      {/* Add gradient display */}
-      {gradientUrls && (
-        <div className="mt-4">
-          <h3 className="text-lg font-semibold mb-2">Playlist Mood Gradient</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <img src={gradientUrls.radialUrl} alt="Radial Gradient" className="w-full rounded" />
-            <img src={gradientUrls.conicUrl} alt="Conic Gradient" className="w-full rounded" />
-          </div>
         </div>
       )}
     </div>
