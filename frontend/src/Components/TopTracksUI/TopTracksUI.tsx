@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '../Navbar/navbar';
 import backgroundImage from '../../assets/background/background.svg';
 import shelfImage from '../../assets/icons/shelf.svg';
@@ -50,7 +50,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({ timeRange }) => {
     const shelfTracks = tracks.slice(startIndex, startIndex + 4);
     
     return (
-      <div className="relative">
+      <div className="relative ml-[50px]">
         <img 
           src={shelfImage} 
           alt="shelf" 
@@ -62,11 +62,8 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({ timeRange }) => {
               <img 
                 src={track.albumImageUrl}
                 alt={track.name}
-                className="w-[100px] h-[100px] object-cover rounded-full"
+                className="w-[100px] h-[100px] object-cover"
               />
-              <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-white font-bold text-xl">
-                {startIndex + index + 1}
-              </div>
             </div>
           ))}
         </div>
@@ -85,7 +82,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({ timeRange }) => {
         className="h-screen bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col">
           <div className="mt-[302px] space-y-[210px]">
             {[0, 4, 8, 12].map((startIndex) => (
               <div key={startIndex}>
