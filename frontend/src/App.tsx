@@ -173,7 +173,6 @@ const App: React.FC = () => {
                   <div className="fixed bottom-4 right-4 flex flex-col gap-4">
                     {topTracks.length > 0 && userProfile && (
                       <>
-                        <Recommender topTracks={topTracks} />
                       </>
                     )}
                   </div>
@@ -187,7 +186,7 @@ const App: React.FC = () => {
                   <Box timeRange={timeRange} />
                   {location.pathname.includes('/track/recent') && topTracks.length > 0 && userProfile && (
                     <div className="flex flex-col">
-                      <Recommender topTracks={recentTracks} />
+                      <Recommender topTracks={recentTracks} selectedTracks={[]} displayedTracks={[]} />
                     </div>
                   )}
                 </div>
