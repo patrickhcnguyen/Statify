@@ -87,7 +87,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
                 key={startIndex + index} 
                 className={`relative cursor-pointer transition-all duration-200 ${
                   selectedTracks.has(track.uri) 
-                    ? 'scale-110 ring-4 ring-white/50' 
+                    ? 'scale-105' 
                     : 'hover:scale-105'
                 }`}
                 onClick={() => handleTrackClick(track)}
@@ -95,7 +95,9 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
                 <img 
                   src={track.albumImageUrl}
                   alt={track.name}
-                  className="w-[7vw] h-[7vw] min-w-[70px] min-h-[70px] max-w-[120px] max-h-[120px] object-cover"
+                  className={`w-[7vw] h-[7vw] min-w-[70px] min-h-[70px] max-w-[120px] max-h-[120px] object-cover ${
+                    selectedTracks.has(track.uri) ? 'ring-2 ring-white' : ''
+                  }`}
                 />
               </div>
             ))}
@@ -130,7 +132,11 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
             timeQuery={timeQuery} 
           />
           <div className="mt-[5vw]">
-            <Recommender topTracks={topTracks} />
+            <Recommender 
+              topTracks={topTracks} 
+              selectedTracks={Array.from(selectedTracks)}
+              displayedTracks={tracks}
+            />
           </div>
         </div>
         <div className="flex flex-col">
