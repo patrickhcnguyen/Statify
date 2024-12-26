@@ -133,7 +133,7 @@ const Recommender: React.FC<RecommenderProps> = ({ topTracks, selectedTracks, di
   return (
     <div className="flex flex-col items-center">
       <div className="w-[296px]">
-        <h3 className="text-white font-picnic text-[2.1vw] min-text-[24px] max-text-[32px] leading-tight">
+        <h3 className="text-white font-pixelify text-[2.1vw] min-text-[24px] max-text-[32px] leading-tight">
           {selectedTracks.length > 0 
             ? `${selectedTracks.length}/5 tracks selected for recommendations!`
             : 'Click on tracks above to select for recommendations, or I\'ll pick 5 random ones!'}
@@ -143,7 +143,7 @@ const Recommender: React.FC<RecommenderProps> = ({ topTracks, selectedTracks, di
       <button 
         onClick={getRecommendations}
         disabled={loading}
-        className="w-[296px] h-[45px] rounded-[15px] bg-white/50 font-picnic text-black hover:opacity-80 transition-opacity mt-6"
+        className="w-[296px] h-[45px] rounded-[15px] bg-white/50 font-pixelify text-black hover:opacity-80 transition-opacity mt-6"
       >
         {loading ? 'Loading...' : 'Get recommendations'}
       </button>
