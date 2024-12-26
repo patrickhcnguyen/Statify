@@ -56,6 +56,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
         }));
         
         setTracks(trackData);
+        setSelectedTracks(new Set());
       } catch (error) {
         console.error('Error fetching top tracks:', error);
         setError('Error fetching top tracks.');
@@ -81,31 +82,52 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
     return (
       <div className="relative ml-[5%]">
         <div className="relative">
-          <div className="absolute bottom-[2vw] left-[4%] flex gap-[3.8vw]">
+          <div className="absolute bottom-[2.3vw] left-[4%] flex gap-[3.8vw] z-10">
             {shelfTracks.map((track, index) => (
               <div 
                 key={startIndex + index} 
-                className={`relative cursor-pointer transition-all duration-200 ${
+                className={`relative cursor-pointer transition-all duration-200 group ${
                   selectedTracks.has(track.uri) 
                     ? 'scale-105' 
                     : 'hover:scale-105'
                 }`}
                 onClick={() => handleTrackClick(track)}
               >
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-[8.75vw] min-w-[90px] max-w-[126px] z-20">
+                  <p className="font-pixelify text-white text-center text-[1vw] min-text-[12px] max-text-[14px] truncate">
+                    {track.name}
+                  </p>
+                </div>
+
                 <img 
                   src={track.albumImageUrl}
                   alt={track.name}
-                  className={`w-[7vw] h-[7vw] min-w-[70px] min-h-[70px] max-w-[120px] max-h-[120px] object-cover ${
+                  className={`w-[7vw] h-[7vw] min-w-[70px] min-h-[70px] max-w-[120px] max-h-[120px] object-cover z-10 ${
                     selectedTracks.has(track.uri) ? 'ring-2 ring-white' : ''
                   }`}
                 />
+
+                <div className="absolute top-[110%] left-1/2 -translate-x-1/2 w-[8.75vw] min-w-[90px] max-w-[126px] z-20">
+                  <p className="font-pixelify text-white text-center text-[0.9vw] min-text-[10px] max-text-[12px] truncate">
+                    {track.artist}
+                  </p>
+                </div>
+
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/80 p-2 rounded-lg whitespace-nowrap z-30">
+                  <p className="font-pixelify text-white text-[0.9vw] min-text-[12px] max-text-[14px]">
+                    {track.name}
+                  </p>
+                  <p className="font-pixelify text-white/70 text-[0.8vw] min-text-[10px] max-text-[12px] mt-1">
+                    {track.artist}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
           <img 
             src={shelfImage} 
             alt="shelf" 
-            className="w-[50%] min-w-[300px] max-w-[720px] h-auto relative"
+            className="w-[50%] min-w-[300px] max-w-[720px] h-auto relative z-0"
           />
         </div>
       </div>
@@ -120,7 +142,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
         throw new Error('Function not implemented.');
       }} />
       <div 
-        className="flex-1 bg-cover bg-center bg-no-repeat min-h-screen"
+        className="flex-1 bg-cover bg-center bg-no-repeat min-h-screen pb-[20vh]"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
         <TimeRangeSelector currentRange={timeRange} onRangeChange={setTimeRange} />
