@@ -9,6 +9,7 @@ import Recommender from './Components/Recommender/Recommender';
 import Feed from './Components/Community/Community';
 import LandingPage from './Components/Landing Page/landingPage';
 import TopTracksUI from './Components/TopTracksUI/TopTracksUI';
+import RecentlyPlayedUI from './Components/RecentlyPlayedUI/RecentlyPlayedUI';
 
 const App: React.FC = () => {
   const [timeRange, setTimeRange] = useState<string>('short_term');
@@ -170,25 +171,23 @@ const App: React.FC = () => {
                     topTracks={topTracks}
                     timeQuery={timeQuery}
                   />
-                  <div className="fixed bottom-4 right-4 flex flex-col gap-4">
-                    {topTracks.length > 0 && userProfile && (
-                      <>
-                      </>
-                    )}
-                  </div>
                 </div>
               } 
+            />
+            <Route
+              path="/track/recent"
+              element={
+                <RecentlyPlayedUI
+                  userProfile={userProfile || { id: '', displayName: '' }}
+                  recentTracks={recentTracks}
+                />
+              }
             />
             <Route
               path="*"
               element={
                 <div className="flex bg-gray-100 h-auto">
                   <Box timeRange={timeRange} />
-                  {location.pathname.includes('/track/recent') && topTracks.length > 0 && userProfile && (
-                    <div className="flex flex-col">
-                      <Recommender topTracks={recentTracks} selectedTracks={[]} displayedTracks={[]} />
-                    </div>
-                  )}
                 </div>
               }
             />
