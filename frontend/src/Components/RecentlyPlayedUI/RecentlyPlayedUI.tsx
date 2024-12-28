@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../Navbar/navbar';
 import backgroundImage from '../../assets/background/background.svg';
 import shelfImage from '../../assets/icons/shelf.svg';
 import CreatePlaylist from '../CreatePlaylist/createPlaylist';
@@ -129,11 +128,6 @@ const RecentlyPlayedUI: React.FC<RecentlyPlayedUIProps> = ({
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar title={''} isLoggedIn={false} onLogin={function (): void {
-        throw new Error('Function not implemented.');
-      }} onLogout={function (): void {
-        throw new Error('Function not implemented.');
-      }} />
       <div 
         className="flex-1 bg-cover bg-center bg-no-repeat min-h-screen pb-[20vh]"
         style={{ backgroundImage: `url(${backgroundImage})` }}
