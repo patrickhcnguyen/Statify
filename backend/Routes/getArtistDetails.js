@@ -19,15 +19,6 @@ router.get('/artist/:id', async (req, res) => {
     });
     const artistData = await artistResponse.json();
 
-    // Add monthly listeners fetch
-    const monthlyListenersResponse = await axios.get('https://spotify81.p.rapidapi.com/artist_stats', {
-      params: { id: id },
-      headers: {
-        'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
-        'X-RapidAPI-Host': 'spotify81.p.rapidapi.com'
-      }
-    });
-
     // Get artist images in different sizes
     // images[0] = largest (640x640)
     // images[1] = medium (320x320)
@@ -55,7 +46,6 @@ router.get('/artist/:id', async (req, res) => {
         latestAlbumArt: latestAlbumImage
       },
       genres: artistData.genres,
-      monthlyListeners: monthlyListenersResponse.data.monthly_listeners,
       topTracks: topTracksData.tracks
         .slice(0, 5)
         .map(track => ({
