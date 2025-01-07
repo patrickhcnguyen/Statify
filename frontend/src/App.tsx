@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom'; 
 import Navbar from './Components/Navbar/navbar';
 import Box from './Components/Box/box';
-import TimeRangeSelector from './Components/TimeRangeSelector/TimeRangeSelector';
 import useUserProfile from './Components/GetUserProfile/getUserProfile';
-import CreatePlaylist from './Components/CreatePlaylist/createPlaylist';
-import Recommender from './Components/Recommender/Recommender';
 import Feed from './Components/Community/Community';
 import LandingPage from './Components/Landing Page/landingPage';
 import TopTracksUI from './Components/TopTracksUI/TopTracksUI';
 import RecentlyPlayedUI from './Components/RecentlyPlayedUI/RecentlyPlayedUI';
+import TopArtistsUI from './Components/TopArtistsUI/TopArtistsUI';
+
+// TODO: move functionality to different components
 
 const App: React.FC = () => {
   const [timeRange, setTimeRange] = useState<string>('short_term');
@@ -23,6 +23,15 @@ const App: React.FC = () => {
   const [timeQuery, setTimeQuery] = useState<'Last 4 weeks' | 'Last 6 months' | 'All time' | null>(null);
   const location = useLocation();
   const { userProfile } = useUserProfile();
+  const [topArtists, setTopArtists] = useState<Array<{ 
+    id: string; 
+    name: string; 
+    albumImageUrl: string;
+    genres: string[];
+    followers: number;
+    randomAlbumImage: string;
+    isFollowed: boolean;
+  }>>([]);
 
   const renderHeroAndBox = location.pathname !== '/feed';
 
@@ -137,6 +146,45 @@ const App: React.FC = () => {
     }
   }, [timeRange]);
 
+  useEffect(() => {
+    const fetchTopArtists = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8888/top-artists?time_range=${timeRange}`,
+          {
+            method: 'GET',
+            credentials: 'include',
+          }
+        );
+
+        if (!response.ok) throw new Error('Failed to fetch top artists');
+
+        const data = await response.json();
+
+        if (data.items && data.items.length > 0) {
+          const artists = data.items.map((item: any) => ({
+            id: item.id,
+            name: item.name,
+            albumImageUrl: item.images[0]?.url || '',
+            genres: item.genres || [],
+            followers: item.followers.total || 0,
+            randomAlbumImage: item.randomAlbumImage || '',
+            isFollowed: item.isFollowed || false,
+          }));
+
+          setTopArtists(artists);
+          console.log('Fetched top artists:', artists);
+        } else {
+          console.warn('No top artists found in response:', data);
+        }
+      } catch (error) {
+        console.error('Error fetching top artists:', error);
+      }
+    };
+
+    fetchTopArtists();
+  }, [timeRange]);
+
   const handleLogin = () => {
     window.location.href = 'http://localhost:8888/login';
   };
@@ -182,6 +230,18 @@ const App: React.FC = () => {
                   recentTracks={recentTracks}
                 />
               }
+            />
+            <Route 
+              path="/artist/top" 
+              element={
+                <TopArtistsUI 
+                  timeRange={timeRange}
+                  setTimeRange={setTimeRange}
+                  userProfile={userProfile || { id: '', displayName: '' }}
+                  topArtists={topArtists}
+                  timeQuery={timeQuery}
+                />
+              } 
             />
             <Route
               path="*"
