@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
+import { useNavigate } from 'react-router-dom';
 
 interface Track {
   name: string;
@@ -12,6 +13,7 @@ interface TopTracksProps {
 }
 
 interface Artist {
+  id: string;
   name: string;
   albumImageUrl: string;
 }
@@ -100,6 +102,7 @@ export const TopTracks: React.FC<TopTracksProps> = ({ timeRange }) => {
 export const TopArtists: React.FC<TopArtistsProps> = ({ timeRange }) => {
   const [artists, setArtists] = useState<Artist[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTopArtists = async () => {
@@ -110,16 +113,19 @@ export const TopArtists: React.FC<TopArtistsProps> = ({ timeRange }) => {
         });
 
         if (!response.ok) {
-          const text = await response.text();
-          console.error('Response Text:', text);
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
+        console.log('Raw artist data:', data); // Add this debug log
+        
         const artistData = data.items.map((item: any) => ({
+          id: item.id,
           name: item.name,
           albumImageUrl: item.images[0]?.url || '',
         }));
+        
+        console.log('Processed artist data:', artistData); // Add this debug log
         setArtists(artistData);
       } catch (error) {
         console.error('Error fetching top artists:', error);
@@ -136,11 +142,19 @@ export const TopArtists: React.FC<TopArtistsProps> = ({ timeRange }) => {
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
       <ul>
         {artists.map((artist, index) => (
-          <li key={index} className="flex items-center mb-4">
+          <li 
+            key={artist.id} 
+            className="flex items-center mb-4 cursor-pointer"
+            onClick={() => {
+              console.log('Clicking artist with ID:', artist.id); // Add this debug log
+              navigate(`/artist/${artist.id}`);
+            }}
+          >
             <img 
-            src={artist.albumImageUrl} 
-            alt={artist.name} 
-            className="w-36 h-36 mr-4" />
+              src={artist.albumImageUrl} 
+              alt={artist.name} 
+              className="w-36 h-36 mr-4"
+            />
             <div>
               <p className="font-bold">{index + 1}. {artist.name}</p>
             </div>
