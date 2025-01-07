@@ -34,6 +34,30 @@ router.get('/user-profile', function(req, res) {
     });
 });
 
+router.get('/user-follows', function(req, res) {
+    const accessToken = req.cookies.access_token; 
+
+    if (!accessToken) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const options = {
+        url: 'https://api.spotify.com/v1/me/following?type=artist',
+        headers: {
+            'Authorization': 'Bearer ' + accessToken
+        },
+        json: true
+    }
+
+    request.get(options, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+            res.json(body);
+        } else {
+            res.status(response.statusCode).json(body);
+        }
+    });
+});
+
 module.exports = router;
 
  
