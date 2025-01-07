@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../Navbar/navbar';
 import backgroundImage from '../../assets/background/background.svg';
 import shelfImage from '../../assets/icons/shelf.svg';
 import TimeRangeSelector from '../TimeRangeSelector/TimeRangeSelector';
@@ -136,16 +135,11 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar title={''} isLoggedIn={false} onLogin={function (): void {
-        throw new Error('Function not implemented.');
-      }} onLogout={function (): void {
-        throw new Error('Function not implemented.');
-      }} />
       <div 
         className="flex-1 bg-cover bg-center bg-no-repeat min-h-screen pb-[20vh]"
         style={{ backgroundImage: `url(${backgroundImage})` }}
       >
-        <TimeRangeSelector currentRange={timeRange} onRangeChange={setTimeRange} />
+        <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />
         <div className="absolute top-[35vh] left-[70%] -translate-x-1/2 flex flex-col items-center">
           <CreatePlaylist 
             userId={userProfile.id} 
