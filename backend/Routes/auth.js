@@ -5,7 +5,6 @@ const crypto = require('crypto');
 const querystring = require('querystring');
 const request = require('request');
 
-// Aggieworks reviewers look here!!!!!!!!!!!!!!
 
 const client_id = "54da85c1c7114ffb810148c9cbdede29";
 const client_secret = "e2abdb2c6d594b229a47f11aabeb7f92";
