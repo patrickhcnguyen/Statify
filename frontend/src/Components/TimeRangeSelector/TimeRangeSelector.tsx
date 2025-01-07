@@ -2,16 +2,16 @@ import React from 'react';
 import bubbleSvg from '../../assets/icons/bubble.svg';
 
 interface TimeRangeSelectorProps {
-  currentRange: string;
-  onRangeChange: (range: string) => void;
+  timeRange: string;
+  setTimeRange: (range: string) => void;
 }
 
-const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ currentRange, onRangeChange }) => {
+const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ timeRange, setTimeRange }) => {
   return (
     <div className="absolute top-[14vh] left-[55%] flex space-x-[2vw]">
       <button
         className="relative w-[13.5vw] h-[13.5vw] group"
-        onClick={() => onRangeChange('short_term')}
+        onClick={() => setTimeRange('short_term')}
       >
         <img 
           src={bubbleSvg} 
@@ -25,7 +25,7 @@ const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ currentRange, onR
 
       <button
         className="relative w-[13.5vw] h-[13.5vw] group"
-        onClick={() => onRangeChange('medium_term')}
+        onClick={() => setTimeRange('medium_term')}
       >
         <img 
           src={bubbleSvg} 
@@ -39,7 +39,7 @@ const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ currentRange, onR
 
       <button
         className="relative w-[13.5vw] h-[13.5vw] group"
-        onClick={() => onRangeChange('long_term')}
+        onClick={() => setTimeRange('long_term')}
       >
         <img 
           src={bubbleSvg} 
