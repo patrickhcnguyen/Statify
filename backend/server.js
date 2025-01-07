@@ -42,6 +42,7 @@ const gradientRoutes = require('./Routes/gradientURLs');
 const getTrackGenresRoute = require('./Routes/getTrackGenres');
 const gptGradientRoute = require('./Routes/gptGradient');
 const updatePlaylistImageRoute = require('./Routes/updatePlaylistImage');
+const getArtistDetailsRoute = require('./Routes/getArtistDetails');
 app.use(authRoutes);
 app.use(topArtistsRoutes);
 app.use(topTrackRoutes);
@@ -57,7 +58,7 @@ app.use(getTrackGenresRoute);
 app.use(gptGradientRoute);
 app.use(updatePlaylistImageRoute);
 app.use(express.static(path.join(__dirname, 'client/build')));
-
+app.use(getArtistDetailsRoute);
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 });
