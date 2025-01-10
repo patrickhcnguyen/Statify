@@ -31,6 +31,15 @@ const App: React.FC = () => {
     followers: number;
     randomAlbumImage: string;
     isFollowed: boolean;
+    // monthlyListeners?: number;
+    topTracks?: Array<{
+        name: string;
+        uri: string;
+    }>;
+    recommendedTracks?: Array<{
+        name: string;
+        uri: string;
+    }>;
   }>>([]);
 
   const renderHeroAndBox = location.pathname !== '/feed';
@@ -170,6 +179,9 @@ const App: React.FC = () => {
             followers: item.followers.total || 0,
             randomAlbumImage: item.randomAlbumImage || '',
             isFollowed: item.isFollowed || false,
+            monthlyListeners: item.monthlyListeners || 0,
+            topTracks: item.topTracks || [],
+            recommendedTracks: item.recommendedTracks || []
           }));
 
           setTopArtists(artists);
