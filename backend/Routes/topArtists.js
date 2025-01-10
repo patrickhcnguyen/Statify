@@ -36,24 +36,24 @@ router.get('/top-artists', async function(req, res) {
         const followsData = await followsResponse.json();
 
         // Only get monthly listeners for the first artist to avoid rate limits
-        let monthlyListeners = 0;
-        if (artistsData.items.length > 0) {
-            try {
-                const monthlyListenersResponse = await axios({
-                    method: 'GET',
-                    url: 'https://spotify-artist-monthly-listeners.p.rapidapi.com/artists/spotify_artist_monthly_listeners',
-                    params: { spotify_artist_id: artistsData.items[0].id },
-                    headers: {
-                        'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
-                        'X-RapidAPI-Host': 'spotify-artist-monthly-listeners.p.rapidapi.com'
-                    }
-                });
-                monthlyListeners = monthlyListenersResponse.data?.monthly_listeners || 0;
-            } catch (error) {
-                console.error('Error fetching monthly listeners:', error);
-                monthlyListeners = 0;
-            }
-        }
+        // let monthlyListeners = 0;
+        // if (artistsData.items.length > 0) {
+        //     try {
+        //         const monthlyListenersResponse = await axios({
+        //             method: 'GET',
+        //             url: 'https://spotify-artist-monthly-listeners.p.rapidapi.com/artists/spotify_artist_monthly_listeners',
+        //             params: { spotify_artist_id: artistsData.items[0].id },
+        //             headers: {
+        //                 'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
+        //                 'X-RapidAPI-Host': 'spotify-artist-monthly-listeners.p.rapidapi.com'
+        //             }
+        //         });
+        //         monthlyListeners = monthlyListenersResponse.data?.monthly_listeners || 0;
+        //     } catch (error) {
+        //         console.error('Error fetching monthly listeners:', error);
+        //         monthlyListeners = 0;
+        //     }
+        // }
 
         // Combine artist data with follow status
         const enrichedItems = await Promise.all(artistsData.items.map(async (artist, index) => {
@@ -63,11 +63,40 @@ router.get('/top-artists', async function(req, res) {
             );
             const albumsData = await albumsResponse.json();
             
+            const topTracksResponse = await fetch(
+                `https://api.spotify.com/v1/artists/${artist.id}/top-tracks?market=US`,
+                { headers: { 'Authorization': `Bearer ${accessToken}` } }
+            );
+            const topTracksData = await topTracksResponse.json();
+
+            // Get random tracks by artist using search
+            const searchResponse = await fetch(
+                `https://api.spotify.com/v1/search?q=artist:"${encodeURIComponent(artist.name)}"&type=track&market=US&limit=50`,
+                { headers: { 'Authorization': `Bearer ${accessToken}` } }
+            );
+            const searchData = await searchResponse.json();
+
+            let artistTracks = [];
+            if (searchData?.tracks?.items) {
+                artistTracks = searchData.tracks.items
+                    .filter(track => track.artists.some(a => a.id === artist.id))
+                    .sort(() => Math.random() - 0.5)
+                    .slice(0, 3)
+                    .map(track => ({
+                        name: track.name,
+                        uri: track.uri
+                    }));
+            }
+
             return {
                 ...artist,
                 randomAlbumImage: albumsData.items[0]?.images[0]?.url || '',
                 isFollowed: followsData[index],
-                monthlyListeners: index === 0 ? monthlyListeners : 0 // Only first artist gets monthly listeners
+                topTracks: topTracksData.tracks?.map(track => ({
+                    name: track.name,
+                    uri: track.uri
+                })) || [],
+                recommendedTracks: artistTracks
             };
         }));
 
