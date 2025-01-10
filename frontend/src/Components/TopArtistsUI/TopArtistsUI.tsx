@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import backgroundImage from '../../assets/background/background.svg';
 import journalImage from '../../assets/background/journal.svg';
 import starImage from '../../assets/icons/star.svg';
@@ -41,6 +41,32 @@ interface TopArtistsUIProps {
 
 const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists }) => {
   const [currentArtistIndex, setCurrentArtistIndex] = useState(0);
+  const [recommendations, setRecommendations] = useState<Array<{name: string; uri: string}>>([]);
+  const [loading, setLoading] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const fetchRecommendations = async (artistId: string) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8888/artist-recommendations/${artistId}`, {
+        credentials: 'include'
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setRecommendations(data);
+      }
+    } catch (error) {
+      console.error('Error fetching recommendations:', error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    const currentArtist = topArtists[currentArtistIndex];
+    if (currentArtist?.id) {
+      fetchRecommendations(currentArtist.id);
+    }
+  }, [currentArtistIndex, topArtists]);
 
   const handlePrevArtist = () => {
     if (currentArtistIndex > 0) {
@@ -55,6 +81,24 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists }) => {
   };
 
   const currentArtist = topArtists[currentArtistIndex];
+
+  const formatGenres = (genres: string[] = []) => {
+    if (!genres || !currentArtist) return { displayText: '', hasMore: false };
+    
+    const text = `${currentArtist.name} likes to make ${genres.join(', ')}.`;
+    if (!isExpanded && text.length > 50) { // 50 character limit
+      return {
+        displayText: text.slice(0, 50) + '...',
+        hasMore: true
+      };
+    }
+    return {
+      displayText: text,
+      hasMore: text.length > 50
+    };
+  };
+
+  const { displayText, hasMore } = formatGenres(currentArtist?.genres);
 
   return (
     <div 
@@ -114,11 +158,20 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists }) => {
                   marginTop: '15%',
                   width: '100%',
                   maxWidth: '186px',
-                  minHeight: '112px',
-                  marginLeft: '-30px'
+                  minHeight: isExpanded ? 'auto' : '112px',
+                  marginLeft: '-30px',
+                  transition: 'all 0.3s ease'
                 }}
               >
-                {`${currentArtist.name} likes to make ${currentArtist.genres?.join(', ')}.`}
+                {displayText}
+                {hasMore && (
+                  <button
+                    onClick={() => setIsExpanded(!isExpanded)}
+                    className="text-green-700 hover:text-green-900 ml-2 underline cursor-pointer"
+                  >
+                    {isExpanded ? 'Read Less' : 'Read More'}
+                  </button>
+                )}
               </div>
             </div>
             <div 
@@ -248,10 +301,12 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists }) => {
                 width: '12%',
               }}
             >
-              {currentArtist.recommendedTracks && currentArtist.recommendedTracks.length > 0 ? (
-                currentArtist.recommendedTracks.map((track, index) => (
+              {loading ? (
+                <div>Loading recommendations...</div>
+              ) : recommendations.length > 0 ? (
+                recommendations.map((track, index) => (
                   <a 
-                    key={track.uri} 
+                    key={track.uri}
                     href={`https://open.spotify.com/track/${track.uri.split(':')[2]}`}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -261,7 +316,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists }) => {
                   </a>
                 ))
               ) : (
-                <div>Loading recommendations...</div>
+                <div>No recommendations found</div>
               )}
             </div>
           </>
