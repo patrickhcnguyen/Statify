@@ -35,26 +35,6 @@ router.get('/top-artists', async function(req, res) {
         
         const followsData = await followsResponse.json();
 
-        // Only get monthly listeners for the first artist to avoid rate limits
-        // let monthlyListeners = 0;
-        // if (artistsData.items.length > 0) {
-        //     try {
-        //         const monthlyListenersResponse = await axios({
-        //             method: 'GET',
-        //             url: 'https://spotify-artist-monthly-listeners.p.rapidapi.com/artists/spotify_artist_monthly_listeners',
-        //             params: { spotify_artist_id: artistsData.items[0].id },
-        //             headers: {
-        //                 'X-RapidAPI-Key': process.env.RAPIDAPI_KEY,
-        //                 'X-RapidAPI-Host': 'spotify-artist-monthly-listeners.p.rapidapi.com'
-        //             }
-        //         });
-        //         monthlyListeners = monthlyListenersResponse.data?.monthly_listeners || 0;
-        //     } catch (error) {
-        //         console.error('Error fetching monthly listeners:', error);
-        //         monthlyListeners = 0;
-        //     }
-        // }
-
         // Combine artist data with follow status
         const enrichedItems = await Promise.all(artistsData.items.map(async (artist, index) => {
             const albumsResponse = await fetch(
@@ -69,25 +49,6 @@ router.get('/top-artists', async function(req, res) {
             );
             const topTracksData = await topTracksResponse.json();
 
-            // Get random tracks by artist using search
-            const searchResponse = await fetch(
-                `https://api.spotify.com/v1/search?q=artist:"${encodeURIComponent(artist.name)}"&type=track&market=US&limit=50`,
-                { headers: { 'Authorization': `Bearer ${accessToken}` } }
-            );
-            const searchData = await searchResponse.json();
-
-            let artistTracks = [];
-            if (searchData?.tracks?.items) {
-                artistTracks = searchData.tracks.items
-                    .filter(track => track.artists.some(a => a.id === artist.id))
-                    .sort(() => Math.random() - 0.5)
-                    .slice(0, 3)
-                    .map(track => ({
-                        name: track.name,
-                        uri: track.uri
-                    }));
-            }
-
             return {
                 ...artist,
                 randomAlbumImage: albumsData.items[0]?.images[0]?.url || '',
@@ -96,7 +57,7 @@ router.get('/top-artists', async function(req, res) {
                     name: track.name,
                     uri: track.uri
                 })) || [],
-                recommendedTracks: artistTracks
+                recommendedTracks: []
             };
         }));
 
@@ -104,6 +65,50 @@ router.get('/top-artists', async function(req, res) {
     } catch (error) {
         console.error('Error fetching top artists:', error);
         res.status(500).json({ error: 'Failed to fetch top artists' });
+    }
+});
+
+router.get('/artist-recommendations/:artistId', async function(req, res) {
+    const accessToken = req.cookies.access_token;
+    const { artistId } = req.params;
+
+    if (!accessToken) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    try {
+        const { default: fetch } = await import('node-fetch');
+        
+        // Get artist name first
+        const artistResponse = await fetch(
+            `https://api.spotify.com/v1/artists/${artistId}`,
+            { headers: { 'Authorization': `Bearer ${accessToken}` } }
+        );
+        const artistData = await artistResponse.json();
+
+        // Get recommendations using search
+        const searchResponse = await fetch(
+            `https://api.spotify.com/v1/search?q=artist:"${encodeURIComponent(artistData.name)}"&type=track&market=US&limit=50`,
+            { headers: { 'Authorization': `Bearer ${accessToken}` } }
+        );
+        const searchData = await searchResponse.json();
+
+        let recommendedTracks = [];
+        if (searchData?.tracks?.items) {
+            recommendedTracks = searchData.tracks.items
+                .filter(track => track.artists.some(a => a.id === artistId))
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 3)
+                .map(track => ({
+                    name: track.name,
+                    uri: track.uri
+                }));
+        }
+
+        res.json(recommendedTracks);
+    } catch (error) {
+        console.error('Error fetching recommendations:', error);
+        res.status(500).json({ error: 'Failed to fetch recommendations' });
     }
 });
 
