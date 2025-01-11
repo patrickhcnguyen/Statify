@@ -1,9 +1,5 @@
-# SpotiStats
-
-My old repository got corrupted somehow...so I switched to a new one, but if you'd want to see the prior commit history here is the old repo
-
-<l>https://github.com/patrickhcnguyen/Stats-For-Spotify-Clone/</l>
-
+# Statify
+A personalized way of viewing your Spotify stats and a community focused way of creating/viewing new playlists 
 # IMPORTANT
 
 You MUST have a Spotify account (sorry Apple users)
