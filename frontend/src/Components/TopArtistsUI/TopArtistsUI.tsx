@@ -39,7 +39,7 @@ interface TopArtistsUIProps {
   timeQuery: 'Last 4 weeks' | 'Last 6 months' | 'All time' | null;
 }
 
-const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists }) => {
+const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setTimeRange }) => {
   const [currentArtistIndex, setCurrentArtistIndex] = useState(0);
   const [recommendations, setRecommendations] = useState<Array<{name: string; uri: string}>>([]);
   const [loading, setLoading] = useState(false);
@@ -86,7 +86,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists }) => {
     if (!genres || !currentArtist) return { displayText: '', hasMore: false };
     
     const text = `${currentArtist.name} likes to make ${genres.join(', ')}.`;
-    if (!isExpanded && text.length > 50) { // 50 character limit
+    if (!isExpanded && text.length > 50) {
       return {
         displayText: text.slice(0, 50) + '...',
         hasMore: true
@@ -99,6 +99,14 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists }) => {
   };
 
   const { displayText, hasMore } = formatGenres(currentArtist?.genres);
+
+  // Base positions
+  const positions = {
+    stars: isExpanded ? "28%" : "18%",
+    randomAlbum: isExpanded ? "76%" : "66%",
+    arrows: isExpanded ? "60%" : "50%",
+    recommendations: isExpanded ? "76%" : "66%"
+  };
 
   return (
     <div 
@@ -136,7 +144,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists }) => {
               src={currentArtist.albumImageUrl}
               alt={currentArtist.name}
               className="absolute w-[13%] max-w-[175px] aspect-square"
-              style={{ left: '22%', top: '17%' }}
+              style={{ left: '20%', top: '17%' }}
             />
             <img
               src={currentArtist.randomAlbumImage}
@@ -144,7 +152,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists }) => {
               className="absolute w-[13%] max-w-[175px] aspect-square"
               style={{ left: '36%', top: '46%' }}
             />
-            <div className="absolute" style={{ left: '37%', top: '18%' }}>
+            <div className="absolute" style={{ left: '35%', top: '18%' }}>
               <span className="font-pixelify text-[48px] text-black">#{currentArtistIndex + 1}</span>
               <span 
                 className="font-pixelify text-[20px] text-black ml-4"
@@ -159,8 +167,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists }) => {
                   width: '100%',
                   maxWidth: '186px',
                   minHeight: isExpanded ? 'auto' : '112px',
-                  marginLeft: '-30px',
-                  transition: 'all 0.3s ease'
+                  marginLeft: '-30px'
                 }}
               >
                 {displayText}
@@ -169,7 +176,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists }) => {
                     onClick={() => setIsExpanded(!isExpanded)}
                     className="text-green-700 hover:text-green-900 ml-2 underline cursor-pointer"
                   >
-                    {isExpanded ? 'Read Less' : 'Read More'}
+                    {isExpanded ? 'Show Less' : 'Show More'}
                   </button>
                 )}
               </div>
@@ -272,7 +279,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists }) => {
               className="font-pixelify text-[20px] text-black absolute flex flex-col gap-2"
               style={{ 
                 left: '68%',
-                top: '18%',
+                top: positions.stars,
                 width: '15%',
                 minHeight: '193px'
               }}
@@ -296,9 +303,9 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists }) => {
             <div 
               className="font-pixelify text-[20px] text-black absolute flex flex-col gap-3"
               style={{ 
-                left: '53%', 
-                top: '66%',
-                width: '12%',
+                left: '53%',
+                top: positions.recommendations,
+                width: '12%'
               }}
             >
               {loading ? (
@@ -321,6 +328,29 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists }) => {
             </div>
           </>
         )}
+        <button 
+          className={`font-pixelify text-[20px] absolute hover:text-green-700 transition-colors duration-200 ${timeRange === 'short_term' ? 'text-green-700' : 'text-black'}`}
+          style={{ left: '20%', top: '80%', width: '12%', minHeight: '28px' }}
+          onClick={() => setTimeRange('short_term')}
+        >
+          Last 4 weeks
+        </button>
+
+        <button 
+          className={`font-pixelify text-[20px] absolute hover:text-green-700 transition-colors duration-200 ${timeRange === 'medium_term' ? 'text-green-700' : 'text-black'}`}
+          style={{ left: '31%', top: '80%', width: '12%', minHeight: '28px' }}
+          onClick={() => setTimeRange('medium_term')}
+        >
+          Last 6 months
+        </button>
+
+        <button 
+          className={`font-pixelify text-[20px] absolute hover:text-green-700 transition-colors duration-200 ${timeRange === 'long_term' ? 'text-green-700' : 'text-black'}`}
+          style={{ left: '40%', top: '80%', width: '12%', minHeight: '28px' }}
+          onClick={() => setTimeRange('long_term')}
+        >
+          All Time
+        </button>
       </div>
     </div>
   );
