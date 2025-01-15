@@ -6,9 +6,9 @@ const querystring = require('querystring');
 const request = require('request');
 
 
-const client_id = "54da85c1c7114ffb810148c9cbdede29";
-const client_secret = "e2abdb2c6d594b229a47f11aabeb7f92";
-const redirect_uri = 'http://localhost:8888/callback';
+const client_id = process.env.CLIENT_ID;
+const client_secret = process.env.CLIENT_SECRET;
+const redirect_uri = process.env.REDIRECT_URI;
 
 const generateRandomString = (length) => {
     return crypto
