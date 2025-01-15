@@ -21,9 +21,12 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   });
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://accounts.spotify.com'], 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
-  credentials: true, 
+  origin: [
+    process.env.FRONTEND_URL || 'http://localhost:3000',
+    'https://accounts.spotify.com'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
 }));
 
 app.use(cookieParser());
@@ -67,3 +70,5 @@ const PORT = process.env.PORT || 8888;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+module.exports = app;
