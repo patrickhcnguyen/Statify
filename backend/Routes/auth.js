@@ -99,7 +99,7 @@ router.get('/callback', function(req, res) {
                 console.log('Access token set in cookie:', access_token);
                 console.log("Refresh token is:", refresh_token);
 
-                res.redirect('http://localhost:3000'); 
+                res.redirect(process.env.FRONTEND_URL || 'http://localhost:3000'); 
             } else {
                 console.error('Token exchange error:', body); 
                 res.redirect('/#' + querystring.stringify({ error: 'invalid_token' }));
