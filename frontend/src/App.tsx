@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom'; 
 import Navbar from './Components/Navbar/navbar';
-import Box from './Components/Box/box';
+
 import useUserProfile from './Components/GetUserProfile/getUserProfile';
 import Feed from './Components/Community/Community';
 import LandingPage from './Components/Landing Page/landingPage';
 import TopTracksUI from './Components/TopTracksUI/TopTracksUI';
 import RecentlyPlayedUI from './Components/RecentlyPlayedUI/RecentlyPlayedUI';
 import TopArtistsUI from './Components/TopArtistsUI/TopArtistsUI';
+import TopGenreUI from './Components/TopGenre/topGenreUI';
 
 // TODO: move functionality to different components
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8888';
 
 const App: React.FC = () => {
   const [timeRange, setTimeRange] = useState<string>('short_term');
@@ -42,7 +45,7 @@ const App: React.FC = () => {
     }>;
   }>>([]);
 
-  const renderHeroAndBox = location.pathname !== '/feed';
+
 
   useEffect(() => {
     const fetchTopTracks = async () => {
@@ -198,11 +201,11 @@ const App: React.FC = () => {
   }, [timeRange]);
 
   const handleLogin = () => {
-    window.location.href = 'http://localhost:8888/login';
+    window.location.href = `${API_URL}/login`;
   };
 
   const handleLogout = async () => {
-    await fetch('http://localhost:8888/logout', { credentials: 'include' });
+    await fetch(`${API_URL}/logout`, { credentials: 'include' });
     setIsLoggedIn(false);
   };
 
@@ -255,13 +258,15 @@ const App: React.FC = () => {
                 />
               } 
             />
-            <Route
-              path="*"
+            <Route 
+              path="/genre/top" 
               element={
-                <div className="flex bg-gray-100 h-auto">
-                  <Box timeRange={timeRange} />
-                </div>
-              }
+                <TopGenreUI 
+                  timeRange={timeRange}
+                  setTimeRange={setTimeRange}
+                  timeQuery={timeQuery}
+                />
+              } 
             />
           </Routes>
         </>
