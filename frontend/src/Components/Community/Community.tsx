@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import backgroundImage from '../../assets/background/background.svg';
 
 interface Playlist {
   playlistID: string;
@@ -120,93 +121,97 @@ const Community: React.FC = () => {
   }
 
   return (
-    <div className="feed-container p-4 max-w-7xl mx-auto">
-      <h2 className="text-xl font-semibold mb-4">User Playlists Feed</h2>
-      {feedData.length === 0 ? (
-        <p>No playlists available.</p>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {currentPlaylists.map((playlist) => (
-              <div key={playlist.playlistID} className="playlist-card bg-gray-100 p-4 rounded-lg shadow-md relative">
-                {currentUserId === playlist.userID && (
-                  <button
-                    onClick={() => handleDelete(playlist.playlistID, playlist.userID)}
-                    className="absolute top-2 right-2 p-2 text-red-500 hover:text-red-700 bg-white rounded-full shadow-sm"
-                    title="Delete playlist"
+    <div 
+      className="min-h-screen w-full bg-cover bg-center bg-no-repeat relative"
+      style={{ backgroundImage: `url(${backgroundImage})` }}
+    >
+      <div className="feed-container p-4 pt-[100px] max-w-7xl mx-auto">
+        {feedData.length === 0 ? (
+          <p>No playlists available.</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {currentPlaylists.map((playlist) => (
+                <div key={playlist.playlistID} className="playlist-card p-4 rounded-lg relative">
+                  {currentUserId === playlist.userID && (
+                    <button
+                      onClick={() => handleDelete(playlist.playlistID, playlist.userID)}
+                      className="absolute top-2 right-2 p-2 text-red-500 hover:text-red-700 rounded-full"
+                      title="Delete playlist"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                  )}
+                  
+                  {playlist.imageBase64 && (
+                    <img
+                      src={playlist.imageBase64}
+                      className="w-full aspect-square object-cover mb-2 rounded"
+                      alt={playlist.name}
+                    />
+                  )}
+                  <h3 className="font-bold text-base sm:text-lg truncate">{playlist.name}</h3>
+                  <p className="text-gray-200 text-sm">Created by {playlist.displayName}</p>
+                  <p className="text-gray-300 text-xs mt-2">
+                    Created on: {new Date(playlist.createdAt).toLocaleDateString()}
+                  </p>
+                  <a
+                    href={`https://open.spotify.com/playlist/${playlist.playlistID}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-300 hover:text-blue-400 hover:underline mt-4 block text-sm"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                  </button>
-                )}
-                
-                {playlist.imageBase64 && (
-                  <img
-                    src={playlist.imageBase64}
-                    className="w-full aspect-square object-cover mb-2 rounded"
-                    alt={playlist.name}
-                  />
-                )}
-                <h3 className="font-bold text-base sm:text-lg truncate">{playlist.name}</h3>
-                <p className="text-gray-600 text-sm">Created by {playlist.displayName}</p>
-                <p className="text-gray-500 text-xs mt-2">
-                  Created on: {new Date(playlist.createdAt).toLocaleDateString()}
-                </p>
-                <a
-                  href={`https://open.spotify.com/playlist/${playlist.playlistID}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline mt-4 block text-sm"
-                >
-                  View on Spotify
-                </a>
-              </div>
-            ))}
-          </div>
+                    View on Spotify
+                  </a>
+                </div>
+              ))}
+            </div>
 
-          {/* Pagination Controls */}
-          <div className="flex justify-center mt-8 space-x-2">
-            <button
-              onClick={() => paginate(currentPage - 1)}
-              disabled={currentPage === 1}
-              className={`px-4 py-2 rounded ${
-                currentPage === 1 
-                  ? 'bg-gray-300 cursor-not-allowed' 
-                  : 'bg-blue-500 hover:bg-blue-600 text-white'
-              }`}
-            >
-              Previous
-            </button>
-            
-            {[...Array(totalPages)].map((_, index) => (
+            {/* Pagination Controls */}
+            <div className="flex justify-center mt-8 space-x-2">
               <button
-                key={index + 1}
-                onClick={() => paginate(index + 1)}
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
                 className={`px-4 py-2 rounded ${
-                  currentPage === index + 1
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-200 hover:bg-gray-300'
+                  currentPage === 1 
+                    ? 'bg-gray-500 cursor-not-allowed' 
+                    : 'bg-blue-500 hover:bg-blue-600 text-white'
                 }`}
               >
-                {index + 1}
+                Previous
               </button>
-            ))}
+              
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index + 1}
+                  onClick={() => paginate(index + 1)}
+                  className={`px-4 py-2 rounded ${
+                    currentPage === index + 1
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-500 hover:bg-gray-600 text-white'
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
 
-            <button
-              onClick={() => paginate(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className={`px-4 py-2 rounded ${
-                currentPage === totalPages 
-                  ? 'bg-gray-300 cursor-not-allowed' 
-                  : 'bg-blue-500 hover:bg-blue-600 text-white'
-              }`}
-            >
-              Next
-            </button>
-          </div>
-        </>
-      )}
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`px-4 py-2 rounded ${
+                  currentPage === totalPages 
+                    ? 'bg-gray-500 cursor-not-allowed' 
+                    : 'bg-blue-500 hover:bg-blue-600 text-white'
+                }`}
+              >
+                Next
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };
