@@ -7,52 +7,8 @@
     ],
     "routes": [
         {
-            "src": "/callback(.*)",
-            "dest": "/server.js"
-        },
-        {
-            "src": "/login(.*)",
-            "dest": "/server.js"
-        },
-        {
-            "src": "/feed(.*)",
-            "dest": "/server.js"
-        },
-        {
-            "src": "/top-tracks(.*)",
-            "dest": "/server.js"
-        },
-        {
-            "src": "/top-artists(.*)",
-            "dest": "/server.js"
-        },
-        {
-            "src": "/top-genres(.*)",
-            "dest": "/server.js"
-        },
-        {
-            "src": "/recently-played(.*)",
-            "dest": "/server.js"
-        },
-        {
-            "src": "/user-profile(.*)",
-            "dest": "/server.js"
-        },
-        {
-            "src": "/gradients/(.*)",
-            "dest": "/server.js"
-        },
-        {
             "src": "/(.*)",
             "dest": "/server.js"
         }
-    ],
-    "env": {
-        "MONGODBURI": "@mongodb-uri",
-        "OPENAI_API_KEY": "@openai-api-key",
-        "RAPIDAPI_KEY": "@rapidapi-key",
-        "CLIENT_ID": "@spotify-client-id",
-        "CLIENT_SECRET": "@spotify-client-secret",
-        "REDIRECT_URI": "@spotify-redirect-uri"
-    }
+    ]
 }   
