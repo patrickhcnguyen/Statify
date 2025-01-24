@@ -9,6 +9,7 @@ import TopTracksUI from './Components/TopTracksUI/TopTracksUI';
 import RecentlyPlayedUI from './Components/RecentlyPlayedUI/RecentlyPlayedUI';
 import TopArtistsUI from './Components/TopArtistsUI/TopArtistsUI';
 import TopGenreUI from './Components/TopGenre/topGenreUI';
+import backgroundImage from './assets/background/background.svg';
 
 // TODO: move functionality to different components
 
@@ -208,13 +209,15 @@ const App: React.FC = () => {
     await fetch(`${API_URL}/logout`, { credentials: 'include' });
     setIsLoggedIn(false);
   };
-
   return (
     <div className="min-h-screen">
       {location.pathname === '/' ? (
         <LandingPage />
       ) : (
-        <>
+        <div
+          className="min-h-screen bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${backgroundImage})` }}
+        >
           <Navbar
             title="Stats For Spotify"
             isLoggedIn={isLoggedIn}
@@ -269,7 +272,7 @@ const App: React.FC = () => {
               } 
             />
           </Routes>
-        </>
+        </div>
       )}
     </div>
   );

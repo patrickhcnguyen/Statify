@@ -35,6 +35,8 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  const [isClick, setIsClick] = useState(false);
+
   const handleLoginClick = () => {
     if (!isLoggedIn) {
       window.location.href = 'http://localhost:8888/login';
@@ -55,7 +57,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center justify-center">
+    <div className="z-50 h-16 flex items-center justify-cente bg-transparent">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-center space-x-8">
           <Link to="/" className="text-[24px] font-picnic text-white flex items-center">
