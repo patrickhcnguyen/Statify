@@ -164,7 +164,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
                 }`}
               />
 
-              <div className="absolute bottom-[-25px] left-1/2 -translate-x-1/2 w-[30vw] z-20">
+              <div className="absolute bottom-[-23px] left-1/2 -translate-x-1/2 w-[30vw] z-20">
                 <p className="font-pixelify text-white text-center text-[12px] truncate">
                   {track.artist}
                 </p>
@@ -196,7 +196,6 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
     <div className="min-h-screen flex flex-col">
       {/* Mobile section */}
       <div className="md:hidden">
-        {/* time range selector */}
         <div className="flex justify-center"> 
           <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />
         </div>
@@ -207,6 +206,23 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
               {renderMobileShelf(startIndex)}
             </div>
           ))}
+        </div>
+        {/* create playlist */}
+        <div className="flex justify-center mt-[-6rem] mb-[2rem]">
+          <CreatePlaylist 
+            userId={userProfile.id} 
+            displayName={userProfile.displayName} 
+            topTracks={topTracks} 
+            timeQuery={timeQuery} 
+          />
+        </div>
+        {/* recommender */}
+        <div className="flex justify-center mb-8">
+          <Recommender 
+            topTracks={topTracks} 
+            selectedTracks={Array.from(selectedTracks)}
+            displayedTracks={tracks}
+          />
         </div>
       </div>
 
