@@ -32,7 +32,7 @@ const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ timeRange, setTim
     <>
       {/* mobile selector */}
       <div className="md:hidden absolute top-[100px] left-1/2 -translate-x-1/2">
-        <button {...handlers} className="relative w-[200px] h-[200px]">
+        <div {...handlers} className="relative w-[200px] h-[200px]">
           <img 
             src={bubbleSvg} 
             alt="time range bubble" 
@@ -41,7 +41,7 @@ const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ timeRange, setTim
           <span className="absolute inset-0 flex items-center justify-center text-white font-pixelify text-[24px]">
             {timeOptions[currentIndex].label}
           </span>
-        </button>
+        </div>
         
         {/* Pagination dots */}
         <div className="flex justify-center gap-2 mt-4">
