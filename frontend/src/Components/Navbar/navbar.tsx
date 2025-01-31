@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronDownIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom'; 
 import smallStar from '../../assets/icons/smallStar.svg';
 
@@ -88,6 +88,23 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
           <Link to="/track/recent" className="text-[25px] font-pixelify text-white">Recently Played</Link>
           <img src={smallStar} alt="star" className="w-6 h-6" />
           <Link to="/feed" className="text-[25px] font-pixelify text-white">Community</Link>
+          <img src={smallStar} alt="star" className="w-6 h-6" />
+          {/* Desktop Login/Logout Button */}
+          {isLoggedIn ? (
+            <button
+              className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors"
+              onClick={handleLogoutClick}
+            >
+              Logout
+            </button>
+          ) : (
+            <button
+              className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors"
+              onClick={handleLoginClick}
+            >
+              Login
+            </button>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
