@@ -70,7 +70,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center bg-transparent">
+    <div className="top-0 left-0 right-0 z-50 h-16 flex items-center bg-transparent">
       <div className="w-full px-4 flex items-center">
         {/* Logo - always visible */}
         <Link to="/" className="text-[24px] font-picnic text-white">
@@ -122,11 +122,11 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
 
       {/* Mobile Menu Overlay - Always rendered but transformed */}
       <div className={`
-        lg:hidden fixed top-16 left-0 right-0 
+        lg:hidden fixed inset-0 top-16
         bg-[#5e73a6] backdrop-blur-sm p-4 
         transform transition-transform duration-300 ease-in-out
         ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}
-        h-screen focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500
+        h-[100vh] z-[9999]
       `}>
         <div className="flex flex-col space-y-8 pt-8">
           <Link to="/track/top" className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Top Tracks</Link>
