@@ -11,6 +11,12 @@ import cardboardCatImage from '../../assets/icons/cardboardCat.svg';
 import pageFlipLeft from '../../assets/icons/pageFlipLeft.svg';
 import pageFlipRight from '../../assets/icons/pageFlipRight.svg';
 
+// mobile images
+import journalMobile from '../../assets/background/journal mobile.svg';
+import jellyfishMobile from '../../assets/icons/jellyfish mobile.svg';
+import ribbonMobile from '../../assets/icons/ribbon mobile.svg';
+import cardboardCatMobile from '../../assets/icons/cardboardCat mobile.svg';
+
 interface TopArtistsUIProps {
   timeRange: string;
   setTimeRange: (range: string) => void;
@@ -111,11 +117,24 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
   return (
     <div 
       className="min-h-screen w-full bg-cover bg-center bg-no-repeat relative"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
-    >
-      <div className="absolute inset-0 flex items-center justify-center">
-        <img 
-          src={journalImage} 
+      style={{ backgroundImage: `url(${backgroundImage})` }} >
+
+      {/* mobile view */}
+      <div className="block md:hidden">
+        <div className="relative pt-10">
+          <img 
+            src={journalMobile}
+            alt="Journal"
+            className="w-full min-h-screen"
+          />
+        </div>
+      </div>
+
+      {/* desktop view */}
+      <div className="hidden md:block">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <img 
+            src={journalImage} 
           alt="Journal"
           className="w-[100%] h-[75%] max-w-[1300px] max-h-[782px]"
           style={{ transform: 'scale(1.1)' }}
@@ -352,6 +371,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
           All Time
         </button>
       </div>
+    </div>
     </div>
   );
 };
