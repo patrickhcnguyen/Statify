@@ -127,6 +127,27 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
             alt="Journal"
             className="w-full min-h-screen"
           />
+          {/* artist image */}
+          <div className="absolute top-24 left-2 flex items-center gap-4">
+            {/* Artist image */}
+              <img
+                src={currentArtist.albumImageUrl}
+                alt={currentArtist.name}
+                className="w-[200px] aspect-square"
+              />
+              {/* artist genre list */}
+              <div className="font-pixelify text-[18px] text-black">
+                {currentArtist.name} likes to make {currentArtist.genres.join(', ')}
+              </div>
+          </div>
+          {/* artist number */}
+          <div className="font-pixelify text-[48px] text-black absolute left-56 top-16">
+            #{currentArtistIndex + 1}
+          </div>
+          {/* artist name */}
+          <div className="font-pixelify text-[32px] text-black absolute left-[19rem] top-24" >
+            {currentArtist.name}
+          </div>
         </div>
       </div>
 
