@@ -120,16 +120,17 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
       style={{ backgroundImage: `url(${backgroundImage})` }} >
 
       {/* mobile view */}
-      <div className="block md:hidden">
-        <div className="relative pt-10">
-          <img 
-            src={journalMobile}
-            alt="Journal"
-            className="w-full min-h-screen"
-          />
-          {/* artist image */}
-          <div className="absolute top-24 left-2 flex items-center gap-4">
-            {/* Artist image */}
+      {currentArtist && (
+        <div className="block md:hidden">
+          <div className="relative pt-10">
+            <img 
+              src={journalMobile}
+              alt="Journal"
+              className="w-full min-h-screen"
+            />
+            {/* artist image */}
+            <div className="absolute top-24 left-2 flex items-center gap-4">
+              {/* Artist image */}
               <img
                 src={currentArtist.albumImageUrl}
                 alt={currentArtist.name}
@@ -139,17 +140,23 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
               <div className="font-pixelify text-[18px] text-black">
                 {currentArtist.name} likes to make {currentArtist.genres.join(', ')}
               </div>
+            </div>
+            {/* artist number */}
+            <div className="font-pixelify text-[48px] text-black absolute left-56 top-16">
+              #{currentArtistIndex + 1}
+            </div>
+            {/* artist name */}
+            <div className="font-pixelify text-[32px] text-black absolute left-[19rem] top-24" >
+              {currentArtist.name}
+            </div>
           </div>
-          {/* artist number */}
-          <div className="font-pixelify text-[48px] text-black absolute left-56 top-16">
-            #{currentArtistIndex + 1}
+          {/* followers */}
+          <div className="font-pixelify text-[18px] text-black absolute left-2 top-[19rem] w-40">
+            {`They have ${currentArtist.followers.toLocaleString()} followers${currentArtist.isFollowed ? " and you're one of them!" : '!'}`}
           </div>
-          {/* artist name */}
-          <div className="font-pixelify text-[32px] text-black absolute left-[19rem] top-24" >
-            {currentArtist.name}
-          </div>
+          {/* monthly listeners */}
         </div>
-      </div>
+      )}
 
       {/* desktop view */}
       <div className="hidden md:block">
