@@ -116,14 +116,14 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
 
   return (
     <div 
-      className="min-h-screen w-full bg-cover bg-center bg-no-repeat relative"
+      className="min-h-screen w-full bg-cover bg-center bg-no-repeat relative overflow-x-hidden"
       style={{ backgroundImage: `url(${backgroundImage})` }} >
 
       {/* mobile view */}
       {currentArtist && (
-        <div className="block md:hidden">
+        <div className="block md:hidden overflow-x-hidden w-full">
           {/* journal image */}
-          <div className="relative pt-10 min-h-screen">
+          <div className="relative pt-10 min-h-screen overflow-x-hidden">
             <img 
               src={journalMobile}
               alt="Journal"
@@ -184,19 +184,21 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
               className="w-[75px] aspect-square"
             />
           </div>
-          {/* jellyfish + top 5 songs*/}
-          <div className="absolute top-[43rem]">
+          {/*  container for jellyfish + top 5 songs + heart*/}
+          <div className="absolute top-[32rem]">
             <div className="relative">
               <img 
-                src={jellyfishImage}
+                src={jellyfishMobile}
                 alt="Jellyfish"
+                className='relative pt-40'
               />
-              <div className="absolute top-16 left-10 flex items-center justify-center">
+              <div className="absolute top-52 left-6 flex items-center justify-center">
                 <span className="font-pixelify text-[18px] text-black text-center">
                   Their top 5 songs are
                 </span>
               </div>
-              <div className="absolute top-16 left-[19rem] flex items-center justify-center">
+              {/* top 5 songs */}
+              <div className="absolute top-52 left-[16rem] flex items-center justify-center">
                 <span className="font-pixelify text-[18px] text-black text-center">
                   {currentArtist.topTracks?.slice(0, 5).map((track, index) => (
                     <div key={index} className="flex items-center gap-2">
@@ -212,6 +214,55 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
                     </div>
                   ))}
                 </span>
+              </div>
+              {/* heart */}
+              <div className="absolute top-[28rem] left-32">
+                <img 
+                  src={heartImage}
+                  alt="Heart"
+                  className="w-[50px] aspect-square"
+                />
+              </div>
+              {/* ribbon */}
+              <div className="relative bottom-12 left-8">
+                <img 
+                  src={ribbonMobile}
+                  alt="Ribbon"
+                  className="w-[275px] aspect-square"
+                />
+              </div>
+              {/* cardboard cat */}
+              <div className="relative bottom-28 left-52">
+                <div className="absolute">
+                  <img 
+                    src={cardboardCatImage}
+                    alt="Cardboard Cat"
+                    className="w-[225px] aspect-square"
+                  />
+                  <div className="relative flex bottom-36 justify-center">
+                    <span className="font-pixelify text-[16px] text-black text-center max-w-[120px]">
+                      Some more songs you'd like by them!
+                    </span>
+                  </div>
+                  {/* song recommendations */}
+                  {/* move to be centered with text in cat */}
+                  <div className="absolute right-60 top-14">
+                    <span className="font-pixelify text-[16px] text-black text-center">
+                      {recommendations.map((track, index) => (
+                        <div key={track.uri} className="flex flex-col items-start gap-2">
+                          <a 
+                            href={`https://open.spotify.com/track/${track.uri.split(':')[2]}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-black hover:text-green-900 cursor-pointer truncate max-w-[120px]"
+                          >
+                            {index + 1}. {track.name}
+                          </a>
+                        </div>
+                      ))}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -309,7 +360,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
                 }}
               >
                 {/* {`${topArtists[0]?.monthlyListeners?.toLocaleString() || 'Loading...'} monthly listeners`} */}
-                1000 monthly listeners
+                {/* 1000 monthly listeners */}
               </div>
             <img
               src={starImage}
@@ -359,16 +410,16 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
             >
               Some more songs you'd like by them!
             </div>
-            <img
+            {/* <img
               src={arrowImage}
               alt="Arrow"
               className="absolute w-[3%] max-w-[75px] aspect-square"
               style={{ left: '37%', top: '66%' }}
-            />
+            /> */}
             <img
               src={jellyfishImage}
               alt="Jellyfish"
-              className="absolute w-[21%] absolute h-[39%] max-w-[250px]"
+              className="w-[21%] absolute h-[39%] max-w-[250px]"
               style={{ left: '51%', top: '14%' }}
             />
             <div 
