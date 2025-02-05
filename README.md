@@ -12,6 +12,5 @@ You MUST have a Spotify account (sorry Apple users)
   ![Home Page](./frontend/src/assets/screenshots/homepageDesktop.png)
   ![Top Tracks Page](./frontend/src/assets/screenshots/toptracksDesktop.png)
   ![Top Artists Page](./frontend/src/assets/screenshots/topartistsDesktop.png)
-  ![Top Genres Page](./frontend/src/assets/screenshots/topgenresDesktop.png)
   ![Community Playlists Page](./frontend/src/assets/screenshots/communityDesktop.png)
 
