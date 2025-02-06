@@ -184,7 +184,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
               className="w-[75px] aspect-square"
             />
           </div>
-          {/*  container for jellyfish + top 5 songs + heart*/}
+          {/*  container for jellyfish + top 5 songs + heart + ribbon + cardboard cat*/}
           <div className="absolute top-[32rem]">
             <div className="relative">
               <img 
@@ -192,8 +192,8 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
                 alt="Jellyfish"
                 className='relative pt-40'
               />
-              <div className="absolute top-52 left-6 flex items-center justify-center">
-                <span className="font-pixelify text-[18px] text-black text-center">
+              <div className="absolute top-48 left-5 flex items-center justify-center">
+                <span className="font-pixelify text-[18px] text-black text-center w-[50%]">
                   Their top 5 songs are
                 </span>
               </div>
@@ -264,6 +264,52 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          {/* switch between time periods */}
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-8 mb-8">
+            <button 
+              className={`font-pixelify text-[16px] hover:text-green-700 transition-colors duration-200 ${timeRange === 'short_term' ? 'text-green-700' : 'text-black'}`}
+              onClick={() => setTimeRange('short_term')}
+            >
+              Last 4 weeks
+            </button>
+
+            <button 
+              className={`font-pixelify text-[16px] hover:text-green-700 transition-colors duration-200 ${timeRange === 'medium_term' ? 'text-green-700' : 'text-black'}`}
+              onClick={() => setTimeRange('medium_term')}
+            >
+              Last 6 months
+            </button>
+
+            <button 
+              className={`font-pixelify text-[16px] hover:text-green-700 transition-colors duration-200 ${timeRange === 'long_term' ? 'text-green-700' : 'text-black'}`}
+              onClick={() => setTimeRange('long_term')}
+            >
+              All Time
+            </button>
+          </div>
+          {/* buttons to switch between pages - mobile */}
+          <div className="flex justify-between absolute bottom-0 left-2 right-2"> {/* Container for both buttons */}
+            <div className="w-[40px]"> {/* Left button container */}
+              {currentArtistIndex > 0 && (
+                <img 
+                  src={pageFlipLeft}
+                  alt="Previous Artist"
+                  className="w-full h-auto cursor-pointer hover:scale-105 transition-transform duration-200"
+                  onClick={handlePrevArtist}
+                />
+              )}
+            </div>
+            <div className="w-[40px]"> {/* Right button container */}
+              {currentArtistIndex < 14 && (
+                <img 
+                  src={pageFlipRight}
+                  alt="Next Artist"
+                  className="w-full h-auto cursor-pointer hover:scale-105 transition-transform duration-200"
+                  onClick={handleNextArtist}
+                />
+              )}
             </div>
           </div>
         </div>
