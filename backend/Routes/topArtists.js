@@ -51,9 +51,9 @@ router.get('/top-artists', async function(req, res) {
 
             return {
                 ...artist,
-                randomAlbumImage: albumsData.items[0]?.images[0]?.url || '',
+                randomAlbumImage: albumsData?.items?.[0]?.images?.[0]?.url || '',
                 isFollowed: followsData[index],
-                topTracks: topTracksData.tracks?.map(track => ({
+                topTracks: topTracksData?.tracks?.map(track => ({
                     name: track.name,
                     uri: track.uri
                 })) || [],
