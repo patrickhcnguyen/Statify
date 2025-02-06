@@ -137,18 +137,17 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
                 alt={currentArtist.name}
                 className="w-[200px] aspect-square"
               />
-              {/* artist genre list */}
-              <div className="font-pixelify text-[18px] text-black">
-                {currentArtist.name} likes to make {currentArtist.genres.join(', ')}
-              </div>
             </div>
             {/* artist number */}
             <div className="font-pixelify text-[48px] text-black absolute left-56 top-16">
               #{currentArtistIndex + 1}
             </div>
-            {/* artist name */}
-            <div className="font-pixelify text-[32px] text-black absolute left-[19rem] top-24" >
+            {/* artist name and genre list */}
+            <div className="font-pixelify text-[32px] text-black absolute left-[19rem] top-24">
               {currentArtist.name}
+              <div className="font-pixelify text-[18px] text-black mt-4 -ml-10">
+                {currentArtist.name} likes to make {currentArtist.genres.join(', ')}
+              </div>
             </div>
           </div>
           {/* followers */}
