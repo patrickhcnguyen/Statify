@@ -36,11 +36,18 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
   useEffect(() => {
     if (isMobileMenuOpen) {
       setIsMenuOpen(true);
+      // Prevent scrolling on the body when menu is open
+      document.body.style.overflow = 'hidden';
     } else {
       const timer = setTimeout(() => {
         setIsMenuOpen(false);
       }, 300);
-      return () => clearTimeout(timer);
+      // Re-enable scrolling when menu is closed
+      document.body.style.overflow = 'unset';
+      return () => {
+        clearTimeout(timer);
+        document.body.style.overflow = 'unset';
+      };
     }
   }, [isMobileMenuOpen]);
 
@@ -124,13 +131,13 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay - Always rendered but transformed */}
       <div className={`
         lg:hidden fixed inset-0 top-16
         bg-[#5e73a6] backdrop-blur-sm p-4 
         transform transition-transform duration-300 ease-in-out
         ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}
-        h-screen z-[9999]
+        h-[100vh] z-[9999]
       `}>
         <div className="flex flex-col space-y-8 pt-8">
           <Link to="/track/top" onClick={handleMobileMenuClick} className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Top Tracks</Link>
