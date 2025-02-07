@@ -69,6 +69,10 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
     }
   };
 
+  const handleMobileMenuClick = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <div className="top-0 left-0 right-0 z-50 h-16 flex items-center bg-transparent">
       <div className="w-full px-4 flex items-center">
@@ -120,31 +124,37 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
         </button>
       </div>
 
-      {/* Mobile Menu Overlay - Always rendered but transformed */}
+      {/* Mobile Menu Overlay */}
       <div className={`
         lg:hidden fixed inset-0 top-16
         bg-[#5e73a6] backdrop-blur-sm p-4 
         transform transition-transform duration-300 ease-in-out
         ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'}
-        h-[100vh] z-[9999]
+        h-screen z-[9999]
       `}>
         <div className="flex flex-col space-y-8 pt-8">
-          <Link to="/track/top" className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Top Tracks</Link>
-          <Link to="/artist/top" className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Top Artists</Link>
-          <Link to="/genre/top" className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Top Genres</Link>
-          <Link to="/track/recent" className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Recently Played</Link>
-          <Link to="/feed" className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Community</Link>
+          <Link to="/track/top" onClick={handleMobileMenuClick} className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Top Tracks</Link>
+          <Link to="/artist/top" onClick={handleMobileMenuClick} className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Top Artists</Link>
+          <Link to="/genre/top" onClick={handleMobileMenuClick} className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Top Genres</Link>
+          <Link to="/track/recent" onClick={handleMobileMenuClick} className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Recently Played</Link>
+          <Link to="/feed" onClick={handleMobileMenuClick} className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Community</Link>
           {isLoggedIn ? (
             <button
               className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors text-left"
-              onClick={handleLogoutClick}
+              onClick={() => {
+                handleLogoutClick();
+                handleMobileMenuClick();
+              }}
             >
               Logout
             </button>
           ) : (
             <button
               className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors text-left"
-              onClick={handleLoginClick}
+              onClick={() => {
+                handleLoginClick();
+                handleMobileMenuClick();
+              }}
             >
               Login
             </button>
