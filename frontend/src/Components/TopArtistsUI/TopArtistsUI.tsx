@@ -3,7 +3,6 @@ import backgroundImage from '../../assets/background/background.svg';
 import journalImage from '../../assets/background/journal.svg';
 import starImage from '../../assets/icons/star.svg';
 import buttonImage from '../../assets/icons/button.svg';
-import arrowImage from '../../assets/icons/arrow.svg';
 import jellyfishImage from '../../assets/icons/jellyfish.svg';
 import heartImage from '../../assets/icons/heart.svg';
 import ribbonImage from '../../assets/icons/ribbon.svg';
@@ -15,7 +14,6 @@ import pageFlipRight from '../../assets/icons/pageFlipRight.svg';
 import journalMobile from '../../assets/background/journal mobile.png';
 import jellyfishMobile from '../../assets/icons/jellyfish mobile.svg';
 import ribbonMobile from '../../assets/icons/ribbon mobile.svg';
-import cardboardCatMobile from '../../assets/icons/cardboardCat mobile.svg';
 
 interface TopArtistsUIProps {
   timeRange: string;
@@ -90,6 +88,14 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
 
   const formatGenres = (genres: string[] = []) => {
     if (!genres || !currentArtist) return { displayText: '', hasMore: false };
+    
+    // Check if genres array is empty
+    if (genres.length === 0) {
+      return {
+        displayText: `${currentArtist.name} likes to make music.`,
+        hasMore: false
+      };
+    }
     
     const text = `${currentArtist.name} likes to make ${genres.join(', ')}.`;
     if (!isExpanded && text.length > 50) {
