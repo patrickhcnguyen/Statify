@@ -322,246 +322,200 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
 
       {/* desktop view */}
       <div className="hidden md:block">
-        <div className="absolute inset-0 flex items-center justify-center">
-          <img 
-            src={journalImage} 
-          alt="Journal"
-          className="w-[100%] h-[75%] max-w-[1300px] max-h-[782px]"
-          style={{ transform: 'scale(1.1)' }}
-        />
-        {currentArtistIndex > 0 && (
-          <img 
-            src={pageFlipLeft}
-            alt="Previous Artist"
-            className="absolute w-[10%] h-auto max-w-[100px] cursor-pointer hover:scale-105 transition-transform duration-200"
-            style={{ left: '16.3%', bottom: '8%' }}
-            onClick={handlePrevArtist}
-          />
-        )}
-        {currentArtistIndex < 14 && (
-          <img 
-            src={pageFlipRight}
-            alt="Next Artist"
-            className="absolute w-[10%] h-auto max-w-[100px] cursor-pointer hover:scale-105 transition-transform duration-200"
-            style={{ right: '18%', bottom: '7%' }}
-            onClick={handleNextArtist}
-          />
-        )}
-        {currentArtist && (
-          <>
-            <img
-              src={currentArtist.albumImageUrl}
-              alt={currentArtist.name}
-              className="absolute w-[13%] max-w-[175px] aspect-square"
-              style={{ left: '20%', top: '17%' }}
+        <div className="relative flex items-center justify-center min-h-screen">
+          {/* Journal container - adjusted to fit journal image exactly */}
+          <div className="relative">
+            <img 
+              src={journalImage} 
+              alt="Journal"
+              className="w-full h-full object-cover"
             />
-            <img
-              src={currentArtist.randomAlbumImage}
-              alt="Random Album"
-              className="absolute w-[13%] max-w-[175px] aspect-square"
-              style={{ left: '36%', top: '46%' }}
-            />
-            <div className="absolute" style={{ left: '35%', top: '18%' }}>
-              <span className="font-pixelify text-[48px] text-black">#{currentArtistIndex + 1}</span>
-              <span 
-                className="font-pixelify text-[20px] text-black ml-4"
-                style={{ transform: 'translateY(16px)', display: 'inline-block' }}
-              >
-                {currentArtist.name}
-              </span>
-              <div 
-                className="font-pixelify text-[20px] text-black"
-                style={{ 
-                  marginTop: '15%',
-                  width: '100%',
-                  maxWidth: '186px',
-                  minHeight: isExpanded ? 'auto' : '112px',
-                  marginLeft: '-30px'
-                }}
-              >
-                {displayText}
-                {hasMore && (
-                  <button
-                    onClick={() => setIsExpanded(!isExpanded)}
-                    className="text-green-700 hover:text-green-900 ml-2 underline cursor-pointer"
-                  >
-                    {isExpanded ? 'Show Less' : 'Show More'}
-                  </button>
-                )}
-              </div>
-            </div>
-            <div 
-                className="font-pixelify text-[20px] text-black absolute"
-                style={{ 
-                  left: '21%', 
-                  top: '43.7%',  
-                  width: '14%',
-                  minHeight: '112px'
-                }}
-              >
-                {`They have ${currentArtist.followers.toLocaleString()} followers${currentArtist.isFollowed ? " and you're one of them!" : '!'}`}
-              </div>
-              <div 
-                className="font-pixelify text-[20px] text-black absolute"
-                style={{ 
-                  left: '32%', 
-                  top: '71%',  
-                  width: '25%',
-                  minHeight: '28'
-                }}
-              >
-                {/* {`${topArtists[0]?.monthlyListeners?.toLocaleString() || 'Loading...'} monthly listeners`} */}
-                {/* 1000 monthly listeners */}
-              </div>
-            <img
-              src={starImage}
-              alt="Star 1"
-              className="absolute w-[4%] max-w-[75px] aspect-square"
-              style={{ left: '44%', top: '39.5%' }}
-            />
-            <img
-              src={starImage}
-              alt="Star 2"
-              className="absolute w-[4%] max-w-[75px] aspect-square"
-              style={{ left: '30%', top: '51.8%' }}
-            />
-            <img
-              src={buttonImage}
-              alt="Button 1"
-              className="absolute w-[3%] max-w-[75px] aspect-square"
-              style={{ left: '32.5%', top: '60%' }}
-            />
-            <img
-              src={heartImage}
-              alt="Heart"
-              className="absolute w-[3%] max-w-[75px] aspect-square"
-              style={{ left: '64%', top: '45%' }}
-            />
-            <img
-              src={ribbonImage}
-              alt="Ribbon"
-              className="absolute w-[20%] h-[14%] max-w-[300px] max-h-[151px]"
-              style={{ left: '55%', top: '50%' }}
-            />
-            <img
-              src={cardboardCatImage}
-              alt="Cardboard Cat"
-              className="absolute w-[10%] h-[14%] max-w-[175] max-h-[151px]"
-              style={{ left: '68%', top: '65%' }}
-            />
-            <div 
-              className="font-pixelify text-[20px] text-black absolute flex items-center justify-center text-center"
-              style={{ 
-                left: '68%', 
-                top: '67%',
-                width: '10%',
-                minHeight: '28px',
-                padding: '0 8px'
-              }}
-            >
-              Some more songs you'd like by them!
-            </div>
-            {/* <img
-              src={arrowImage}
-              alt="Arrow"
-              className="absolute w-[3%] max-w-[75px] aspect-square"
-              style={{ left: '37%', top: '66%' }}
-            /> */}
-            <img
-              src={jellyfishImage}
-              alt="Jellyfish"
-              className="w-[21%] absolute h-[39%] max-w-[250px]"
-              style={{ left: '51%', top: '14%' }}
-            />
-            <div 
-              className="font-pixelify text-[20px] text-black absolute flex justify-center text-center"
-              style={{ 
-                left: '55%',
-                top: '18%',
-                width: '10%',
-                minHeight: '112px'
-              }}
-            >
-              Their top 5 songs are
-            </div>
-            <div
-              className="font-pixelify text-[20px] text-black absolute flex flex-col gap-2"
-              style={{ 
-                left: '68%',
-                top: positions.stars,
-                width: '15%',
-                minHeight: '193px'
-              }}
-            >
-              {currentArtist.topTracks?.slice(0, 5).map((track, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <span className="text-[20px] font-bold">{index + 1}.</span>
-                  <a 
-                    href={`https://open.spotify.com/track/${track.uri.split(':')[2]}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[20px] hover:text-green-700 transition-colors duration-200 truncate"
-                  >
-                    {track.name}
-                  </a>
-                </div>
-              ))}
-            </div>
-            
-            {/* Recommended Songs Links */}
-            <div 
-              className="font-pixelify text-[20px] text-black absolute flex flex-col gap-3"
-              style={{ 
-                left: '53%',
-                top: positions.recommendations,
-                width: '12%'
-              }}
-            >
-              {loading ? (
-                <div>Loading recommendations...</div>
-              ) : recommendations.length > 0 ? (
-                recommendations.map((track, index) => (
-                  <a 
-                    key={track.uri}
-                    href={`https://open.spotify.com/track/${track.uri.split(':')[2]}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-left hover:text-green-700 transition-colors duration-200 truncate"
-                  >
-                    {index + 1}. {track.name}
-                  </a>
-                ))
-              ) : (
-                <div>No recommendations found</div>
+
+            {/* Content container - everything inside the journal */}
+            <div className="absolute inset-0">
+              {currentArtist && (
+                <>
+                  {/* Main artist image - top left */}
+                  <div className="absolute left-0 top-16 border-2 border-red-500">
+                    <img
+                      src={currentArtist.albumImageUrl}
+                      alt={currentArtist.name}
+                      className="w-[175px] aspect-square"
+                    />
+                  </div>
+
+                  {/* Random album image */}
+                  <div className="absolute left-1/3 top-[45%]">
+                    <img
+                      src={currentArtist.randomAlbumImage}
+                      alt="Random Album"
+                      className="w-[175px] aspect-square"
+                    />
+                  </div>
+
+                  {/* Artist info section */}
+                  <div className="absolute left-1/3 top-[15%]">
+                    <span className="font-pixelify text-[48px] text-black">#{currentArtistIndex + 1}</span>
+                    <span className="font-pixelify text-[20px] text-black ml-4 inline-block translate-y-4">
+                      {currentArtist.name}
+                    </span>
+                    {/* Genre text */}
+                    <div className="font-pixelify text-[20px] text-black mt-[15%] -ml-8 max-w-[186px]">
+                      {displayText}
+                      {hasMore && (
+                        <button
+                          onClick={() => setIsExpanded(!isExpanded)}
+                          className="text-green-700 hover:text-green-900 ml-2 underline cursor-pointer"
+                        >
+                          {isExpanded ? 'Show Less' : 'Show More'}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Followers count */}
+                  <div className="absolute left-[21%] top-[43%] w-[14%] min-h-[112px] font-pixelify text-[20px] text-black">
+                    {`They have ${currentArtist.followers.toLocaleString()} followers${currentArtist.isFollowed ? " and you're one of them!" : '!'}`}
+                  </div>
+
+                  {/* Decorative elements */}
+                  <img
+                    src={starImage}
+                    alt="Star 1"
+                    className="absolute w-[75px] aspect-square left-[40%] top-[35%]"
+                  />
+                  <img
+                    src={starImage}
+                    alt="Star 2"
+                    className="absolute w-[75px] aspect-square left-[30%] top-[50%]"
+                  />
+                  <img
+                    src={buttonImage}
+                    alt="Button"
+                    className="absolute w-[50px] aspect-square left-[32%] top-[55%]"
+                  />
+                  <img
+                    src={heartImage}
+                    alt="Heart"
+                    className="absolute w-[50px] aspect-square left-[64%] top-[35%]"
+                  />
+
+                  {/* Jellyfish section with top tracks */}
+                  <div className="absolute left-[51%] top-[14%] w-[21%] h-[39%]">
+                    <img
+                      src={jellyfishImage}
+                      alt="Jellyfish"
+                      className="w-full h-full max-w-[250px]"
+                    />
+                    <div className="absolute left-[8%] top-[10%] font-pixelify text-[20px] text-black text-center w-[40%]">
+                      Their top 5 songs are
+                    </div>
+                    <div className="absolute left-[55%] top-[10%] flex flex-col gap-2 w-[180px]">
+                      {currentArtist.topTracks?.slice(0, 5).map((track, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <span className="text-[20px] font-bold">{index + 1}.</span>
+                          <a 
+                            href={`https://open.spotify.com/track/${track.uri.split(':')[2]}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[20px] hover:text-green-700 transition-colors duration-200 truncate"
+                          >
+                            {track.name}
+                          </a>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Ribbon and recommendations section */}
+                  <div className="absolute left-[55%] top-[50%]">
+                    <img
+                      src={ribbonImage}
+                      alt="Ribbon"
+                      className="w-[200px] h-[140px]"
+                    />
+                    <div className="absolute left-[15%] top-[40%] flex flex-col gap-3 w-[144px]">
+                      {loading ? (
+                        <div>Loading recommendations...</div>
+                      ) : recommendations.length > 0 ? (
+                        recommendations.map((track, index) => (
+                          <a 
+                            key={track.uri}
+                            href={`https://open.spotify.com/track/${track.uri.split(':')[2]}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-left hover:text-green-700 transition-colors duration-200 truncate"
+                          >
+                            {index + 1}. {track.name}
+                          </a>
+                        ))
+                      ) : (
+                        <div>No recommendations found</div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Cardboard Cat section */}
+                  <div className="absolute left-[68%] top-[65%]">
+                    <img
+                      src={cardboardCatImage}
+                      alt="Cardboard Cat"
+                      className="w-[175px] h-[140px]"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="font-pixelify text-[16px] text-black text-center max-w-[120px]">
+                        Some more songs you'd like by them!
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Navigation buttons */}
+                  <div className="absolute bottom-20 w-full flex justify-between px-16">
+                    {currentArtistIndex > 0 && (
+                      <img 
+                        src={pageFlipLeft}
+                        alt="Previous Artist"
+                        className="w-[100px] cursor-pointer hover:scale-105 transition-transform duration-200"
+                        onClick={handlePrevArtist}
+                      />
+                    )}
+                    {currentArtistIndex < 14 && (
+                      <img 
+                        src={pageFlipRight}
+                        alt="Next Artist"
+                        className="w-[100px] cursor-pointer hover:scale-105 transition-transform duration-200"
+                        onClick={handleNextArtist}
+                      />
+                    )}
+                  </div>
+
+                  {/* Time range buttons */}
+                  <div className="absolute bottom-8 left-[20%] flex gap-8">
+                    <button 
+                      className={`font-pixelify text-xl hover:text-green-700 transition-colors duration-200 ${timeRange === 'short_term' ? 'text-green-700' : 'text-black'}`}
+                      onClick={() => setTimeRange('short_term')}
+                    >
+                      Last 4 weeks
+                    </button>
+                    <button 
+                      className={`font-pixelify text-xl hover:text-green-700 transition-colors duration-200 ${timeRange === 'medium_term' ? 'text-green-700' : 'text-black'}`}
+                      onClick={() => setTimeRange('medium_term')}
+                    >
+                      Last 6 months
+                    </button>
+                    <button 
+                      className={`font-pixelify text-xl hover:text-green-700 transition-colors duration-200 ${timeRange === 'long_term' ? 'text-green-700' : 'text-black'}`}
+                      onClick={() => setTimeRange('long_term')}
+                    >
+                      All Time
+                    </button>
+                  </div>
+                </>
               )}
             </div>
-          </>
-        )}
-        <button 
-          className={`font-pixelify text-[20px] absolute hover:text-green-700 transition-colors duration-200 ${timeRange === 'short_term' ? 'text-green-700' : 'text-black'}`}
-          style={{ left: '20%', top: '80%', width: '12%', minHeight: '28px' }}
-          onClick={() => setTimeRange('short_term')}
-        >
-          Last 4 weeks
-        </button>
-
-        <button 
-          className={`font-pixelify text-[20px] absolute hover:text-green-700 transition-colors duration-200 ${timeRange === 'medium_term' ? 'text-green-700' : 'text-black'}`}
-          style={{ left: '31%', top: '80%', width: '12%', minHeight: '28px' }}
-          onClick={() => setTimeRange('medium_term')}
-        >
-          Last 6 months
-        </button>
-
-        <button 
-          className={`font-pixelify text-[20px] absolute hover:text-green-700 transition-colors duration-200 ${timeRange === 'long_term' ? 'text-green-700' : 'text-black'}`}
-          style={{ left: '40%', top: '80%', width: '12%', minHeight: '28px' }}
-          onClick={() => setTimeRange('long_term')}
-        >
-          All Time
-        </button>
+          </div>
+        </div>
       </div>
-    </div>
     </div>
   );
 };
