@@ -129,7 +129,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
       {currentArtist && (
         <div className="block md:hidden overflow-x-hidden w-full">
           {/* journal image */}
-          <div className="relative pt-10 min-h-screen overflow-x-hidden">
+          <div className="relative min-h-screen overflow-x-hidden">
             <img 
               src={journalMobile}
               alt="Journal"
@@ -327,7 +327,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
             <img 
               src={journalImage} 
               alt="Journal"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover -mt-10"
             />
 
             {/* Content container - everything inside the journal */}
