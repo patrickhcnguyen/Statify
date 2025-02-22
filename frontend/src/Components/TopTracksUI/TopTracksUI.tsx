@@ -81,7 +81,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
       return (
       <div className="relative">
         <div className="relative">
-          <div className="absolute bottom-[2.3vw] left-[4%] flex gap-[3.8vw] z-10">
+          <div className="absolute bottom-[2.19rem] left-10 flex gap-16 z-10">
             {shelfTracks.map((track, index) => (
               <div 
                 key={startIndex + index} 
@@ -92,22 +92,25 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
                 }`}
                 onClick={() => handleTrackClick(track)}
               >
-                <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-[8.75vw] min-w-[90px] max-w-[126px] z-20">
-                  <p className="font-pixelify text-white text-center text-[1vw] min-text-[12px] max-text-[14px] truncate">
+                {/* track name */}
+                <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-24 z-20">
+                  <p className="font-pixelify text-white text-center text-[14px] truncate">
                     {track.name}
                   </p>
                 </div>
 
+                {/* album image */}
                 <img 
                   src={track.albumImageUrl}
                   alt={track.name}
-                  className={`w-[7vw] h-[7vw] min-w-[70px] min-h-[70px] max-w-[120px] max-h-[120px] object-cover z-10 ${
+                  className={`w-28 aspect-square object-cover z-10 ${
                     selectedTracks.has(track.uri) ? 'ring-2 ring-white' : ''
                   }`}
                 />
 
-                <div className="absolute top-[110%] left-1/2 -translate-x-1/2 w-[8.75vw] min-w-[90px] max-w-[126px] z-20">
-                  <p className="font-pixelify text-white text-center text-[0.9vw] min-text-[10px] max-text-[12px] truncate">
+                {/* artist name */}
+                <div className="absolute top-[7.5rem] left-1/2 -translate-x-1/2 w-24 z-20">
+                  <p className="font-pixelify text-white text-center text-[14px] truncate">
                     {track.artist}
                   </p>
                 </div>
@@ -115,10 +118,10 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
                 <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
                                 opacity-0 group-hover:opacity-100 transition-opacity duration-200 
                                 bg-black/80 p-2 rounded-lg whitespace-nowrap z-30">
-                  <p className="font-pixelify text-white text-[0.9vw] min-text-[12px] max-text-[14px]">
+                  <p className="font-pixelify text-white text-[14px]">
                     {track.name}
                   </p>
-                  <p className="font-pixelify text-white/70 text-[0.8vw] min-text-[10px] max-text-[12px] mt-1">
+                  <p className="font-pixelify text-white/70 text-[14px] mt-1">
                     {track.artist}
                   </p>
                 </div>
@@ -232,7 +235,6 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
     className="flex-1 bg-cover bg-center bg-no-repeat min-h-screen relative"
     style={{ backgroundImage: `url(${backgroundImage})` }}
   > 
-
     <div className="absolute top-16 right-[21rem] flex flex-col items-center">
       <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />
       <div className="absolute top-52">
@@ -252,7 +254,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
       </div>
     </div>
         {/* Rendering shelves */}
-          <div className="flex flex-col ml-[5%]">
+          <div className="flex flex-col ml-4">
             <div className="mt-[25vh] space-y-[20vh]">
               {[0, 4, 8, 12].map((startIndex) => (
                 <div key={startIndex}>
