@@ -79,7 +79,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
     // fix shelf track sizing 
     const shelfTracks = tracks.slice(startIndex, startIndex + 4);
       return (
-      <div className="relative ml-[5%]">
+      <div className="relative">
         <div className="relative">
           <div className="absolute bottom-[2.3vw] left-[4%] flex gap-[3.8vw] z-10">
             {shelfTracks.map((track, index) => (
@@ -228,27 +228,31 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
 
       {/* Desktop section */}
       <div className="hidden md:block">
-        <div 
-          className="flex-1 bg-cover bg-center bg-no-repeat min-h-screen pb-[20vh]"
-          style={{ backgroundImage: `url(${backgroundImage})` }}
-        >
-          <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />
-          <div className="absolute top-[35vh] left-[70%] -translate-x-1/2 flex flex-col items-center">
-            <CreatePlaylist 
-              userId={userProfile.id} 
-              displayName={userProfile.displayName} 
-              topTracks={topTracks} 
-              timeQuery={timeQuery} 
-            />
-            <div className="mt-[5vw]">
-              <Recommender 
-                topTracks={topTracks} 
-                selectedTracks={Array.from(selectedTracks)}
-                displayedTracks={tracks}
-              />
-            </div>
-          </div>
-          <div className="flex flex-col">
+  <div 
+    className="flex-1 bg-cover bg-center bg-no-repeat min-h-screen relative"
+    style={{ backgroundImage: `url(${backgroundImage})` }}
+  > 
+
+    <div className="absolute top-16 right-[21rem] flex flex-col items-center">
+      <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />
+      <div className="absolute top-52">
+        <CreatePlaylist 
+          userId={userProfile.id} 
+          displayName={userProfile.displayName} 
+          topTracks={topTracks} 
+          timeQuery={timeQuery} 
+        />
+      </div>
+      <div className="absolute top-96">
+        <Recommender 
+          topTracks={topTracks} 
+          selectedTracks={Array.from(selectedTracks)}
+        displayedTracks={tracks}
+        />
+      </div>
+    </div>
+        {/* Rendering shelves */}
+          <div className="flex flex-col ml-[5%]">
             <div className="mt-[25vh] space-y-[20vh]">
               {[0, 4, 8, 12].map((startIndex) => (
                 <div key={startIndex}>
