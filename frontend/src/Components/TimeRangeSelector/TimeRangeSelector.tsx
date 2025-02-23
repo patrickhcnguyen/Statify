@@ -133,9 +133,9 @@ const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ timeRange, setTim
       </div>
 
       {/* desktop bubbles */}
-      <div className="hidden md:flex absolute top-[14vh] left-[55%] space-x-[2vw]">
+      <div className="hidden md:flex absolute space-x-12">
         <button
-          className="relative w-[13.5vw] h-[13.5vw] group"
+          className="relative w-48 aspect-square group"
           onClick={() => setTimeRange('short_term')}
         >
           <img 
@@ -143,13 +143,13 @@ const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ timeRange, setTim
             alt="4 weeks bubble" 
             className="w-full h-full"
           />
-          <span className="absolute inset-0 flex items-center justify-center text-white font-pixelify text-[1.5vw] min-text-[14px] max-text-[18px]">
+          <span className="absolute inset-0 flex items-center justify-center text-white font-pixelify text-[20px]">
             Last 4 Weeks
           </span>
         </button>
 
         <button
-          className="relative w-[13.5vw] h-[13.5vw] group"
+          className="relative w-48 aspect-square group"
           onClick={() => setTimeRange('medium_term')}
         >
           <img 
@@ -157,13 +157,13 @@ const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ timeRange, setTim
             alt="6 months bubble" 
             className="w-full h-full"
           />
-          <span className="absolute inset-0 flex items-center justify-center text-white font-pixelify text-[1.5vw] min-text-[14px] max-text-[18px]">
+          <span className="absolute inset-0 flex items-center justify-center text-white font-pixelify text-[20px]">
             Last 6 Months
           </span>
         </button>
 
         <button
-          className="relative w-[13.5vw] h-[13.5vw] group"
+          className="relative w-48 aspect-square group"
           onClick={() => setTimeRange('long_term')}
         >
           <img 
@@ -171,7 +171,7 @@ const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({ timeRange, setTim
             alt="all time bubble" 
             className="w-full h-full"
           />
-          <span className="absolute inset-0 flex items-center justify-center text-white font-pixelify text-[1.5vw] min-text-[14px] max-text-[18px]">
+          <span className="absolute inset-0 flex items-center justify-center text-white font-pixelify text-[20px]">
             All Time
           </span>
         </button>
