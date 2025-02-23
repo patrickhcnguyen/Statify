@@ -65,14 +65,27 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
 
   const handleLogoutClick = async () => {
     try {
+      // First try to refresh the token
+      const refreshResponse = await fetch('http://localhost:8888/refresh-token', {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      // Attempt logout regardless of refresh result
       await fetch('http://localhost:8888/logout', {
         method: 'GET',
         credentials: 'include',
       });
+
       setIsLoggedIn(false);
       onLogout();
+      window.location.href = '/'; // Redirect to home page after logout
     } catch (error) {
-      console.error('Error logging out:', error);
+      console.error('Error during logout:', error);
+      // Even if there's an error, we want to clear the login state
+      setIsLoggedIn(false);
+      onLogout();
+      window.location.href = '/';
     }
   };
 
