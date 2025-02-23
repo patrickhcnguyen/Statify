@@ -134,7 +134,6 @@ const Recommender: React.FC<RecommenderProps> = ({ topTracks, selectedTracks, di
     <div className="flex flex-col items-center">
       <div className="w-[296px]">
         <h3 className="text-white font-pixelify text-center md:text-left
-                       text-[24px] md:text-[2.1vw] 
                        text-[24px] md:text-[32px] 
                        leading-tight px-4 md:px-0">
           {selectedTracks.length > 0 

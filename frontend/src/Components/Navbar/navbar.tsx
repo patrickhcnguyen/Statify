@@ -36,11 +36,18 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
   useEffect(() => {
     if (isMobileMenuOpen) {
       setIsMenuOpen(true);
+      // Prevent scrolling on the body when menu is open
+      document.body.style.overflow = 'hidden';
     } else {
       const timer = setTimeout(() => {
         setIsMenuOpen(false);
       }, 300);
-      return () => clearTimeout(timer);
+      // Re-enable scrolling when menu is closed
+      document.body.style.overflow = 'unset';
+      return () => {
+        clearTimeout(timer);
+        document.body.style.overflow = 'unset';
+      };
     }
   }, [isMobileMenuOpen]);
 
@@ -58,15 +65,32 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
 
   const handleLogoutClick = async () => {
     try {
+      // First try to refresh the token
+      const refreshResponse = await fetch('http://localhost:8888/refresh-token', {
+        method: 'POST',
+        credentials: 'include',
+      });
+
+      // Attempt logout regardless of refresh result
       await fetch('http://localhost:8888/logout', {
         method: 'GET',
         credentials: 'include',
       });
+
       setIsLoggedIn(false);
       onLogout();
+      window.location.href = '/'; // Redirect to home page after logout
     } catch (error) {
-      console.error('Error logging out:', error);
+      console.error('Error during logout:', error);
+      // Even if there's an error, we want to clear the login state
+      setIsLoggedIn(false);
+      onLogout();
+      window.location.href = '/';
     }
+  };
+
+  const handleMobileMenuClick = () => {
+    setIsMobileMenuOpen(false);
   };
 
   return (
@@ -129,22 +153,28 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
         h-[100vh] z-[9999]
       `}>
         <div className="flex flex-col space-y-8 pt-8">
-          <Link to="/track/top" className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Top Tracks</Link>
-          <Link to="/artist/top" className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Top Artists</Link>
-          <Link to="/genre/top" className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Top Genres</Link>
-          <Link to="/track/recent" className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Recently Played</Link>
-          <Link to="/feed" className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Community</Link>
+          <Link to="/track/top" onClick={handleMobileMenuClick} className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Top Tracks</Link>
+          <Link to="/artist/top" onClick={handleMobileMenuClick} className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Top Artists</Link>
+          <Link to="/genre/top" onClick={handleMobileMenuClick} className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Top Genres</Link>
+          <Link to="/track/recent" onClick={handleMobileMenuClick} className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Recently Played</Link>
+          <Link to="/feed" onClick={handleMobileMenuClick} className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors">Community</Link>
           {isLoggedIn ? (
             <button
               className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors text-left"
-              onClick={handleLogoutClick}
+              onClick={() => {
+                handleLogoutClick();
+                handleMobileMenuClick();
+              }}
             >
               Logout
             </button>
           ) : (
             <button
               className="text-[25px] font-pixelify text-white hover:text-purple-300 transition-colors text-left"
-              onClick={handleLoginClick}
+              onClick={() => {
+                handleLoginClick();
+                handleMobileMenuClick();
+              }}
             >
               Login
             </button>

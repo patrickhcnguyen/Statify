@@ -80,6 +80,7 @@ const TopGenreUI: React.FC<TopGenreUIProps> = ({ timeRange, setTimeRange, timeQu
         dominantBaseline="central"
         fontSize={12}
         fontWeight="bold"
+        fontFamily="pixelify"
       >
         {`${chartData[index].percentage}%`}
       </text>
@@ -87,62 +88,56 @@ const TopGenreUI: React.FC<TopGenreUIProps> = ({ timeRange, setTimeRange, timeQu
   };
 
   return (
-    <div 
-      className="min-h-screen w-full bg-cover bg-center bg-no-repeat relative"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
-    >
-      <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />
-      
-      <div className="flex items-center justify-center pt-[25vh]">
-        <div className="bg-transparent mt-[50px] p-8 max-w-4xl w-full mx-4">
-          <h2 className="text-3xl font-bold mb-6 text-center font-pixelify">Your Top Genres</h2>
-          {error && <p className="text-red-500 text-center mb-4">Error: {error}</p>}
-          
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="w-full md:w-1/2">
-              {genres.length > 0 && (
-                <PieChart width={400} height={450}>
-                  <Pie
-                    data={chartData}
-                    dataKey="count"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={150}
-                    label={renderCustomLabel}
-                    labelLine={false}
-                    fill="#8884d8"
-                  >
-                    {chartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              )}
-            </div>
-
-            <div className="w-full md:w-1/2 mt-8 md:mt-0">
-              <img 
-                src="https://media.giphy.com/media/10YpWPBU7GAYwM/giphy.gif"
-                alt="Dancing GIF"
-                className="w-64 h-64 mx-auto mb-6"
-              />
-              <div className="rounded-lg p-4">
-                <ul className="grid grid-cols-2 gap-2">
+    <div className="min-h-screen w-full bg-cover bg-center bg-no-repeat relative">
+      <div className="container mx-auto px-4 pt-12 flex flex-col items-center">
+        <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />
+        <h2 className="text-3xl font-bold mb-6 text-center font-pixelify mt-72 md:mt-52">Your Top Genres</h2>
+        {error && <p className="text-red-500 text-center mb-4 ">Error: {error}</p>}
+        <div className="flex flex-col md:flex-row items-center justify-center w-full max-w-7xl gap-2 md:gap-44">
+          {/* Pie Chart */}
+          <div>
+            {genres.length > 0 && (
+              <PieChart width={400} height={450}>
+                <Pie
+                  data={chartData}
+                  dataKey="count"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={150}
+                  label={renderCustomLabel}
+                  labelLine={false}
+                  fill="#8884d8"
+                >
                   {chartData.map((entry, index) => (
-                    <li key={`legend-${index}`} className="flex items-center">
-                      <span 
-                        className="w-3 h-3 mr-2 rounded-full" 
-                        style={{ backgroundColor: COLORS[index % COLORS.length] }} 
-                      />
-                      <span className="text-sm font-pixelify">
-                        {entry.name} - {entry.percentage}%
-                      </span>
-                    </li>
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
-                </ul>
-              </div>
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            )}
+          </div>
+
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            <img 
+              src="https://media.giphy.com/media/10YpWPBU7GAYwM/giphy.gif"
+              alt="Dancing GIF"
+              className="w-64 h-64"
+            />
+            <div className="rounded-lg p-4">
+              <ul className="grid grid-cols-1 gap-2">
+                {chartData.map((entry, index) => (
+                  <li key={`legend-${index}`} className="flex items-center">
+                    <span 
+                      className="w-3 h-3 mr-2 rounded-full" 
+                      style={{ backgroundColor: COLORS[index % COLORS.length] }} 
+                    />
+                    <span className="text-sm font-pixelify">
+                      {entry.name} - {entry.percentage}%
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>

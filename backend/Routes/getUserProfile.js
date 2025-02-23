@@ -59,5 +59,3 @@ router.get('/user-follows', function(req, res) {
 });
 
 module.exports = router;
-
- 
