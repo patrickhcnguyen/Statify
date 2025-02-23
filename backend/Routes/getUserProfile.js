@@ -6,7 +6,7 @@
 const request = require('request');
 const router = express.Router();
 
-router.get('/', function(req, res) {
+router.get('/user-profile', function(req, res) {
     const accessToken = req.cookies.access_token; 
 
     if (!accessToken) {
@@ -59,5 +59,3 @@ router.get('/user-follows', function(req, res) {
 });
 
 module.exports = router;
-
- 
