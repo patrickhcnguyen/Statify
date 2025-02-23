@@ -51,7 +51,7 @@ app.use(topArtistsRoutes);
 app.use(topTrackRoutes);
 app.use(topGenreRoutes);
 app.use(recentlyPlayedRoutes);
-app.use(getUserProfileRoutes);
+app.use('/getUserProfile', getUserProfileRoutes);
 app.use(createPlaylistRoute);
 app.use(addTracksRoute);
 app.use(getRecommendationsRoute);
@@ -62,9 +62,9 @@ app.use(gptGradientRoute);
 app.use(updatePlaylistImageRoute);
 app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(getArtistDetailsRoute);
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-});
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+// });
 
 const PORT = process.env.PORT || 8888;
 
