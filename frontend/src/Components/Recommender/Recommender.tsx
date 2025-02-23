@@ -132,10 +132,10 @@ const Recommender: React.FC<RecommenderProps> = ({ topTracks, selectedTracks, di
 
   return (
     <div className="flex flex-col items-center">
-      <div className="w-[296px]">
-        <h3 className="text-white font-pixelify text-center md:text-left
-                       text-[24px] md:text-[32px] 
-                       leading-tight px-4 md:px-0">
+      <div className="w-[325px]">
+        <h3 className="text-white font-pixelify text-center
+                       text-[30px] w-full
+                       leading-tight">
           {selectedTracks.length > 0 
             ? `${selectedTracks.length}/5 tracks selected for recommendations!`
             : 'Click on tracks above to select for recommendations, or I\'ll pick 5 random ones!'}

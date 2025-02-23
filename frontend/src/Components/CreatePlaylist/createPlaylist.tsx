@@ -265,12 +265,14 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
 
   return (
     <div className="flex flex-col items-center">
-      <button 
-        onClick={handleCreatePlaylist}
-        className="text-[24px] font-pixelify text-white mb-4 hover:opacity-80 transition-opacity whitespace-nowrap"
-      >
-        Create a new playlist!
-      </button>
+      <div className="w-[325px]">
+        <button 
+          onClick={handleCreatePlaylist}
+          className="text-[30px] font-pixelify text-white mb-4 hover:opacity-80 transition-opacity whitespace-nowrap w-full text-center"
+        >
+          Create a new playlist!
+        </button>
+      </div>
       <input
         type="text"
         value={playlistName}

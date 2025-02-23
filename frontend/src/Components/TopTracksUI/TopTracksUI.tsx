@@ -230,26 +230,30 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
       </div>
 
       {/* Desktop section */}
-      <div className="hidden md:block">
+  <div className="hidden md:block">
   <div 
     className="flex-1 bg-cover bg-center bg-no-repeat min-h-screen relative"
   > 
     <div className="absolute top-16 right-[21rem] flex flex-col items-center">
       <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />
-      <div className="absolute top-52">
-        <CreatePlaylist 
-          userId={userProfile.id} 
-          displayName={userProfile.displayName} 
-          topTracks={topTracks} 
-          timeQuery={timeQuery} 
-        />
-      </div>
-      <div className="absolute top-96">
-        <Recommender 
-          topTracks={topTracks} 
-          selectedTracks={Array.from(selectedTracks)}
-        displayedTracks={tracks}
-        />
+      
+      <div className="flex flex-col items-center">
+        <div className="absolute top-52">
+          <CreatePlaylist 
+            userId={userProfile.id} 
+            displayName={userProfile.displayName} 
+            topTracks={topTracks} 
+            timeQuery={timeQuery} 
+          />
+        </div>
+        
+        <div className="absolute top-96">
+          <Recommender 
+            topTracks={topTracks} 
+            selectedTracks={Array.from(selectedTracks)}
+            displayedTracks={tracks}
+          />
+        </div>
       </div>
     </div>
         {/* Rendering shelves */}
