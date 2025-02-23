@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import backgroundImage from '../../assets/background/background.svg';
+import { Button } from '../button';
 
 interface Playlist {
   playlistID: string;
@@ -113,7 +114,7 @@ const Community: React.FC = () => {
   };
 
   if (loading) {
-    return <div>Loading feed...</div>;
+    return <div className="text-white text-2xl font-pixelify flex items-center justify-center h-screen">Loading feed...</div>;
   }
 
   if (error) {
@@ -148,20 +149,20 @@ const Community: React.FC = () => {
                   {playlist.imageBase64 && (
                     <img
                       src={playlist.imageBase64}
-                      className="w-full aspect-square object-cover mb-2 rounded"
+                      className="w-full aspect-square object-cover mb-2"
                       alt={playlist.name}
                     />
                   )}
-                  <h3 className="font-bold text-base sm:text-lg truncate">{playlist.name}</h3>
-                  <p className="text-gray-200 text-sm">Created by {playlist.displayName}</p>
-                  <p className="text-gray-300 text-xs mt-2">
+                  <h3 className="font-bold text-base sm:text-lg truncate font-pixelify">{playlist.name}</h3>
+                  <p className="text-gray-200 text-sm font-pixelify">Created by {playlist.displayName}</p>
+                  <p className="text-gray-300 text-xs mt-2 font-pixelify">
                     Created on: {new Date(playlist.createdAt).toLocaleDateString()}
                   </p>
                   <a
                     href={`https://open.spotify.com/playlist/${playlist.playlistID}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-300 hover:text-blue-400 hover:underline mt-4 block text-sm"
+                    className="text-green-400 hover:text-green-500 hover:underline mt-4 block text-sm font-pixelify"
                   >
                     View on Spotify
                   </a>
@@ -170,44 +171,41 @@ const Community: React.FC = () => {
             </div>
 
             {/* Pagination Controls */}
-            <div className="flex justify-center mt-8 space-x-2">
-              <button
-                onClick={() => paginate(currentPage - 1)}
-                disabled={currentPage === 1}
-                className={`px-4 py-2 rounded ${
-                  currentPage === 1 
-                    ? 'bg-gray-500 cursor-not-allowed' 
-                    : 'bg-blue-500 hover:bg-blue-600 text-white'
-                }`}
+            <div className="flex justify-center mt-8">
+              <Button 
+                variant="secondary" 
+                className="min-w-[200px] bg-black/50 flex items-center justify-center gap-4"
               >
-                Previous
-              </button>
-              
-              {[...Array(totalPages)].map((_, index) => (
-                <button
-                  key={index + 1}
-                  onClick={() => paginate(index + 1)}
-                  className={`px-4 py-2 rounded ${
-                    currentPage === index + 1
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-500 hover:bg-gray-600 text-white'
+                <span
+                  onClick={() => currentPage > 1 && paginate(currentPage - 1)}
+                  className={`cursor-pointer px-2 ${
+                    currentPage === 1 ? 'text-gray-500' : 'text-white hover:text-green-400'
                   }`}
                 >
-                  {index + 1}
-                </button>
-              ))}
+                  ←
+                </span>
 
-              <button
-                onClick={() => paginate(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className={`px-4 py-2 rounded ${
-                  currentPage === totalPages 
-                    ? 'bg-gray-500 cursor-not-allowed' 
-                    : 'bg-blue-500 hover:bg-blue-600 text-white'
-                }`}
-              >
-                Next
-              </button>
+                {[...Array(totalPages)].map((_, index) => (
+                  <span
+                    key={index + 1}
+                    onClick={() => paginate(index + 1)}
+                    className={`cursor-pointer px-2 hover:text-green-400 ${
+                      currentPage === index + 1 ? 'text-green-500' : 'text-white'
+                    }`}
+                  >
+                    {index + 1}
+                  </span>
+                ))}
+
+                <span
+                  onClick={() => currentPage < totalPages && paginate(currentPage + 1)}
+                  className={`cursor-pointer px-2 ${
+                    currentPage === totalPages ? 'text-gray-500' : 'text-white hover:text-green-400'
+                  }`}
+                >
+                  →
+                </span>
+              </Button>
             </div>
           </>
         )}
