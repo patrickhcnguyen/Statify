@@ -123,7 +123,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
   return (
     <div 
       className="min-h-screen w-full bg-cover bg-center bg-no-repeat relative overflow-x-hidden"
-      style={{ backgroundImage: `url(${backgroundImage})` }} >
+    >
 
       {/* mobile view */}
       {currentArtist && (

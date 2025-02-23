@@ -233,7 +233,6 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
       <div className="hidden md:block">
   <div 
     className="flex-1 bg-cover bg-center bg-no-repeat min-h-screen relative"
-    style={{ backgroundImage: `url(${backgroundImage})` }}
   > 
     <div className="absolute top-16 right-[21rem] flex flex-col items-center">
       <TimeRangeSelector timeRange={timeRange} setTimeRange={setTimeRange} />

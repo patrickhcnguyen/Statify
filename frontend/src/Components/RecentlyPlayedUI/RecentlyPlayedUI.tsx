@@ -222,7 +222,6 @@ const RecentlyPlayedUI: React.FC<RecentlyPlayedUIProps> = ({
       <div className="hidden md:block">
         <div 
           className="flex-1 bg-cover bg-center bg-no-repeat min-h-screen pb-[20vh]"
-          style={{ backgroundImage: `url(${backgroundImage})` }}
         >
           <div className="absolute top-[35vh] left-[70%] -translate-x-1/2 flex flex-col items-center">
             <CreatePlaylist 
