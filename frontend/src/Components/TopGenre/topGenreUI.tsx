@@ -2,16 +2,16 @@ import React from 'react';
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import TimeRangeSelector from '../TimeRangeSelector/TimeRangeSelector';
 import { useGenres } from '../../hooks/useGenres';
+import { GenreData } from './topGenreFunctions';
+
+interface ChartDataEntry extends GenreData {
+  percentage: string;
+}
 
 interface TopGenreUIProps {
   timeRange: string;
   setTimeRange: (range: string) => void;
   timeQuery: 'Last 4 weeks' | 'Last 6 months' | 'All time' | null;
-}
-
-interface GenreData {
-  name: string;
-  count: number;
 }
 
 const COLORS = [
@@ -73,7 +73,7 @@ const TopGenreUI: React.FC<TopGenreUIProps> = ({ timeRange, setTimeRange, timeQu
                   fill="#8884d8"
                   isAnimationActive={false}
                 >
-                  {chartData.map((entry, index) => (
+                  {chartData.map((entry: ChartDataEntry, index: number) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
@@ -90,7 +90,7 @@ const TopGenreUI: React.FC<TopGenreUIProps> = ({ timeRange, setTimeRange, timeQu
             />
             <div className="rounded-lg p-4">
               <ul className="grid grid-cols-1 gap-2">
-                {chartData.map((entry, index) => (
+                {chartData.map((entry: ChartDataEntry, index: number) => (
                   <li key={`legend-${index}`} className="flex items-center">
                     <span 
                       className="w-3 h-3 mr-2 rounded-full" 
