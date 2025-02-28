@@ -24,9 +24,6 @@ const App: React.FC = () => {
   const [topTracks, setTopTracks] = useState<
     Array<{ name: string; artist: string; albumImageUrl: string; uri: string }>
   >([]);
-  const [recentTracks, setRecentTracks] = useState<
-    Array<{ name: string; artist: string; albumImageUrl: string; uri: string }>
-  >([]);
   const [timeQuery, setTimeQuery] = useState<'Last 4 weeks' | 'Last 6 months' | 'All time' | null>(null);
   const location = useLocation();
   const { userProfile } = useUserProfile();
@@ -93,7 +90,6 @@ const App: React.FC = () => {
               element={
                 <RecentlyPlayedUI
                   userProfile={userProfile || { id: '', displayName: '' }}
-                  recentTracks={recentTracks}
                 />
               }
             />
