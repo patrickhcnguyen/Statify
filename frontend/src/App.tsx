@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom'; 
 import Navbar from './Components/Navbar/navbar';
-
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import useUserProfile from './Components/GetUserProfile/getUserProfile';
 import Feed from './Components/Community/Community';
 import LandingPage from './Components/Landing Page/landingPage';
@@ -10,6 +10,9 @@ import RecentlyPlayedUI from './Components/RecentlyPlayedUI/RecentlyPlayedUI';
 import TopArtistsUI from './Components/TopArtistsUI/TopArtistsUI';
 import TopGenreUI from './Components/TopGenre/topGenreUI';
 import backgroundImage from './assets/background/background.svg';
+import TestDataPage from './pages/TestDataPage';
+
+const queryClient = new QueryClient();
 
 // TODO: move functionality to different components
 
@@ -210,6 +213,7 @@ const App: React.FC = () => {
     setIsLoggedIn(false);
   };
   return (
+    <QueryClientProvider client={queryClient}>
     <div className="min-h-screen">
       {location.pathname === '/' ? (
         <LandingPage />
@@ -271,10 +275,12 @@ const App: React.FC = () => {
                 />
               } 
             />
+            <Route path="/test" element={<TestDataPage />} />
           </Routes>
         </div>
       )}
     </div>
+    </QueryClientProvider>
   );
 };
 
