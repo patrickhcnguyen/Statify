@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { PieChart, Pie, Cell, Tooltip } from 'recharts';
 import TimeRangeSelector from '../TimeRangeSelector/TimeRangeSelector';
-import backgroundImage from '../../assets/background/background.svg';
+import { useGenres } from '../../hooks/useGenres';
 
 interface TopGenreUIProps {
   timeRange: string;
@@ -20,53 +20,16 @@ const COLORS = [
 ];
 
 const TopGenreUI: React.FC<TopGenreUIProps> = ({ timeRange, setTimeRange, timeQuery }) => {
-  const [genres, setGenres] = useState<GenreData[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const { genres, error } = useGenres(timeRange);
 
-  useEffect(() => {
-    const fetchTopGenres = async () => {
-      try {
-        const response = await fetch(`http://localhost:8888/top-genres?time_range=${timeRange}`, {
-          method: 'GET',
-          credentials: 'include',
-        });
+  const totalTracks = genres.reduce((total: number, genre: GenreData) => total + genre.count, 0);
 
-        if (!response.ok) {
-          const text = await response.text();
-          console.error('Response Text:', text);
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        
-        const genreData = data.topGenres
-          .map((genre: string) => ({
-            name: genre,
-            count: data.genreCount[genre] || 0,
-          }))
-          .filter((genre: GenreData) => genre.count > 0)
-          .slice(0, 10);
-        
-        setGenres(genreData);
-      } catch (error) {
-        console.error('Error fetching top genres:', error);
-        setError('Error fetching top genres.');
-      }
-    };
-
-    fetchTopGenres();
-  }, [timeRange]);
-
-  // Calculate total count for percentage calculations
-  const totalTracks = genres.reduce((total, genre) => total + genre.count, 0);
-
-  // Prepare the chart data with percentages
-  const chartData = genres.map(genre => ({
+  const chartData = genres.map((genre: GenreData) => ({
     ...genre,
     percentage: ((genre.count / totalTracks) * 100).toFixed(1), 
   }));
 
-  const renderCustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, index }: any) => {
+  const renderCustomLabel = ({ cx, cy, midAngle, outerRadius, index }: any) => {
     const radius = outerRadius + 10; 
     const x = cx + radius * Math.cos(-midAngle * (Math.PI / 180));
     const y = cy + radius * Math.sin(-midAngle * (Math.PI / 180));
@@ -108,6 +71,7 @@ const TopGenreUI: React.FC<TopGenreUIProps> = ({ timeRange, setTimeRange, timeQu
                   label={renderCustomLabel}
                   labelLine={false}
                   fill="#8884d8"
+                  isAnimationActive={false}
                 >
                   {chartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
