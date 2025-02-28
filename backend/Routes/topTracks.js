@@ -1,6 +1,10 @@
 const express = require('express');
 const request = require('request');
 const router = express.Router();
+const NodeCache = require('node-cache');
+
+// Create cache instance with 5 minute TTL
+const cache = new NodeCache({ stdTTL: 300 });
 
 router.get('/top-tracks', function(req, res) {
     const accessToken = req.cookies.access_token;
@@ -10,6 +14,14 @@ router.get('/top-tracks', function(req, res) {
     }
 
     const timeRange = req.query.time_range || 'short_term'; 
+
+    // Check cache first
+    const cacheKey = `top-tracks-${timeRange}-${accessToken}`;
+    const cachedData = cache.get(cacheKey);
+    
+    if (cachedData) {
+        return res.json(cachedData);
+    }
 
     const options = {
         url: 'https://api.spotify.com/v1/me/top/tracks',
@@ -30,6 +42,8 @@ router.get('/top-tracks', function(req, res) {
         }
         
         if (response.statusCode === 200) {
+            // Store in cache before sending response
+            cache.set(cacheKey, body);
             res.json(body);  
         } else {
             console.error('Error fetching top tracks:', body);
