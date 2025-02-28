@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import backgroundImage from '../../assets/background/background.svg';
+import React, { useState } from 'react';
+import useMusicData from "../../hooks/useMusicData";
 import shelfImage from '../../assets/icons/shelf.svg';
 import CreatePlaylist from '../CreatePlaylist/createPlaylist';
 import Recommender from '../Recommender/Recommender';
@@ -16,47 +16,27 @@ interface RecentlyPlayedUIProps {
     id: string;
     displayName: string;
   };
-  recentTracks: Array<{ name: string; artist: string; albumImageUrl: string; uri: string }>;
 }
 
 const RecentlyPlayedUI: React.FC<RecentlyPlayedUIProps> = ({ 
   userProfile,
-  recentTracks,
 }) => {
-  const [tracks, setTracks] = useState<Track[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [selectedTracks, setSelectedTracks] = useState<Set<string>>(new Set());
+  const { musicData, isLoading, error } = useMusicData('recently-played');
 
-  useEffect(() => {
-    const fetchRecentTracks = async () => {
-      try {
-        const response = await fetch('http://localhost:8888/recently-played', {
-          method: 'GET',
-          credentials: 'include',
-        });
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">
+      <p className="text-white font-pixelify text-2xl">Loading...</p>
+    </div>;
+  }
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-          
-        const data = await response.json();
-        const trackData = data.items.slice(0, 16).map((item: any) => ({
-          name: item.track.name,
-          artist: item.track.artists[0].name,
-          albumImageUrl: item.track.album.images[0]?.url || '',
-          uri: item.track.uri,
-        }));
-        
-        setTracks(trackData);
-        setSelectedTracks(new Set());
-      } catch (error) {
-        console.error('Error fetching recent tracks:', error);
-        setError('Error fetching recent tracks.');
-      }
-    };
+  if (error) {
+    return <div className="min-h-screen flex items-center justify-center">
+      <p className="text-red-500 font-pixelify text-2xl">Error loading tracks</p>
+    </div>;
+  }
 
-    fetchRecentTracks();
-  }, []);
+  const tracks = Array.isArray(musicData) ? musicData : [];
 
   const handleTrackClick = (track: Track) => {
     const newSelection = new Set(selectedTracks);
@@ -69,14 +49,18 @@ const RecentlyPlayedUI: React.FC<RecentlyPlayedUIProps> = ({
   };
 
   const renderShelf = (startIndex: number) => {
+    if (!tracks.length) return null;
+    
     const shelfTracks = tracks.slice(startIndex, startIndex + 4);
+    if (!shelfTracks.length) return null;
+
     return (
       <div className="relative">
         <div className="relative">
           <div className="absolute bottom-[2.19rem] left-10 flex gap-16 z-10">
-            {shelfTracks.map((track, index) => (
+            {shelfTracks.map((track: Track, index: number) => (
               <div 
-                key={startIndex + index} 
+                key={`${startIndex}-${index}`}
                 className={`relative cursor-pointer transition-all duration-200 group ${
                   selectedTracks.has(track.uri) 
                     ? 'scale-105' 
@@ -128,13 +112,17 @@ const RecentlyPlayedUI: React.FC<RecentlyPlayedUIProps> = ({
   };
 
   const renderMobileShelf = (startIndex: number) => {
+    if (!tracks.length) return null;
+    
     const shelfTracks = tracks.slice(startIndex, startIndex + 2);
+    if (!shelfTracks.length) return null;
+
     return (
       <div className="relative">
         <div className="absolute bottom-[19px] left-1/2 -translate-x-1/2 flex gap-[25vw] z-10 w-full justify-center">
-          {shelfTracks.map((track, index) => (
+          {shelfTracks.map((track: Track, index: number) => (
             <div 
-              key={startIndex + index} 
+              key={`${startIndex}-${index}`}
               className={`relative cursor-pointer transition-all duration-200 group ${
                 selectedTracks.has(track.uri) 
                   ? 'scale-105' 
@@ -184,6 +172,12 @@ const RecentlyPlayedUI: React.FC<RecentlyPlayedUIProps> = ({
     );
   };
 
+  if (!tracks.length) {
+    return <div className="min-h-screen flex items-center justify-center">
+      <p className="text-white font-pixelify text-2xl">No recently played tracks found</p>
+    </div>;
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Mobile section */}
@@ -204,14 +198,14 @@ const RecentlyPlayedUI: React.FC<RecentlyPlayedUIProps> = ({
           <CreatePlaylist 
             userId={userProfile.id} 
             displayName={userProfile.displayName} 
-            topTracks={recentTracks}
+            topTracks={musicData}
             timeQuery={null}
           />
         </div>
         {/* recommender */}
         <div className="flex justify-center mb-8">
           <Recommender 
-            topTracks={recentTracks}
+            topTracks={musicData}
             selectedTracks={Array.from(selectedTracks)}
             displayedTracks={tracks}
           />
@@ -229,14 +223,14 @@ const RecentlyPlayedUI: React.FC<RecentlyPlayedUIProps> = ({
                 <CreatePlaylist 
                   userId={userProfile.id} 
                   displayName={userProfile.displayName} 
-                  topTracks={recentTracks}
+                  topTracks={musicData}
                   timeQuery={null}
                 />
               </div>
               
               <div className="absolute top-96">
                 <Recommender 
-                  topTracks={recentTracks}
+                  topTracks={musicData}
                   selectedTracks={Array.from(selectedTracks)}
                   displayedTracks={tracks}
                 />
