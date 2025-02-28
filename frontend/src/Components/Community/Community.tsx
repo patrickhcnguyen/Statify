@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import backgroundImage from '../../assets/background/background.svg';
 import { Button } from '../button';
 
 interface Playlist {
@@ -124,7 +123,6 @@ const Community: React.FC = () => {
   return (
     <div 
       className="min-h-screen w-full bg-cover bg-center bg-no-repeat relative"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className="feed-container p-4 pt-[100px] max-w-7xl mx-auto">
         {feedData.length === 0 ? (
