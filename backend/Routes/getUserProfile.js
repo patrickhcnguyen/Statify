@@ -7,20 +7,18 @@ const request = require('request');
 const router = express.Router();
 
 router.get('/user-profile', function(req, res) {
-    const accessToken = req.cookies.access_token; 
-
-    if (!accessToken) {
-        return res.status(401).json({ error: 'Unauthorized' });
+    const access_token = req.cookies.access_token;
+    
+    if (!access_token) {
+        return res.status(401).json({ error: 'Not authenticated' });
     }
-
+    
     const options = {
-        url: 'https://api.spotify.com/v1/me', 
-        headers: {
-            'Authorization': 'Bearer ' + accessToken
-        },
+        url: 'https://api.spotify.com/v1/me',
+        headers: { 'Authorization': 'Bearer ' + access_token },
         json: true
     };
-
+    
     request.get(options, function(error, response, body) {
         if (!error && response.statusCode === 200) {
             res.json({
@@ -28,8 +26,7 @@ router.get('/user-profile', function(req, res) {
                 displayName: body.display_name
             });
         } else {
-            console.error('Error fetching user profile:', body);
-            res.status(response.statusCode).json(body); 
+            res.status(401).json({ error: 'Failed to fetch profile' });
         }
     });
 });
