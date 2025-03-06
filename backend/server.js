@@ -10,7 +10,33 @@ const mongoose = require('mongoose');
 const app = express();
 app.use(express.json()); 
 
-const mongoURI = process.env.MONGODBURI;
+// Function to read secret files
+function readSecret(secretName) {
+  const fs = require('fs');
+  const path = `/run/secrets/${secretName}`;
+  
+  try {
+    return fs.readFileSync(path, 'utf8').trim();
+  } catch (err) {
+    console.error(`Error reading secret ${secretName}:`, err);
+    return process.env[secretName.toUpperCase()]; // Fall back to environment variable
+  }
+}
+
+// Read secrets
+const mongoURI = process.env.MONGODBURI || readSecret('mongodb_uri');
+const openaiApiKey = process.env.OPENAI_API_KEY || readSecret('openai_api_key');
+const rapidApiKey = process.env.RAPIDAPI_KEY || readSecret('rapidapi_key');
+const clientId = process.env.CLIENT_ID || readSecret('client_id');
+const clientSecret = process.env.CLIENT_SECRET || readSecret('client_secret');
+const redirectUri = process.env.REDIRECT_URI || readSecret('redirect_uri');
+
+process.env.MONGODBURI = mongoURI;
+process.env.OPENAI_API_KEY = openaiApiKey;
+process.env.RAPIDAPI_KEY = rapidApiKey;
+process.env.CLIENT_ID = clientId;
+process.env.CLIENT_SECRET = clientSecret;
+process.env.REDIRECT_URI = redirectUri;
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
@@ -32,6 +58,9 @@ app.use(cors({
 }));
 
 app.use(cookieParser());
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
 
 const authRoutes = require('./Routes/auth');
 const topArtistsRoutes = require('./Routes/topArtists');
@@ -70,10 +99,8 @@ app.get('*', (req, res) => {
 
 const PORT = process.env.PORT || 8888;
 
-if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-}
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
 module.exports = app;
