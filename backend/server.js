@@ -16,18 +16,37 @@ function readSecret(secretName) {
   try {
     return fs.readFileSync(path, 'utf8').trim();
   } catch (err) {
-    console.error(`Error reading secret ${secretName}:`, err);
-    return process.env[secretName.toUpperCase()]; // Fall back to environment variable
+    // Only log error in production environment
+    if (process.env.NODE_ENV === 'production') {
+      console.error(`Error reading secret ${secretName}:`, err);
+    }
+    return null; // Return null instead of falling back immediately
   }
 }
 
-// Read secrets
-const mongoURI = process.env.MONGODBURI || readSecret('mongodb_uri');
-const openaiApiKey = process.env.OPENAI_API_KEY || readSecret('openai_api_key');
-const rapidApiKey = process.env.RAPIDAPI_KEY || readSecret('rapidapi_key');
-const clientId = process.env.CLIENT_ID || readSecret('client_id');
-const clientSecret = process.env.CLIENT_SECRET || readSecret('client_secret');
-const redirectUri = process.env.REDIRECT_URI || readSecret('redirect_uri');
+// Get configuration from environment or secrets
+const getConfig = (envName, secretName) => {
+  // First try environment variable
+  if (process.env[envName]) {
+    return process.env[envName];
+  }
+  
+  // Then try Docker secret
+  const secretValue = readSecret(secretName);
+  if (secretValue) {
+    return secretValue;
+  }
+  
+  return null;
+};
+
+// Read configuration
+const mongoURI = getConfig('MONGODBURI', 'mongodb_uri');
+const openaiApiKey = getConfig('OPENAI_API_KEY', 'openai_api_key');
+const rapidApiKey = getConfig('RAPIDAPI_KEY', 'rapidapi_key');
+const clientId = getConfig('CLIENT_ID', 'client_id');
+const clientSecret = getConfig('CLIENT_SECRET', 'client_secret');
+const redirectUri = getConfig('REDIRECT_URI', 'redirect_uri');
 
 process.env.MONGODBURI = mongoURI;
 process.env.OPENAI_API_KEY = openaiApiKey;
@@ -36,15 +55,20 @@ process.env.CLIENT_ID = clientId;
 process.env.CLIENT_SECRET = clientSecret;
 process.env.REDIRECT_URI = redirectUri;
 
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('MongoDB connected successfully');
-    const db = mongoose.connection; // Get the connection instance
-    console.log(`Connected to database: ${db.name}`); // Use `db.name` to get the database name
-  })
-  .catch(err => {
-    console.error('MongoDB connection error:', err);
-  });
+// Connect to MongoDB if URI is available
+if (mongoURI) {
+  mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+      console.log('MongoDB connected successfully');
+      const db = mongoose.connection;
+      console.log(`Connected to database: ${db.name}`);
+    })
+    .catch(err => {
+      console.error('MongoDB connection error:', err);
+    });
+} else {
+  console.error('MongoDB URI not available. Database connection skipped.');
+}
 
 app.use(cors({
   origin: [
