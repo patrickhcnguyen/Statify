@@ -5,47 +5,6 @@ export interface GenreData {
   count: number;
 }
 
-export const useTopGenres = (timeRange: string) => {
-  const [genres, setGenres] = useState<GenreData[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchTopGenres = async () => {
-      try {
-        const response = await fetch(`http://localhost:8888/top-genres?time_range=${timeRange}`, {
-          method: 'GET',
-          credentials: 'include',
-        });
-
-        if (!response.ok) {
-          const text = await response.text();
-          console.error('Response Text:', text);
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        
-        const genreData = data.topGenres
-          .map((genre: string) => ({
-            name: genre,
-            count: data.genreCount[genre] || 0,
-          }))
-          .filter((genre: GenreData) => genre.count > 0)
-          .slice(0, 10);
-        
-        setGenres(genreData);
-      } catch (error) {
-        console.error('Error fetching top genres:', error);
-        setError('Error fetching top genres.');
-      }
-    };
-
-    fetchTopGenres();
-  }, [timeRange]);
-
-  return { genres, error };
-};
-
 export const calculateChartData = (genres: GenreData[]) => {
   const totalTracks = genres.reduce((total, genre) => total + genre.count, 0);
   

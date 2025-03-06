@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import backgroundImage from '../../assets/background/background.svg';
+import React, { useState } from 'react';
 import journalImage from '../../assets/background/journal.svg';
 import starImage from '../../assets/icons/star.svg';
 import buttonImage from '../../assets/icons/button.svg';
@@ -9,6 +8,10 @@ import ribbonImage from '../../assets/icons/ribbon.svg';
 import cardboardCatImage from '../../assets/icons/cardboardCat.svg';
 import pageFlipLeft from '../../assets/icons/pageFlipLeft.svg';
 import pageFlipRight from '../../assets/icons/pageFlipRight.svg';
+
+import { useQuery } from '@tanstack/react-query';
+import useArtistData from '../../hooks/artistData';
+import { Artist } from '../../hooks/artistData';
 
 // mobile images
 import journalMobile from '../../assets/background/journal mobile.png';
@@ -22,55 +25,44 @@ interface TopArtistsUIProps {
     id: string;
     displayName: string;
   };
-  topArtists: Array<{ 
-    id: string; 
-    name: string; 
-    albumImageUrl: string;
-    genres: string[];
-    followers: number;
-    randomAlbumImage: string;
-    isFollowed: boolean;
-    // monthlyListeners?: number;
-    topTracks?: Array<{
-      name: string;
-      uri: string;
-    }>;
-    recommendedTracks?: Array<{
-      name: string;
-      uri: string;
-    }>;
-  }>;
-  timeQuery: 'Last 4 weeks' | 'Last 6 months' | 'All time' | null;
+  timeQuery: string | null;
 }
 
-const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setTimeRange }) => {
+const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ 
+  timeRange, 
+  setTimeRange,
+  timeQuery 
+}) => {
   const [currentArtistIndex, setCurrentArtistIndex] = useState(0);
-  const [recommendations, setRecommendations] = useState<Array<{name: string; uri: string}>>([]);
-  const [loading, setLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const fetchRecommendations = async (artistId: string) => {
-    setLoading(true);
-    try {
-      const response = await fetch(`http://localhost:8888/artist-recommendations/${artistId}`, {
+  const { currentArtist, isLoading, error } = useArtistData(timeRange, currentArtistIndex);
+
+  const { data: recommendations = [], isLoading: recommendationsLoading } = useQuery({
+    queryKey: ['artistRecommendations', currentArtist?.id],
+    queryFn: async () => {
+      if (!currentArtist?.id) return [];
+      
+      const response = await fetch(`http://localhost:8888/artist-recommendations/${currentArtist.id}`, {
         credentials: 'include'
       });
-      if (response.ok) {
+      
+      if (response.status === 429) {
         const data = await response.json();
-        setRecommendations(data);
+        await new Promise(resolve => setTimeout(resolve, (data.retryAfter || 30) * 1000));
+        throw new Error('Rate limited');
       }
-    } catch (error) {
-      console.error('Error fetching recommendations:', error);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    const currentArtist = topArtists[currentArtistIndex];
-    if (currentArtist?.id) {
-      fetchRecommendations(currentArtist.id);
-    }
-  }, [currentArtistIndex, topArtists]);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch recommendations');
+      }
+      
+      return response.json();
+    },
+    enabled: !!currentArtist?.id,
+    retry: 2,
+    retryDelay: (attemptIndex) => Math.min(1000 * (2 ** attemptIndex), 30000)
+  });
 
   const handlePrevArtist = () => {
     if (currentArtistIndex > 0) {
@@ -84,7 +76,17 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
     }
   };
 
-  const currentArtist = topArtists[currentArtistIndex];
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  if (!currentArtist) {
+    return <div>No artist data available</div>;
+  }
 
   const formatGenres = (genres: string[] = []) => {
     if (!genres || !currentArtist) return { displayText: '', hasMore: false };
@@ -163,7 +165,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
           {/* album image */}
           <div className="absolute left-40 top-[22rem]">
             <img 
-              src={currentArtist.randomAlbumImage}
+              src={currentArtist.randomImageUrl}
               alt={currentArtist.name}
               className="w-[200px] aspect-square"
             />
@@ -205,7 +207,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
               {/* top 5 songs */}
               <div className="absolute top-52 left-[16rem] flex items-center justify-center">
                 <span className="font-pixelify text-[18px] text-black text-center">
-                  {currentArtist.topTracks?.slice(0, 5).map((track, index) => (
+                  {currentArtist.topTracks?.slice(0, 5).map((track: { name: string; uri: string }, index: number) => (
                     <div key={index} className="flex items-center gap-2">
                       <span className="text-[18px] font-bold">{index + 1}.</span>
                       <a 
@@ -253,7 +255,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
                   {/* move to be centered with text in cat */}
                   <div className="absolute right-60 top-14">
                     <span className="font-pixelify text-[16px] text-black text-center">
-                      {recommendations.map((track, index) => (
+                      {recommendations.map((track: { name: string; uri: string }, index: number) => (
                         <div key={track.uri} className="flex flex-col items-start gap-2">
                           <a 
                             href={`https://open.spotify.com/track/${track.uri.split(':')[2]}`}
@@ -386,7 +388,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
                   {/* Random album image */}
                   <div className="absolute left-64 top-[45%]">
                     <img
-                      src={currentArtist.randomAlbumImage}
+                      src={currentArtist.randomImageUrl}
                       alt="Random Album"
                       className="w-[175px] aspect-square"
                     />
@@ -455,7 +457,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
                     </div>
 
                     <div className="absolute ml-56 top-12 flex flex-col gap-2 w-[180px]">
-                      {currentArtist.topTracks?.slice(0, 5).map((track, index) => (
+                      {currentArtist.topTracks?.slice(0, 5).map((track: { name: string; uri: string }, index: number) => (
                         <div key={index} className="flex items-center gap-2">
                           <span className="text-[20px] font-bold">{index + 1}.</span>
                           <a 
@@ -483,10 +485,10 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({ topArtists, timeRange, setT
                       {/* recommendations */}
                       <div className="absolute inset-0 flex items-center justify-center top-44">
                         <div className="flex flex-col gap-3 w-[144px]">
-                          {loading ? (
+                          {recommendationsLoading ? (
                             <div className="font-pixelify text-[20px] text-black">Loading recommendations...</div>
                           ) : recommendations.length > 0 ? (
-                            recommendations.map((track, index) => (
+                            recommendations.map((track: { uri: string; name: string }, index: number) => (
                               <a 
                                 key={track.uri}
                                 href={`https://open.spotify.com/track/${track.uri.split(':')[2]}`}

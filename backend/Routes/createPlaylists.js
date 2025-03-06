@@ -34,7 +34,7 @@ router.post('/create-playlist', async (req, res) => {
         }
 
         const playlist = JSON.parse(body);
-        console.log('Playlist created successfully:', playlist);
+       
         res.status(201).json(playlist); 
     });
 });

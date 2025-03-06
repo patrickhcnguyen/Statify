@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import backgroundImage from '../../assets/background/background.svg';
+import React, { useState } from 'react';
 import shelfImage from '../../assets/icons/shelf.svg';
 import TimeRangeSelector from '../TimeRangeSelector/TimeRangeSelector';
 import CreatePlaylist from '../CreatePlaylist/createPlaylist';
 import Recommender from '../Recommender/Recommender';
+import { useQuery } from '@tanstack/react-query';
+import useMusicData from '../../hooks/useMusicData';
 
 interface Track {
   name: string;
@@ -30,40 +31,9 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
   topTracks,
   timeQuery 
 }) => {
-  const [tracks, setTracks] = useState<Track[]>([]);
-  const [error, setError] = useState<string | null>(null);
   const [selectedTracks, setSelectedTracks] = useState<Set<string>>(new Set());
-
-  useEffect(() => {
-    const fetchTopTracks = async () => {
-      try {
-        const response = await fetch(`http://localhost:8888/top-tracks?time_range=${timeRange}`, {
-          method: 'GET',
-          credentials: 'include',
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-          
-        const data = await response.json();
-        const trackData = data.items.slice(0, 16).map((item: any) => ({
-          name: item.name,
-          artist: item.artists[0].name,
-          albumImageUrl: item.album.images[0]?.url || '',
-          uri: item.uri,
-        }));
-        
-        setTracks(trackData);
-        setSelectedTracks(new Set());
-      } catch (error) {
-        console.error('Error fetching top tracks:', error);
-        setError('Error fetching top tracks.');
-      }
-    };
-
-    fetchTopTracks();
-  }, [timeRange]);
+  
+  const { musicData, isLoading, error } = useMusicData('top-tracks', timeRange);
 
   const handleTrackClick = (track: Track) => {
     const newSelection = new Set(selectedTracks);
@@ -77,12 +47,12 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
 
   const renderShelf = (startIndex: number) => {
     // fix shelf track sizing 
-    const shelfTracks = tracks.slice(startIndex, startIndex + 4);
+    const shelfTracks = musicData.slice(startIndex, startIndex + 4);
       return (
       <div className="relative">
         <div className="relative">
           <div className="absolute bottom-[2.19rem] left-10 flex gap-16 z-10">
-            {shelfTracks.map((track, index) => (
+            {shelfTracks.map((track: Track, index: number) => (
               <div 
                 key={startIndex + index} 
                 className={`relative cursor-pointer transition-all duration-200 group ${
@@ -139,11 +109,11 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
   };
 
   const renderMobileShelf = (startIndex: number) => {
-    const shelfTracks = tracks.slice(startIndex, startIndex + 2);
+    const shelfTracks = musicData.slice(startIndex, startIndex + 2);
     return (
       <div className="relative">
         <div className="absolute bottom-[19px] left-1/2 -translate-x-1/2 flex gap-[25vw] z-10 w-full justify-center">
-          {shelfTracks.map((track, index) => (
+          {shelfTracks.map((track: Track, index: number) => (
             <div 
               key={startIndex + index} 
               className={`relative cursor-pointer transition-all duration-200 group ${
@@ -215,7 +185,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
           <CreatePlaylist 
             userId={userProfile.id} 
             displayName={userProfile.displayName} 
-            topTracks={topTracks} 
+            topTracks={musicData} 
             timeQuery={timeQuery} 
           />
         </div>
@@ -224,7 +194,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
           <Recommender 
             topTracks={topTracks} 
             selectedTracks={Array.from(selectedTracks)}
-            displayedTracks={tracks}
+            displayedTracks={musicData}
           />
         </div>
       </div>
@@ -242,7 +212,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
           <CreatePlaylist 
             userId={userProfile.id} 
             displayName={userProfile.displayName} 
-            topTracks={topTracks} 
+            topTracks={musicData} 
             timeQuery={timeQuery} 
           />
         </div>
@@ -251,7 +221,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
           <Recommender 
             topTracks={topTracks} 
             selectedTracks={Array.from(selectedTracks)}
-            displayedTracks={tracks}
+            displayedTracks={musicData}
           />
         </div>
       </div>
