@@ -10,7 +10,6 @@ import RecentlyPlayedUI from './Components/RecentlyPlayedUI/RecentlyPlayedUI';
 import TopArtistsUI from './Components/TopArtistsUI/TopArtistsUI';
 import TopGenreUI from './Components/TopGenre/topGenreUI';
 import backgroundImage from './assets/background/background.svg';
-import TestDataPage from './pages/TestDataPage';
 
 const queryClient = new QueryClient();
 
@@ -114,7 +113,6 @@ const App: React.FC = () => {
                 />
               } 
             />
-            <Route path="/test" element={<TestDataPage />} />
           </Routes>
         </div>
       )}
