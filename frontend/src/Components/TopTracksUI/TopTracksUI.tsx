@@ -185,7 +185,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
           <CreatePlaylist 
             userId={userProfile.id} 
             displayName={userProfile.displayName} 
-            topTracks={topTracks} 
+            topTracks={musicData} 
             timeQuery={timeQuery} 
           />
         </div>
@@ -212,7 +212,7 @@ const TopTracksUI: React.FC<TopTracksUIProps> = ({
           <CreatePlaylist 
             userId={userProfile.id} 
             displayName={userProfile.displayName} 
-            topTracks={topTracks} 
+            topTracks={musicData} 
             timeQuery={timeQuery} 
           />
         </div>
