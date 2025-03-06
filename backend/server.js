@@ -24,7 +24,7 @@ function readSecret(secretName) {
 }
 
 // Read secrets
-const mongoURI = process.env.MONGODBURI || readSecret('mongodb_uri');
+const mongoURI = process.env.MONGODB_URI || readSecret('mongodb_uri');
 const openaiApiKey = process.env.OPENAI_API_KEY || readSecret('openai_api_key');
 const rapidApiKey = process.env.RAPIDAPI_KEY || readSecret('rapidapi_key');
 const clientId = process.env.CLIENT_ID || readSecret('client_id');
@@ -51,7 +51,8 @@ mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
 app.use(cors({
   origin: [
     process.env.FRONTEND_URL || 'http://localhost:3000',
-    'https://accounts.spotify.com'
+    'https://accounts.spotify.com',
+    'https://statify.app'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
@@ -59,6 +60,7 @@ app.use(cors({
 
 app.use(cookieParser());
 app.get('/health', (req, res) => {
+  console.log('Health endpoint hit!');
   res.status(200).json({ status: 'ok' });
 });
 
@@ -77,6 +79,8 @@ const getTrackGenresRoute = require('./Routes/getTrackGenres');
 const gptGradientRoute = require('./Routes/gptGradient');
 const updatePlaylistImageRoute = require('./Routes/updatePlaylistImage');
 const getArtistDetailsRoute = require('./Routes/getArtistDetails');
+
+
 app.use(authRoutes);
 app.use(topArtistsRoutes);
 app.use(topTrackRoutes);
@@ -93,14 +97,22 @@ app.use(gptGradientRoute);
 app.use(updatePlaylistImageRoute);
 app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(getArtistDetailsRoute);
+
+app.use(express.static(path.join(__dirname, 'client/build')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 });
 
+
 const PORT = process.env.PORT || 8888;
 
-app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
+  console.log(`Server address info:`, server.address());
+}).on('error', (err) => {
+  console.error('Error starting server:', err);
+  // Exit with error code to make the container restart
+  process.exit(1);
 });
 
 module.exports = app;
