@@ -1,0 +1,34 @@
+services:
+  server:
+    build: .
+    ports:
+      - "8888:8888"
+    secrets:
+      - openai_api_key
+      - mongodb_uri
+      - rapidapi_key
+      - client_id
+      - client_secret
+      - redirect_uri
+    environment:
+      - OPENAI_API_KEY_FILE=/run/secrets/openai_api_key
+      - MONGODBURI_FILE=/run/secrets/mongodb_uri
+      - RAPIDAPI_KEY_FILE=/run/secrets/rapidapi_key
+      - CLIENT_ID_FILE=/run/secrets/client_id
+      - CLIENT_SECRET_FILE=/run/secrets/client_secret
+      - REDIRECT_URI_FILE=/run/secrets/redirect_uri
+
+secrets:
+  openai_api_key:
+    file: ./secrets/openai_api_key
+  mongodb_uri:
+    file: ./secrets/mongodb_uri
+  rapidapi_key:
+    file: ./secrets/rapidapi_key
+  client_id:
+    file: ./secrets/client_id
+  client_secret:
+    file: ./secrets/client_secret
+  redirect_uri:
+    file: ./secrets/redirect_uri
+
