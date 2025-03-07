@@ -8,7 +8,6 @@ const request = require('request');
 
 const client_id = process.env.CLIENT_ID;
 const client_secret = process.env.CLIENT_SECRET;
-const redirect_uri = process.env.REDIRECT_URI;
 
 const generateRandomString = (length) => {
     return crypto
@@ -25,18 +24,21 @@ router.get("/", (req, res) => {
 
 router.get('/login', function(req, res) {
     const state = generateRandomString(16);
-    const scope = 'user-read-private user-read-email user-read-recently-played user-top-read playlist-modify-public playlist-modify-private ugc-image-upload user-follow-read';
+    res.cookie('spotify_auth_state', state);
 
+    const redirectUri = process.env.REDIRECT_URI || `http://18.118.20.116:8888/callback`;
+    
+    const scope = 'user-read-private user-read-email user-read-recently-played user-top-read playlist-modify-public playlist-modify-private ugc-image-upload user-follow-read'
+    
     res.redirect('https://accounts.spotify.com/authorize?' +
       querystring.stringify({
         response_type: 'code',
         client_id: client_id,
         scope: scope,
-        redirect_uri: redirect_uri,
-        state: state,
-        show_dialog: true // Forces Spotify login prompt to show up
+        redirect_uri: redirectUri,
+        show_dialog: true,
+        state: state
       }));
-      
 });
 
 router.get('/logout', (req, res) => {
@@ -46,14 +48,34 @@ router.get('/logout', (req, res) => {
 });
 
 router.get('/check-login-status', (req, res) => {
-    const accessToken = req.cookies['access_token'];
+    const accessToken = req.cookies.access_token;
     
-    if (accessToken) {
-      res.json({ isLoggedIn: true });
-    } else {
-      res.json({ isLoggedIn: false });
+    if (!accessToken) {
+        return res.json({ isLoggedIn: false });
     }
-  });
+    
+    // Verify the token is valid by making a request to Spotify
+    const options = {
+        url: 'https://api.spotify.com/v1/me',
+        headers: { 'Authorization': 'Bearer ' + accessToken },
+        json: true
+    };
+    
+    request.get(options, function(error, response, body) {
+        if (!error && response.statusCode === 200) {
+            res.json({ 
+                isLoggedIn: true,
+                user: {
+                    id: body.id,
+                    displayName: body.display_name
+                }
+            });
+        } else {
+            // Token is invalid
+            res.json({ isLoggedIn: false });
+        }
+    });
+});
 
 router.get('/callback', function(req, res) {
     const code = req.query.code || null;
@@ -66,7 +88,7 @@ router.get('/callback', function(req, res) {
             url: 'https://accounts.spotify.com/api/token',
             form: {
                 code: code,
-                redirect_uri: redirect_uri,
+                redirect_uri: process.env.REDIRECT_URI || 'http://18.118.20.116:8888/callback',
                 grant_type: 'authorization_code'
             },
             headers: {
@@ -84,14 +106,15 @@ router.get('/callback', function(req, res) {
                 res.cookie('access_token', access_token, {
                     path: '/',
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
+                    secure: false,
                     sameSite: 'Lax',
                     maxAge: 3600000
                 });
 
                 res.cookie('refresh_token', refresh_token, { 
+                    path: '/',
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
+                    secure: false,
                     sameSite: 'Lax',
                     maxAge: 7 * 24 * 3600000
                 });
@@ -134,9 +157,17 @@ router.post('/refresh-token', function(req, res) {
             res.cookie('access_token', access_token, {
                 path: '/',
                 httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
+                secure: false,
                 sameSite: 'Lax',
                 maxAge: 3600000
+            });
+
+            res.cookie('refresh_token', refresh_token, { 
+                path: '/',
+                httpOnly: true,
+                secure: false,
+                sameSite: 'Lax',
+                maxAge: 7 * 24 * 3600000
             });
 
             res.json({ success: true });
