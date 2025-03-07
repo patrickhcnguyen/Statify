@@ -74,7 +74,7 @@ app.use(cors({
   origin: ['https://www.statify.app', 'http://localhost:3000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'X-Requested-With']
 }));
 
 app.use(cookieParser());
@@ -116,11 +116,16 @@ app.use(updatePlaylistImageRoute);
 app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(getArtistDetailsRoute);
 
+
 app.use(express.static(path.join(__dirname, 'client/build')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 });
 
+// Add this before your other routes
+app.get('/cors-test', (req, res) => {
+  res.json({ message: 'CORS is working!' });
+});
 
 const PORT = process.env.PORT || 8888;
 
