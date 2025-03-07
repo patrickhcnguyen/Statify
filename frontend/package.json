@@ -60,5 +60,5 @@
     "postcss": "^8.4.31",
     "tailwindcss": "^3.3.0"
   },
-  "proxy": "http://18.118.20.116:8888"
+  "proxy": "https://api.statify.app"
 }
