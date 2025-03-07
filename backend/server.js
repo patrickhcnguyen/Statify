@@ -71,7 +71,7 @@ if (mongoURI) {
 }
 
 app.use(cors({
-  origin: true,  // This will reflect the request origin
+  origin: ['https://www.statify.app', 'http://localhost:3000'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']

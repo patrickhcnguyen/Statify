@@ -106,16 +106,16 @@ router.get('/callback', function(req, res) {
                 res.cookie('access_token', access_token, {
                     path: '/',
                     httpOnly: true,
-                    secure: false,
-                    sameSite: 'Lax',
+                    secure: true,
+                    sameSite: 'None',
                     maxAge: 3600000
                 });
 
                 res.cookie('refresh_token', refresh_token, { 
                     path: '/',
                     httpOnly: true,
-                    secure: false,
-                    sameSite: 'Lax',
+                    secure: true,
+                    sameSite: 'None',
                     maxAge: 7 * 24 * 3600000
                 });
 
@@ -157,16 +157,16 @@ router.post('/refresh-token', function(req, res) {
             res.cookie('access_token', access_token, {
                 path: '/',
                 httpOnly: true,
-                secure: false,
-                sameSite: 'Lax',
+                secure: true,
+                sameSite: 'None',
                 maxAge: 3600000
             });
 
             res.cookie('refresh_token', refresh_token, { 
                 path: '/',
                 httpOnly: true,
-                secure: false,
-                sameSite: 'Lax',
+                secure: true,
+                sameSite: 'None',
                 maxAge: 7 * 24 * 3600000
             });
 
