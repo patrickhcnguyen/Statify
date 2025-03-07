@@ -46,7 +46,7 @@ const openaiApiKey = getConfig('OPENAI_API_KEY', 'openai_api_key');
 const rapidApiKey = getConfig('RAPIDAPI_KEY', 'rapidapi_key');
 const clientId = getConfig('CLIENT_ID', 'client_id');
 const clientSecret = getConfig('CLIENT_SECRET', 'client_secret');
-const redirectUri = getConfig('REDIRECT_URI', 'redirect_uri');
+const redirectUri = getConfig('REDIRECT_URI', 'redirect_uri') || 'https://api.statify.app/callback';
 
 process.env.MONGODBURI = mongoURI;
 process.env.OPENAI_API_KEY = openaiApiKey;
@@ -127,7 +127,7 @@ app.get('/cors-test', (req, res) => {
   res.json({ message: 'CORS is working!' });
 });
 
-const PORT = process.env.PORT || 8888;
+const PORT = process.env.PORT || 80;
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
