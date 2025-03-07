@@ -26,7 +26,7 @@ router.get('/login', function(req, res) {
     const state = generateRandomString(16);
     res.cookie('spotify_auth_state', state);
 
-    const redirectUri = process.env.REDIRECT_URI || `http://18.118.20.116:8888/callback`;
+    const redirectUri = process.env.REDIRECT_URI || `https://api.statify.app/callback`;
     
     const scope = 'user-read-private user-read-email user-read-recently-played user-top-read playlist-modify-public playlist-modify-private ugc-image-upload user-follow-read'
     
@@ -88,7 +88,7 @@ router.get('/callback', function(req, res) {
             url: 'https://accounts.spotify.com/api/token',
             form: {
                 code: code,
-                redirect_uri: process.env.REDIRECT_URI || 'http://18.118.20.116:8888/callback',
+                redirect_uri: process.env.REDIRECT_URI || 'https://api.statify.app/callback',
                 grant_type: 'authorization_code'
             },
             headers: {

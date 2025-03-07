@@ -10,11 +10,11 @@ console.log('isLocalBackend:', isLocalBackend);
 
 export const API_BASE_URL = isDevelopment && isLocalBackend
   ? 'http://localhost:8888'
-  : 'http://18.118.20.116:8888';
+  : 'https://api.statify.app';
 
 console.log('API_BASE_URL:', API_BASE_URL);
 
 export const REDIRECT_URIS = [
   'http://localhost:8888/callback',
-  'http://18.118.20.116:8888/callback'
+  'https://api.statify.app/callback'
 ]; 
