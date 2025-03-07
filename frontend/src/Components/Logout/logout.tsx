@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
+import { API_BASE_URL } from '../../config';
 
 const Logout: React.FC = () => {
   useEffect(() => {
-    window.location.href = 'http://localhost:8888/logout';
+    window.location.href = `${API_BASE_URL}/logout`;
   }, []);
 
   return (

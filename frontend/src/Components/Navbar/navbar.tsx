@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Link } from 'react-router-dom'; 
 import smallStar from '../../assets/icons/smallStar.svg';
+import { API_BASE_URL } from '../../config';
 
 interface NavbarProps {
   title: string;
@@ -19,7 +20,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        const response = await fetch('http://localhost:8888/check-login-status', {
+        const response = await fetch(`${API_BASE_URL}/check-login-status`, {
           credentials: 'include'
         });
         const data = await response.json();
@@ -59,30 +60,28 @@ const Navbar: React.FC<NavbarProps> = ({ onLogout }) => {
 
   const handleLoginClick = () => {
     if (!isLoggedIn) {
-      window.location.href = 'http://localhost:8888/login';
+      window.location.href = `${API_BASE_URL}/login`;
     }
   };
 
   const handleLogoutClick = async () => {
     try {
-      // First try to refresh the token
-      const refreshResponse = await fetch('http://localhost:8888/refresh-token', {
+      const refreshResponse = await fetch(`${API_BASE_URL}/refresh-token`, {
         method: 'POST',
         credentials: 'include',
       });
 
-      // Attempt logout regardless of refresh result
-      await fetch('http://localhost:8888/logout', {
+      await fetch(`${API_BASE_URL}/logout`, {
         method: 'GET',
         credentials: 'include',
       });
 
       setIsLoggedIn(false);
       onLogout();
-      window.location.href = '/'; // Redirect to home page after logout
-    } catch (error) {
+      window.location.href = '/'; 
+    } 
+    catch (error) {
       console.error('Error during logout:', error);
-      // Even if there's an error, we want to clear the login state
       setIsLoggedIn(false);
       onLogout();
       window.location.href = '/';

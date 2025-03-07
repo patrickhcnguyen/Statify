@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
+import { API_BASE_URL } from '../../config';
 
 interface CreatePlaylistProps {
   userId: string;
@@ -41,7 +42,7 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
       }
 
       // Get genres for the tracks
-      const genresResponse = await fetch('http://localhost:8888/get-track-genres', {
+      const genresResponse = await fetch(`${API_BASE_URL}/get-track-genres`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -75,7 +76,7 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
       console.log('Selected random genres:', randomGenres);
 
       // Get colors from GPT
-      const colorResponse = await fetch('http://localhost:8888/generate-gradient-colors', {
+      const colorResponse = await fetch(`${API_BASE_URL}/generate-gradient-colors`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +93,7 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
       console.log('Generated colors:', colors);
 
       // Generate gradient
-      const gradientResponse = await fetch('http://localhost:8888/gradients/generate-gradients', {
+      const gradientResponse = await fetch(`${API_BASE_URL}/gradients/generate-gradients`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -128,7 +129,7 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
 
     const trackUris = topTracks.map(track => track.uri);
 
-    const response = await fetch('http://localhost:8888/add-tracks', {
+    const response = await fetch(`${API_BASE_URL}/add-tracks`, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -165,7 +166,7 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
         reader.readAsDataURL(blob);
       });
 
-      const feedResponse = await fetch('http://localhost:8888/feed', {
+      const feedResponse = await fetch(`${API_BASE_URL}/feed`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -214,7 +215,7 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
       });
 
       // Send to our backend endpoint
-      const updateResponse = await fetch(`http://localhost:8888/update-playlist-image/${playlistId}`, {
+      const updateResponse = await fetch(`${API_BASE_URL}/update-playlist-image/${playlistId}`, {
         method: 'PUT',
         credentials: 'include',
         headers: {
@@ -252,7 +253,7 @@ const CreatePlaylist: React.FC<CreatePlaylistProps> = ({ userId, displayName, to
       }
 
       // Create playlist
-      const response = await fetch('http://localhost:8888/create-playlist', {
+      const response = await fetch(`${API_BASE_URL}/create-playlist`, {
         method: 'POST',
         credentials: 'include',
         headers: {

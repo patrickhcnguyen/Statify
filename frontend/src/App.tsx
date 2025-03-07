@@ -10,12 +10,13 @@ import RecentlyPlayedUI from './Components/RecentlyPlayedUI/RecentlyPlayedUI';
 import TopArtistsUI from './Components/TopArtistsUI/TopArtistsUI';
 import TopGenreUI from './Components/TopGenre/topGenreUI';
 import backgroundImage from './assets/background/background.svg';
+import { API_BASE_URL } from './config';
 
 const queryClient = new QueryClient();
 
 // TODO: move functionality to different components
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8888';
+console.log('API Base URL being used:', API_BASE_URL);
 
 const App: React.FC = () => {
   const [timeRange, setTimeRange] = useState<string>('short_term');
@@ -45,11 +46,11 @@ const App: React.FC = () => {
   }, [timeRange]);
 
   const handleLogin = () => {
-    window.location.href = `${API_URL}/login`;
+    window.location.href = `${API_BASE_URL}/login`;
   };
 
   const handleLogout = async () => {
-    await fetch(`${API_URL}/logout`, { credentials: 'include' });
+    await fetch(`${API_BASE_URL}/logout`, { credentials: 'include' });
     setIsLoggedIn(false);
   };
   return (

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from '../button';
+import { API_BASE_URL } from '../../config';
 
 interface Playlist {
   playlistID: string;
@@ -28,7 +29,7 @@ const Community: React.FC = () => {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const response = await fetch('http://localhost:8888/user-profile', {
+        const response = await fetch(`${API_BASE_URL}/user-profile`, {
           credentials: 'include',
         });
         if (response.ok) {

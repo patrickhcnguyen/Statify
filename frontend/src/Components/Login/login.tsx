@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
+import { API_BASE_URL } from '../../config';
 
 const Login: React.FC = () => {
   useEffect(() => {
-    window.location.href = 'http://localhost:8888/login';
+    console.log('Redirecting to:', `${API_BASE_URL}/login`);
+    window.location.href = `${API_BASE_URL}/login`;
   }, []);
 
   return (
