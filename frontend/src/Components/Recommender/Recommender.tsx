@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useSwipeable } from 'react-swipeable';
+import { API_BASE_URL } from '../../config';
+const API_URL = API_BASE_URL;
 
 interface Track {
   name: string;
@@ -105,7 +107,7 @@ const Recommender: React.FC<RecommenderProps> = ({ topTracks, selectedTracks, di
         ? selectedTracks 
         : getRandomTracks(5);
 
-      const response = await fetch('http://localhost:8888/get-recommendations', {
+      const response = await fetch(`${API_BASE_URL}/get-recommendations`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

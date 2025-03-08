@@ -26,7 +26,8 @@ router.get('/login', function(req, res) {
     const state = generateRandomString(16);
     res.cookie('spotify_auth_state', state);
 
-    const redirectUri = process.env.REDIRECT_URI || 'https://api.statify.app/callback';
+    const redirectUri = process.env.REDIRECT_URI;
+    console.log('Using redirect URI:', redirectUri);
     
     const scope = 'user-read-private user-read-email user-read-recently-played user-top-read playlist-modify-public playlist-modify-private ugc-image-upload user-follow-read'
     
@@ -88,7 +89,7 @@ router.get('/callback', function(req, res) {
             url: 'https://accounts.spotify.com/api/token',
             form: {
                 code: code,
-                redirect_uri: process.env.REDIRECT_URI || 'https://api.statify.app/callback',
+                redirect_uri: process.env.REDIRECT_URI,
                 grant_type: 'authorization_code'
             },
             headers: {
@@ -122,7 +123,7 @@ router.get('/callback', function(req, res) {
                 console.log('Access token set in cookie:', access_token);
                 console.log("Refresh token is:", refresh_token);
 
-                res.redirect(process.env.FRONTEND_URL || 'http://localhost:3000'); 
+                res.redirect(process.env.FRONTEND_URL || 'https://www.statify.app'); 
             } else {
                 console.error('Token exchange error:', body); 
                 res.redirect('/#' + querystring.stringify({ error: 'invalid_token' }));

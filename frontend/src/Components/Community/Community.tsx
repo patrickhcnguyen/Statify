@@ -43,7 +43,7 @@ const Community: React.FC = () => {
 
     const fetchFeed = async () => {
       try {
-        const response = await fetch('http://localhost:8888/feed', {
+        const response = await fetch(`${API_BASE_URL}/feed`, {
           method: 'GET',
           credentials: 'include',
         });
@@ -68,7 +68,7 @@ const Community: React.FC = () => {
 
   const handleDelete = async (playlistId: string, userID: string) => {
     try {
-      const response = await fetch(`http://localhost:8888/feed/playlist/${playlistId}?userID=${userID}`, {
+      const response = await fetch(`${API_BASE_URL}/feed/playlist/${playlistId}?userID=${userID}`, {
         method: 'DELETE',
         credentials: 'include',
       });

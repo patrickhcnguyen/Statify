@@ -18,6 +18,9 @@ import journalMobile from '../../assets/background/journal mobile.png';
 import jellyfishMobile from '../../assets/icons/jellyfish mobile.svg';
 import ribbonMobile from '../../assets/icons/ribbon mobile.svg';
 
+import { API_BASE_URL } from '../../config';
+const API_URL = API_BASE_URL;
+
 interface TopArtistsUIProps {
   timeRange: string;
   setTimeRange: (range: string) => void;
@@ -43,7 +46,7 @@ const TopArtistsUI: React.FC<TopArtistsUIProps> = ({
     queryFn: async () => {
       if (!currentArtist?.id) return [];
       
-      const response = await fetch(`http://localhost:8888/artist-recommendations/${currentArtist.id}`, {
+      const response = await fetch(`${API_BASE_URL}/artist-recommendations/${currentArtist.id}`, {
         credentials: 'include'
       });
       

@@ -13,7 +13,6 @@ const useUserProfile = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
-    // First check if user is logged in
     const checkLoginStatus = async () => {
       console.log("Attempting to check login status...");
       try {
@@ -84,9 +83,7 @@ const useUserProfile = () => {
     checkLoginStatus();
   }, []);
 
-  // Update the login function to use the API_BASE_URL
   const login = () => {
-    // Use the API_BASE_URL from your config instead of hardcoded localhost
     window.location.href = `${API_BASE_URL}/login`;
   };
 

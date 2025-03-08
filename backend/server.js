@@ -46,7 +46,7 @@ const openaiApiKey = getConfig('OPENAI_API_KEY', 'openai_api_key');
 const rapidApiKey = getConfig('RAPIDAPI_KEY', 'rapidapi_key');
 const clientId = getConfig('CLIENT_ID', 'client_id');
 const clientSecret = getConfig('CLIENT_SECRET', 'client_secret');
-const redirectUri = getConfig('REDIRECT_URI', 'redirect_uri') || 'https://api.statify.app/callback';
+const redirectUri = getConfig('REDIRECT_URI', 'redirect_uri');
 
 process.env.MONGODBURI = mongoURI;
 process.env.OPENAI_API_KEY = openaiApiKey;

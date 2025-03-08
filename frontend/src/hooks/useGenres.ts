@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { API_BASE_URL } from "../config";
 
 interface GenreData {
     name: string;
@@ -15,17 +16,12 @@ export const useGenres = (timeRange: string) => {
         queryKey: ["genres", timeRange],
         queryFn: async () => {
             const response = await fetch(
-                `http://localhost:8888/top-genres?time_range=${timeRange}`,
+                `${API_BASE_URL}/top-genres?time_range=${timeRange}`,
                 {
                     credentials: 'include',
                 }
             );
 
-            if (!response.ok) {
-                const text = await response.text();
-                console.error('Response Text:', text);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
 
             const data: ApiResponse = await response.json();
             

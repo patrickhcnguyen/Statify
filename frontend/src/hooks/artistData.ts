@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
+import { API_BASE_URL } from '../config';
 
-const API_URL = 'http://localhost:8888';
+const API_URL = API_BASE_URL;
 
 interface Artist {
     id: string;
@@ -25,7 +26,7 @@ function useArtistData(timeRange: string = 'short_term', currentIndex: number = 
     const { data, isLoading, error } = useQuery<{ items: Artist[] }>({
         queryKey: ['topArtists', timeRange],
         queryFn: async () => {
-            const response = await fetch(`${API_URL}/top-artists?time_range=${timeRange}&limit=15`, {
+            const response = await fetch(`${API_BASE_URL}/top-artists?time_range=${timeRange}&limit=15`, {
                 credentials: 'include'
             });
             
